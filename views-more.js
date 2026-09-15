@@ -71,34 +71,60 @@
       case "cta": {
         if (b.act) return `<button type="button" class="btn btn--mg btn--block art-cta" data-act="${b.act}" data-pid="56">${b.label}</button>`;
         var lp = b.last && H.state.recent.map(H.prod).find(function (p) { return p && !p.launch; });
-        if (lp) return `<button type="button" class="btn btn--ink btn--block art-cta art-cta--last" data-act="lastProduct" data-pid="${lp.id}"${b.plan ? ' data-plan="1"' : ""}><small>보던 휴대폰 · ${lp.name}</small>${b.label}</button>`;
+        if (lp) return `<button type="button" class="btn btn--ink btn--block art-cta art-cta--last" data-act="lastProduct" data-pid="${lp.id}"><small>보던 휴대폰 · ${lp.name}</small>${b.label}</button>`;
         return `<a class="btn btn--ink btn--block art-cta" href="${b.to}">${b.label}</a>`;
       }
     }
     return "";
   }
+  /* 알고사기 목록 — 대표 글 → 주제별 묶음 → 찾는 답이 없을 때 상담 */
+  function plain(t) { return String(t || "").replace(/<[^>]+>/g, ""); }
+  function hasTable(g) { return (g.body || []).some(function (b) { return b.t === "calc" || b.t === "compare"; }); }
+  function glMeta(g) {
+    return `<span class="gl-meta"><span>${H.esc(g.cat)}</span><span class="num">${g.read}분</span>${hasTable(g) ? '<span class="gl-meta__tag">실제 금액표</span>' : ""}</span>`;
+  }
+  function glRow(g) {
+    return `<a class="gl-row" href="#/guide/${g.slug}"><span class="gl-row__txt">${glMeta(g)}<b>${H.esc(g.title)}</b>${g.summary ? `<span class="gl-row__sum">${H.esc(g.summary)}</span>` : ""}</span>${H.icon("chev-r", "gl-row__go")}</a>`;
+  }
+  function glFeature(g) {
+    var ans = (g.body || []).find(function (b) { return b.t === "answer" && b.text; });
+    return `<a class="gl-feat" href="#/guide/${g.slug}">
+      <span class="gl-feat__main"><span class="gl-feat__eyebrow">처음이라면 이 글부터</span><b class="gl-feat__t">${H.esc(g.title)}</b>${glMeta(g)}</span>
+      ${ans ? `<span class="gl-feat__ans"><small>짧게 답하면</small>${H.esc(plain(ans.text))}</span>` : ""}
+      <span class="gl-feat__go">글 읽기${H.icon("arrow")}</span></a>`;
+  }
   H.views.guides = function (r) {
-    var cat = r.q.cat || "전체", all = H.guideList();
-    var cats = C.guideCats.filter(function (c) { return c === "전체" || all.some(function (g) { return g.cat === c; }); });
-    var count = function (c) { return c === "전체" ? all.length : all.filter(function (g) { return g.cat === c; }).length; };
-    var list = all.filter(function (g) { return cat === "전체" || g.cat === cat; });
+    var all = H.guideList(), desc = C.guideCatDesc || {};
+    var cats = C.guideCats.filter(function (c) { return c !== "전체" && all.some(function (g) { return g.cat === c; }); });
+    var cat = cats.indexOf(r.q.cat) >= 0 ? r.q.cat : "전체";
+    var nav = ["전체"].concat(cats).map(function (c) {
+      var n = c === "전체" ? all.length : all.filter(function (g) { return g.cat === c; }).length;
+      return `<a href="#/guide${c === "전체" ? "" : "?cat=" + encodeURIComponent(c)}"${cat === c ? ' aria-current="true"' : ""}><span>${c}</span><small class="num">${n}</small></a>`;
+    }).join("");
+    var lead = cat === "전체" ? all[0] : null;
+    var secs = (cat === "전체" ? cats : [cat]).map(function (c) {
+      var list = all.filter(function (g) { return g.cat === c && g !== lead; });
+      if (!list.length) return "";
+      return `<section class="gl-sec"><header class="gl-sec__hd"><h2>${c}</h2>${desc[c] ? `<p>${desc[c]}</p>` : ""}</header><div class="gl-list">${list.map(glRow).join("")}</div></section>`;
+    }).join("");
     return {
       title: "알고사기",
-      html: `<div class="wrap"><div class="g-layout">
-  <div class="g-side"><header class="ph"><h1>알고사기</h1><p>헷갈리는 조건을 쉬운 말로 풀어드려요.</p></header>
-    <nav class="g-tabs" aria-label="글 주제">${cats.map(function (c) {
-      return `<a href="#/guide${c === "전체" ? "" : "?cat=" + encodeURIComponent(c)}"${cat === c ? ' aria-current="true"' : ""}>${c}<small class="num">${count(c)}</small></a>`;
-    }).join("")}</nav></div>
-  <div class="g-list">${list.map(function (g) {
-    return `<a class="g-item" href="#/guide/${g.slug}"><small>${g.cat}</small><h3>${H.esc(g.title)}</h3><p>${H.esc(g.summary)}</p><p class="meta">${g.read}분이면 읽어요</p></a>`;
-  }).join("") || '<p class="empty">아직 글이 없어요.</p>'}</div>
+      html: `<div class="wrap"><div class="gl">
+  <div class="gl-side">
+    <header class="gl-hd"><h1>알고사기</h1><p>휴대폰 살 때 헷갈리는 조건을 쉬운 말로 풀어드려요.</p><p class="gl-hd__meta num">글 ${all.length}개 · 금액은 ${ASOF} 판매 가격으로 계산</p></header>
+    <a class="gl-search" href="#/search">${H.icon("search")}<span>궁금한 말로 찾기</span></a>
+    <nav class="gl-nav" aria-label="글 주제">${nav}</nav>
+  </div>
+  <div class="gl-main">
+    ${lead ? glFeature(lead) : ""}
+    ${secs || (lead ? "" : '<p class="empty">아직 글이 없어요.</p>')}
+    <div class="gl-help"><div><b>찾는 답이 없나요?</b><p>AI 상담이나 카카오톡으로 물어보세요. 전화 없이도 돼요.</p></div><div class="gl-help__acts"><button type="button" class="btn btn--line btn--sm" data-act="chat">${H.icon("spark")}AI 상담</button><button type="button" class="btn btn--kakao btn--sm" data-act="kakao">${H.icon("kakao", "ic--fill")}카카오톡 상담</button></div></div>
+  </div>
 </div></div>`
     };
   };
-  H.acts.lastProduct = function (el) {
-    if (el.dataset.plan) H._tourAfter = function () { H.acts.planSheet(); };
-    H.go("#/phone/" + el.dataset.pid);
-  };
+  /* 보던 휴대폰 화면으로 — 손님이 고른 조건(H.sel)은 건드리지 않는다 */
+  H.acts.lastProduct = function (el) { H.go("#/phone/" + el.dataset.pid); };
   H.views.guide = function (r) {
     var g = H.guide(r.parts[1]);
     if (g && (H.state.guideHidden || []).indexOf(g.slug) >= 0 && r.q.preview !== "1") g = null;
@@ -181,7 +207,7 @@
   <header class="post__hd"><span class="post__av">${H.esc(p.name.charAt(0))}</span><div><b>${H.esc(p.name)}</b><small class="num">${p.date.replace(/-/g, ".")}${p.tag ? " · " + H.esc(p.tag) : ""}</small></div>${p.mine ? '<span class="demo-tag">내가 올림</span>' : ""}</header>
   ${p.img ? `<div class="post__ph"><img src="${p.img}" alt="${H.esc(p.name)} 손님 사진"></div>` : ""}
   <div class="post__body">${H.stars(p.rating)}<p class="post__txt">${H.esc(p.text)}</p>${p.photoHidden ? '<p class="help-t">사진은 하이유플이 감췄어요.</p>' : ""}</div>
-  <div class="post__acts"><a class="btn btn--ink btn--block" href="#/phones">나도 내 조건으로 보기</a><button type="button" class="link-row" data-act="toast" data-msg="시안: 신고가 들어오면 직원이 보고 감출 수 있어요">이 후기 신고하기</button></div>
+  <div class="post__acts"><a class="btn btn--ink btn--block" href="#/phones">나도 내 조건으로 보기</a></div>
   ${more.length ? `<h2 class="post__more-t">다른 손님 사진</h2><div class="feed-grid feed-grid--sm">${more.map(tile).join("")}</div>` : ""}
 </article></div>`
     };
