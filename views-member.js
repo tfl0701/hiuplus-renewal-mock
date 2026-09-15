@@ -25,8 +25,8 @@
   function nextAction(o) {
     return [
       ["온라인 신청서를 써 주세요", "신청서를 쓰면 담당자가 확인을 시작해요.", `<button type="button" class="btn btn--mg btn--block" data-act="writeForm" data-id="${o.id}">온라인 신청서 작성하기</button>`],
-      ["신청서 작성을 마쳤어요", "담당자가 확인하면 카카오톡으로 가입내역을 보내드려요.", ""],
-      ["개통과 배송을 준비하고 있어요", "택배를 보내면 송장번호를 알려드려요. 택배비는 무료예요.", ""],
+      ["신청서 작성을 마쳤어요", "담당자가 확인하고 카카오톡으로 가입내역을 보내드려요. «확인했습니다»라고 답해 주시면 개통을 진행해요.", `<button type="button" class="btn btn--line btn--block" data-act="joinInfo" data-id="${o.id}">가입내역은 이렇게 받아요</button>`],
+      ["개통과 배송을 준비하고 있어요", "택배를 보내는 날 알림톡으로 택배사와 송장번호를 보내드려요. 택배비는 무료예요.", ""],
       ["개통이 끝났어요", "새 휴대폰 잘 쓰세요. 궁금한 점은 고객센터로 물어봐 주세요.", `<a class="btn btn--line btn--block" href="#/my/reviews">후기 남기기</a>`]
     ][o.step];
   }
@@ -54,16 +54,80 @@
   function trackRow(o) {
     return `<div class="track"><span class="track__txt"><b class="num">${H.esc(o.courier || "CJ대한통운")} ${H.esc(o.trackingNo || "123456789012")}</b><small>눌러서 지금 어디쯤인지 보기</small></span><button type="button" class="btn btn--ink btn--sm" data-act="trackSheet" data-id="${o.id}">배송조회</button></div>`;
   }
+  /* 지금 사이트 코드(courierTracking.ts)와 같게: 다섯 택배사는 번호가 들어간 조회 화면, 나머지는 네이버 택배조회.
+   * 배송 위치를 이 사이트 안에서 보여 주는 조회 API 는 없다 → 택배사 화면으로 넘긴다 */
   H.acts.trackSheet = function (el) {
-    var o = findOrder(el.dataset.id) || {};
-    var rows = [["9월 16일 14:02", "상품을 보냈어요", "하이유플"], ["9월 16일 22:40", "이동 중이에요", "택배 터미널"], ["9월 17일 07:10", "배달을 시작했어요", "받으실 곳 근처"]];
-    if (o.step >= 3) rows.push(["9월 17일 13:25", "배달을 마쳤어요", "문 앞"]);
+    var o = findOrder(el.dataset.id) || {}, courier = o.courier || "CJ대한통운", no = o.trackingNo || "123456789012";
+    var p = H.prod(o.pid || 54), direct = /우체국|CJ|대한통운|한진|롯데|로젠/.test(courier);
+    var msg = `${p.name} 상품이 오늘 출고되었습니다! 📦\n(택배사: ${courier}, 송장번호: ${no})\n\n상품을 수령하신 후, 카카오톡으로 수령 확인을 해주셔야\n개통 진행을 할 수 있습니다. 🔑\n…`;
     H.openSheet({
       title: "배송조회",
-      body: `<div class="track track--sheet"><span class="track__txt"><b class="num">${H.esc(o.courier || "CJ대한통운")} ${H.esc(o.trackingNo || "123456789012")}</b><small>예시 값이에요</small></span><button type="button" class="btn btn--line btn--sm" data-act="toast" data-msg="송장번호를 복사했어요">번호 복사</button></div>
-        <ol class="tl">${rows.reverse().map(function (x, i) { return `<li class="${i === 0 ? "is-now" : ""}"><b>${x[1]}</b><small class="num">${x[0]} · ${x[2]}</small></li>`; }).join("")}</ol>
-        <p class="a-note">${H.icon("info")}<span>실제 사이트에서는 이 단추가 택배사 조회 화면을 바로 열어요. 우체국 · CJ대한통운 · 한진택배 · 롯데택배 · 로젠택배는 번호까지 넣어 바로 열리고, 그 밖의 택배사는 네이버 택배조회로 가요.</span></p>`
+      body: `<div class="track track--sheet"><span class="track__txt"><b class="num">${H.esc(courier)} ${H.esc(no)}</b><small>예시 번호예요</small></span><button type="button" class="btn btn--line btn--sm" data-act="toast" data-msg="송장번호를 복사했어요">번호 복사</button></div>
+        <button type="button" class="btn btn--ink btn--block track-go" data-act="toast" data-msg="시안: ${H.esc(courier)} 배송조회 화면이 새 창으로 열려요">${H.esc(courier)}에서 배송 위치 보기${H.icon("arrow")}</button>
+        <p class="help-t">${direct ? "택배사 조회 화면이 송장번호가 들어간 채로 열려요." : "네이버 택배조회가 열려요. 송장번호를 붙여 넣어 조회해요."} 배송 위치는 택배사 화면에서 확인해요.</p>
+        <p class="kchat-label">택배를 보낸 날 이렇게 와요 · 알림톡 예시</p>
+        <div class="kchat"><div class="kchat__who"><span class="kchat__av">H+</span><b>하이유플</b><small>알림톡</small></div><div class="kchat__bubble">${H.esc(msg)}</div></div>`
     });
+  };
+
+  /* 가입내역 — 지금은 담당자가 자비스웹 접수 상세 «양식(복사용) › 최종안내»를 복사해 카카오톡으로 보낸다(자동 발송 없음).
+   * 글은 orderForm.ts 최종안내 그대로(LGU+ «약정»), 값만 이 신청으로 채움 */
+  var FINAL_REST = "유지 기간 일수 계산은 하이유플 마이페이지 신청내역 보시면 (개통완료시점부터) 경과일이 표시됩니다\n일시 정지 기간없이 정상 사용시 경과일 185일 이후에 요금제 변경하시면됩니다\n저희한테 문의 주셔도 됩니다\n\n참고로, 해외 출국 등의 일시정지나 기타 정지 기간은\n유지 일수에 포함되지 않아 현재 정확한 날짜 계산이 어려운 점 양해 부탁드립니다.\n\n✅ 꼭 확인해 주세요.\n요금제 유지 기간은 준수 의무가 있으며,\n하루라도 일찍 요금제를 변경하실 경우,\n하이유플 할인(유통망지원금) 금액 및 위약금이 청구됩니다.\n반드시 숙지 후 진행 부탁드립니다.\n개통 후 185일 이전에 요금제 변경, 해지(직권해지 포함) 시\n받으신 할인금액 전액이 청구됩니다.\n185일 이후에는\n타 통신사 이동, 해지(직권해지 포함), 특정 요금제 이하로 변경 시\n일할 계산된 위약금이 발생할 수 있습니다.\n\n단말기는 개통 전 개봉하실 경우 단순변심으로 인한 반품이 불가능합니다.\n휴대폰은 반드시 개통 완료 후 개봉해주시기 바랍니다.\n\n(부정 개통 · 유심 다른 기기 사용 시 혜택 반환 안내가 이어져요)\n\n확인하셨다면 \"확인했습니다\" 라고 답변 부탁드립니다.\n(답변 시 위 내용에 동의한 것으로 간주됩니다.)";
+  function finalHead(o) {
+    var p = H.prod(o.pid), s = o.sel, r = H.price(p, s);
+    return `${H.state.user.name} 고객님, LGU+ 접수 건 안내드립니다.\n\n아래 접수 내용이 정확한지 확인 부탁드립니다.\n\n주문 모델 : ${p.name} ${p.vols[s.vol][0]} ${p.colors[s.color][0]}\n\n할부원금(최종 기기값): ${H.num(r.principal)}원\n\n가입 상품:  ${s.discount === "select" ? "선택약정" : "공시지원금"} 약정\n요금제: ${r.plan.name} (${H.num(r.planFeeBase)}원)\n요금제 유지 기간: 185일\n185일 이후 하향 가능 요금제: 47,000원 까지 하향가능`;
+  }
+  H.acts.joinInfo = function (el) {
+    var o = findOrder(el.dataset.id);
+    if (!o) return;
+    H.openSheet({
+      title: "가입내역은 이렇게 받아요", wide: true,
+      body: `<ol class="how3">
+          <li><i>1</i><div><b>담당자가 신청 내용을 확인해요</b><span>온라인 신청서 작성을 마친 뒤 시작해요.</span></div></li>
+          <li><i>2</i><div><b>카카오톡으로 가입내역이 와요</b><span>모델 · 할부원금 · 요금제 · 유지 기간 · 위약금 안내가 한 번에 와요.</span></div></li>
+          <li><i>3</i><div><b>«확인했습니다»라고 답해 주세요</b><span>답을 받으면 개통을 진행해요. 진행 상황은 문자로 알려드려요.</span></div></li>
+        </ol>
+        <p class="kchat-label">이렇게 와요 · 이 신청으로 채운 예시</p>
+        <div class="kchat"><div class="kchat__who"><span class="kchat__av">H+</span><b>하이유플</b></div>
+          <div class="kchat__bubble">${H.esc(finalHead(o))}<details class="kchat__more"><summary>이어지는 안내 보기</summary><p>${H.esc(FINAL_REST)}</p></details></div>
+          <div class="kchat__me">확인했습니다</div></div>
+        <p class="a-note">${H.icon("info")}<span>같은 내용은 로그인 없이 여는 «신청내역 확인» 링크로도 볼 수 있어요.</span></p>`,
+      foot: `<a class="btn btn--ink btn--block" href="#/receipt/${o.id}">신청내역 확인 화면 보기</a><p class="demo-note"><span class="demo-tag">시안</span>지금은 담당자가 자비스웹에서 글을 복사해 카카오톡으로 보내요</p>`
+    });
+  };
+
+  /* 신청내역 확인 — 지금 사이트 /receipt/<토큰>(로그인 없이 · 30일 · 개통완료 · 취소 · 직원이 끊으면 닫힘)과 같은 화면.
+   * «내용이 맞아요»는 제안(지금은 카카오톡 답장으로 받음) */
+  H.views.receipt = function (r) {
+    var o = findOrder(r.parts[1]);
+    if (!o) return { title: "신청내역 확인", html: `<div class="wrap me-narrow"><p class="empty">링크가 닫혔거나 없는 신청이에요.<br>개통이 끝나거나 30일이 지나면 링크가 닫혀요.</p></div>` };
+    var p = H.prod(o.pid), s = o.sel, pr = H.price(p, s), u = H.state.user;
+    var phone = u.phone.slice(0, 6) + "**-**" + u.phone.slice(-2);
+    return {
+      title: "신청내역 확인", tab: false,
+      html: `<div class="wrap me-narrow">
+  <p class="rc-link">${H.icon("shield", "ic--sm")}로그인 없이 여는 링크예요 · 30일 동안 열리고 개통이 끝나면 닫혀요</p>
+  <header class="ph ph--tight"><p class="eyebrow-sm num">신청번호 ${o.id} · ${o.date}</p><h1>${stepName(o)}</h1></header>
+  <section class="form-sec"><h2>가입하시는 분</h2><dl class="kv"><div><dt>명의자</dt><dd>${H.esc(u.name)}</dd></div><div><dt>개통 번호</dt><dd class="num">${H.esc(phone)}</dd></div><div><dt>받으실 곳</dt><dd>${H.esc(o.addr || "-")}</dd></div></dl></section>
+  <section class="form-sec"><h2>휴대폰 · 가입 조건</h2><dl class="kv">
+    <div><dt>모델</dt><dd>${p.name} ${p.vols[s.vol][0]} · ${p.colors[s.color][0]}</dd></div>
+    <div><dt>가입 조건</dt><dd>LG U+ ${H.methodLabel(s.method)} · ${H.discountLabel(s.discount)} · ${pr.months ? pr.months + "개월 할부" : "일시불"}</dd></div>
+    <div><dt>요금제</dt><dd>${pr.plan.name} · 월 ${H.won(pr.planFeeBase)}</dd></div>
+    <div><dt>유지 기간</dt><dd>185일 · 이후 월 47,000원까지 낮출 수 있어요</dd></div>
+  </dl></section>
+  <section class="form-sec"><h2>금액</h2><div class="sum sum--flat"><div class="pbox__rows">${H.priceRows(p, s, pr)}</div><div class="sum__total"><span>월 납부 금액</span><b class="num">${H.won(pr.monthlyTotal)}</b></div></div></section>
+  <div class="rc-confirm">${o.confirmed ? `<p class="ok-t">${H.icon("check", "ic--sm")} ${H.esc(o.confirmed)}에 확인했어요</p>` : `<button type="button" class="btn btn--mg btn--block" data-act="rcConfirm" data-id="${o.id}">내용이 맞아요</button>`}
+    <p class="demo-note"><span class="demo-tag">제안</span>누르면 자비스웹 접수 상세에 «손님 확인»이 남아요. 지금은 카카오톡 답장으로 받아요</p></div>
+</div>`
+    };
+  };
+  H.acts.rcConfirm = function (el) {
+    var o = findOrder(el.dataset.id);
+    if (!o) return;
+    o.confirmed = H.today();
+    H.save();
+    H.rerender();
+    H.toast("확인했어요. 담당자에게 전달돼요 (시안)");
   };
 
   /* ---------- 마이페이지 ---------- */
@@ -102,7 +166,7 @@
       : `<a class="ref-card ref-card--join" href="#/partner"><div><b>하이유플 파트너스</b><small>지인에게 링크를 보내고 개통 1건당 20,000원 받기</small></div>${H.icon("chev-r")}</a>`}
     <div class="quick">
       <button type="button" data-act="consult"><b>중고폰 팔기</b><small>쓰던 폰 시세 조회·판매</small></button>
-      <button type="button" data-act="consult"><b>인터넷 가입</b><small>인터넷·TV 신청 상담</small></button>
+      <a href="#/together"><b>인터넷 같이 하기</b><small>결합 할인 · 상담</small></a>
     </div>
     <nav class="menu-list" aria-label="마이페이지 메뉴">
       <button type="button" data-act="myAlerts">알림 신청 내역<small class="num">${s.alerts.length}건</small></button>
@@ -166,7 +230,7 @@
     <div><dt>상세 주소</dt><dd>${H.esc(o.addr2 || "-")}</dd></div>
     <div><dt>송장번호</dt><dd>${o.step >= 2 ? `<span class="num">${H.esc(o.courier || "CJ대한통운")} ${H.esc(o.trackingNo || "123456789012")}</span> <span class="demo-tag">예시</span>` : "택배를 보내면 알려드려요"}</dd></div>
   </dl></section>
-  <div class="done__acts">${o.step >= 2 ? '<button type="button" class="btn btn--line btn--sm" data-act="caseAsk">케이스 요청하기</button>' : ""}<button type="button" class="btn btn--line btn--sm" data-act="kakao">${H.icon("kakao", "ic--fill")}카카오톡으로 물어보기</button></div>
+  <div class="done__acts"><button type="button" class="btn btn--line btn--sm" data-act="joinInfo" data-id="${o.id}">가입내역 받는 방법</button><a class="btn btn--line btn--sm" href="#/receipt/${o.id}">신청내역 확인 링크</a>${o.step >= 3 ? '<button type="button" class="btn btn--line btn--sm" data-act="caseAsk">케이스 요청하기</button>' : ""}<button type="button" class="btn btn--line btn--sm" data-act="kakao">${H.icon("kakao", "ic--fill")}카카오톡으로 물어보기</button></div>
 </div>`
     };
   };

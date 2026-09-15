@@ -208,7 +208,7 @@
       html: `<div class="wrap"><div class="done">
   <div class="done__ic">${H.icon("check")}</div>
   <h1>${formDone ? "신청서까지 받았어요" : "접수됐어요.<br>이제 신청서만 쓰면 끝이에요"}</h1>
-  <p class="lead">${formDone ? "담당자가 확인하면 카카오톡으로 가입내역을 보내드려요. 진행 상황은 마이페이지에서 볼 수 있어요." : p.name + " 주문을 받았어요. 온라인 신청서를 써 주시면 담당자가 확인하고 개통을 준비해요."}</p>
+  <p class="lead">${formDone ? "담당자가 확인하고 카카오톡으로 가입내역을 보내드려요. «확인했습니다»라고 답해 주시면 개통을 진행해요. 진행 상황은 마이페이지에서 볼 수 있어요." : p.name + " 주문을 받았어요. 온라인 신청서를 써 주시면 담당자가 확인하고 개통을 준비해요."}</p>
   ${H.tracker(o.step)}
   ${formDone ? "" : `<section class="next-card"><small>지금 할 일</small><h2>온라인 신청서 작성하기</h2><p>통신사 가입에 필요한 신청서예요. 3분이면 충분해요. 같은 링크를 카카오톡으로도 보내드렸어요.</p>
     <button type="button" class="btn btn--mg btn--block" data-act="writeForm" data-id="${o.id}">온라인 신청서 작성하기</button>

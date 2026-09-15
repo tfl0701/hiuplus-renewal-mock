@@ -45,16 +45,19 @@
   }
   function compare(b) {
     var p = H.prod(b.pid), sa = sel(b, b.a), sb = sel(b, b.b);
-    var ra = H.price(p, sa), rb = H.price(p, sb), ca = H.cost(p, sa), cb = H.cost(p, sb);
+    var cost = b.down ? H.costDown : H.cost;
+    var ra = H.price(p, sa), rb = H.price(p, sb), ca = cost(p, sa), cb = cost(p, sb);
     var win = b.neutral || ca === cb ? "" : ca < cb ? "a" : "b";
-    var col = function (key, lab, r, c) {
+    var after = function (r, s) { return r.monthlyTotal - r.planFee + Math.round(Math.min(r.planFeeBase, H.DOWN.fee) * (s.discount === "select" ? 0.75 : 1)); };
+    var col = function (key, lab, r, c, s) {
       return `<div class="col${win === key ? " win" : ""}"><h4>${lab}${win === key ? '<span class="badge badge--pre">덜 내요</span>' : ""}</h4>
-        <p class="big num">월 ${H.won(r.monthlyTotal)}</p><p class="small num">실구매가 ${H.won(r.principal)}<br>24개월 합계 ${H.won(c)}</p></div>`;
+        <p class="big num">월 ${H.won(r.monthlyTotal)}</p><p class="small num">${b.down ? `${H.DOWN.keep + 1}개월째부터 월 ${H.won(after(r, s))}<br>` : ""}실구매가 ${H.won(r.principal)}<br>24개월 합계 ${H.won(c)}</p></div>`;
     };
     var gap = H.won(Math.abs(ca - cb));
     var res = ca === cb ? "" : b.neutral ? `<p class="compare-res">같은 폰, 같은 요금제라도 24개월 합계가 <span class="num">${gap}</span> 달라요.</p>`
-      : `<p class="compare-res">${win === "a" ? b.a.label : b.b.label} 쪽이 24개월 동안 <span class="num">${gap}</span> 덜 내요.</p>`;
-    return `<figure class="compare-wrap"><figcaption>${b.caption}</figcaption><div class="compare">${col("a", b.a.label, ra, ca)}${col("b", b.b.label, rb, cb)}</div>${res}<p class="asof">하이유플 ${ASOF} 가격으로 계산했어요 · 24개월 합계 = 기기값 + 할부 이자 + 요금 24개월</p></figure>`;
+      : `<p class="compare-res">${win === "a" ? b.a.label : b.b.label} 쪽이 ${b.down ? "185일 뒤 47,000원으로 낮춰도 " : ""}24개월 동안 <span class="num">${gap}</span> 덜 내요.</p>`;
+    var how = b.down ? ` · 185일이 지나는 ${H.DOWN.keep}개월째까지 고른 요금제, ${H.DOWN.keep + 1}개월째부터 월 47,000원(${H.DOWN.name})` : "";
+    return `<figure class="compare-wrap"><figcaption>${b.caption}</figcaption><div class="compare">${col("a", b.a.label, ra, ca, sa)}${col("b", b.b.label, rb, cb, sb)}</div>${res}<p class="asof">하이유플 ${ASOF} 가격으로 계산했어요 · 24개월 합계 = 기기값 + 할부 이자 + 요금${how}</p></figure>`;
   }
   function block(b) {
     switch (b.t) {

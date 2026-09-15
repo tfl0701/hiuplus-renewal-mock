@@ -94,6 +94,10 @@ window.HIU_CONTENT = {
         { t: "h", text: "같은 조건으로 비교해 볼게요" },
         { t: "compare", pid: 54, plan: 50, vol: 0, months: 24, total: true, caption: "아이폰 18 프로 256G · 데이터플랜MAX · 번호이동 · 24개월 할부",
           a: { label: "이통사지원금", method: "move", discount: "official" }, b: { label: "선택약정", method: "move", discount: "select" } },
+        { t: "h", text: "185일 뒤 월 47,000원 요금제로 낮추면" },
+        { t: "p", text: "하이유플 주문 안내 기준으로 요금제는 185일 동안 유지하고, 그 뒤에는 월 47,000원 요금제까지 낮출 수 있어요. 선택약정 25% 할인은 바꾼 요금제에 그대로 붙어요. 같은 조건으로 낮춘 경우도 계산해 봤어요." },
+        { t: "compare", pid: 54, plan: 50, vol: 0, months: 24, down: true, caption: "같은 조건 · 185일이 지나는 7개월째까지 데이터플랜MAX, 8개월째부터 월 47,000원 요금제",
+          a: { label: "이통사지원금", method: "move", discount: "official" }, b: { label: "선택약정", method: "move", discount: "select" } },
         { t: "p", text: "하이유플 상품 화면에서 두 방법을 눌러 보면 월 납부 금액이 바로 바뀌어요. 24개월 동안 덜 내는 쪽도 함께 알려드려요." },
         { t: "cta", label: "내 조건으로 비교하기", to: "#/phones", last: true }
       ]

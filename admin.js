@@ -7,14 +7,17 @@
   var ADD_TYPES = [["h", "소제목"], ["p", "문단"], ["list", "목록"], ["note", "안내"], ["steps", "순서"], ["cta", "단추"]];
   var TYPE_LABEL = { answer: "짧게 답하면", h: "소제목", p: "문단", list: "목록", note: "안내", steps: "순서", pairs: "두 칸 설명", formula: "계산식", calc: "금액표 (자동 계산)", compare: "비교표 (자동 계산)", cta: "단추" };
 
+  /* 관리 화면은 손님 사이트가 아니라 자비스웹(직원 로그인) «판매몰 관리 › 손님몰 화면» 안에 들어간다.
+   * 자비스웹과 손님몰은 한 프로그램(labadmin) · 같은 DB. 탭 옆 표시: 있음 = 지금 메뉴 · 고침 = 칸 더하기 · 새로 = 새 메뉴 */
+  var TAG = { "있음": "have", "고침": "fix", "새로": "new" };
   function shell(tab, inner, title, extra) {
-    var tabs = [["home", "관리 첫 화면", "#/admin"], ["guides", "알고사기 글", "#/admin/guides"], ["reviews", "구매후기 피드", "#/admin/reviews"]];
+    var tabs = [["home", "관리 첫 화면", "#/admin", ""], ["banners", "배너 관리", "#/admin/banners", "있음"], ["reviews", "후기 관리", "#/admin/reviews", "고침"], ["guides", "알고사기 글", "#/admin/guides", "새로"]];
     return Object.assign({
       title: title, tab: false, footer: false,
       html: `<div class="adm">
-  <div class="adm__bar"><div class="wrap adm__bar-in"><b>하이유플 관리 <span class="demo-tag">시안</span></b><a class="adm__out" href="#/">손님 화면으로${H.icon("arrow", "ic--sm")}</a></div></div>
+  <div class="adm__bar"><div class="wrap adm__bar-in"><b>자비스웹 <span class="adm__path">판매몰 관리 › 손님몰 화면 · 하이유플</span></b><a class="adm__out" href="#/">손님 화면으로${H.icon("arrow", "ic--sm")}</a></div></div>
   <div class="wrap">
-    <nav class="adm__tabs" aria-label="관리 메뉴">${tabs.map(function (t) { return `<a href="${t[2]}"${tab === t[0] ? ' aria-current="page"' : ""}>${t[1]}</a>`; }).join("")}</nav>
+    <nav class="adm__tabs" aria-label="관리 메뉴">${tabs.map(function (t) { return `<a href="${t[2]}"${tab === t[0] ? ' aria-current="page"' : ""}>${t[1]}${t[3] ? `<small class="adm-tag adm-tag--${TAG[t[3]]}">${t[3]}</small>` : ""}</a>`; }).join("")}</nav>
     ${inner}
   </div>
 </div>`
@@ -27,13 +30,55 @@
     var feed = H.feedAll(), mods = H.state.feedMod || {};
     var hidePosts = feed.filter(function (p) { return (mods[p.id] || {}).hide; }).length;
     var hidePhotos = feed.filter(function (p) { return (mods[p.id] || {}).hidePhoto; }).length;
+    var bnOn = (H.BANNERS || []).filter(function (b) { return (H.state.bannerOff || []).indexOf(b.key) < 0; }).length;
     return shell("home", `
-  <header class="ph ph--tight"><h1>관리 첫 화면</h1><p>실제로는 자비스웹 안에 들어갈 화면이에요. 목업에서는 고친 내용이 이 브라우저에만 저장돼요.</p></header>
+  <header class="ph ph--tight"><h1>관리 첫 화면</h1><p>손님 사이트(hiuplus.com)에는 관리 화면이 없어요. 모두 직원이 로그인하는 자비스웹 «판매몰 관리 › 손님몰 화면» 메뉴에 들어가요.</p></header>
+  <div class="adm-where">
+    <div><b>자비스웹과 손님몰은 한 프로그램이에요</b><p>같은 데이터를 쓰기 때문에 자비스웹에서 저장하면 손님 화면에 바로 반영돼요. 목업에서는 이 브라우저에만 저장돼요.</p></div>
+    <ul><li><span class="adm-tag adm-tag--have">있음</span>지금 자비스웹에 있는 메뉴</li><li><span class="adm-tag adm-tag--fix">고침</span>있는 메뉴에 칸 · 기능 더하기</li><li><span class="adm-tag adm-tag--new">새로</span>새로 만드는 메뉴</li></ul>
+  </div>
   <div class="adm-cards">
-    <a class="adm-card" href="#/admin/guides"><small>알고사기 글</small><b class="num">${guides.length}개</b><span>숨김 ${hidden}개 · 새 글 쓰기 · 고치기</span></a>
-    <a class="adm-card" href="#/admin/reviews"><small>구매후기 피드</small><b class="num">${feed.length}개</b><span>감춤 ${hidePosts}개 · 사진만 감춤 ${hidePhotos}개</span></a>
-    <a class="adm-card adm-card--soft" href="#/partner"><small>파트너스</small><b>안내 · 가입 화면</b><span>파트너 정산 관리는 지금 자비스웹 화면을 그대로 써요</span></a>
-  </div>`, "관리");
+    <a class="adm-card" href="#/admin/banners"><small>배너 관리 <span class="adm-tag adm-tag--have">있음</span></small><b class="num">${bnOn}장 켜짐</b><span>순서 · 노출 기간 · 켜기 · PC/모바일 그림</span></a>
+    <a class="adm-card" href="#/admin/reviews"><small>후기 관리 <span class="adm-tag adm-tag--fix">고침</span></small><b class="num">${feed.length}개</b><span>감춤 ${hidePosts}개 · 사진만 감춤 ${hidePhotos}개</span></a>
+    <a class="adm-card" href="#/admin/guides"><small>알고사기 글 <span class="adm-tag adm-tag--new">새로</span></small><b class="num">${guides.length}개</b><span>숨김 ${hidden}개 · 새 글 쓰기 · 고치기</span></a>
+  </div>
+  <p class="demo-note"><span class="demo-tag">시안</span>파트너스 · 인터넷+TV · 상담 접수 · 접수 관리는 지금 자비스웹 화면을 그대로 써요</p>`, "관리");
+  };
+
+  /* ---------- 배너 관리 — 지금 자비스웹 «배너 관리»와 같은 칸 + 시안에 필요한 칸 ---------- */
+  H.views["admin-banners"] = function () {
+    var list = H.BANNERS || [], off = H.state.bannerOff || [];
+    return shell("banners", `
+  <div class="adm-hd"><div><h1>배너 관리</h1><p>첫 화면 배너를 올리고 순서 · 노출 기간 · 켜기를 정해요. 켜진 배너가 5초마다 넘어가요.</p></div><button type="button" class="btn btn--mg btn--sm" data-act="toast" data-msg="시안: 배너 추가 칸이 열려요 (PC 그림 · 모바일 그림 · 링크 · 순서 · 노출 기간)">배너 추가</button></div>
+  <p class="adm-now">${H.icon("info", "ic--sm")}<span>지금 하이유플에 켜진 배너는 5장이에요. 글자까지 그림에 그려 넣고 배너 전체가 링크예요(상품 목록 3장 · 아이폰 사전예약 이벤트 · 랜덤박스 후기).</span></p>
+  <div class="bnr-list">${list.map(function (b, i) {
+    var on = off.indexOf(b.key) < 0;
+    return `<div class="bnr${on ? "" : " is-off"}">
+      <span class="bnr__th bnr__th--${b.theme || "fold"}" aria-hidden="true"><i class="num">${i + 1}</i></span>
+      <div class="bnr__main"><b>${H.esc(b.name)}</b><small>${H.esc(b.to || "#/phones?cat=galaxy&series=z8")}</small>
+        <dl class="bnr__kv"><div><dt>PC 그림</dt><dd>올림</dd></div><div><dt>모바일 그림</dt><dd>올림</dd></div><div><dt>노출 기간</dt><dd>없음</dd></div></dl></div>
+      <button type="button" class="switch" role="switch" aria-checked="${on}" aria-label="${H.esc(b.name)} 켜기" data-act="bnrToggle" data-v="${b.key}"></button>
+    </div>`;
+  }).join("")}</div>
+  <section class="adm-sec adm-sec--gap"><h2>배너 한 장에 넣는 칸</h2>
+    <div class="tbl-wrap"><table class="adm-tbl"><thead><tr><th>칸</th><th>지금 자비스웹</th><th>리뉴얼 시안에 필요한 것</th></tr></thead><tbody>
+      <tr><td>PC 그림</td><td>있음 · 틀 1280:620 · PNG · JPG · WEBP · GIF 8MB 이하</td><td>시안 틀은 1200:500 → 틀 비율 바꾸기(개발)</td></tr>
+      <tr><td>모바일 그림</td><td>있음 · 틀 800:985</td><td>시안은 글자 아래 사진 구성 → 사진 틀 바꾸기(개발)</td></tr>
+      <tr><td>글자</td><td>«배너 위 문구» 한 줄(왼쪽 위 검정 글씨)</td><td>작은 제목 · 큰 제목 · 설명 · 단추 글자 칸 더하기(개발). 안 하면 지금처럼 글자를 그림에 그림</td></tr>
+      <tr><td>링크</td><td>있음 · 배너 전체</td><td>그대로</td></tr>
+      <tr><td>순서 · 사용 · 노출 기간</td><td>있음</td><td>그대로 (노출 시각 칸 한국시간 처리 확인 필요)</td></tr>
+      <tr><td>넘김</td><td>5초 · 좌우 화살표 · 아래 점 · 누르고 있으면 멈춤</td><td>멈춤 단추 + 5초 막대(하이폰 · 하이스테이션에 고른 모양과 같게)</td></tr>
+    </tbody></table></div>
+  </section>`, "배너 관리");
+  };
+  H.acts.bnrToggle = function (el) {
+    var k = el.dataset.v, off = (H.state.bannerOff || []).slice(), i = off.indexOf(k);
+    if (i < 0 && (H.BANNERS || []).length - off.length <= 1) { H.toast("배너는 한 장 이상 켜 두세요"); return; }
+    if (i >= 0) off.splice(i, 1); else off.push(k);
+    H.state.bannerOff = off;
+    H.save();
+    H.rerender();
+    H.toast(i >= 0 ? "배너를 켰어요. 첫 화면에 다시 보여요" : "배너를 껐어요. 첫 화면에서 빠졌어요");
   };
 
   /* ---------- 알고사기 글 목록 ---------- */
@@ -203,7 +248,7 @@
     });
     var tabs = [["all", "전체"], ["photo", "사진 있음"], ["hidden", "감춤"], ["home", "첫 화면"]];
     return shell("reviews", `
-  <div class="adm-hd"><div><h1>구매후기 피드</h1><p>손님이 올린 사진과 글이에요. 알맞지 않으면 감춰요. 감춘 건 손님 화면에서 바로 빠져요.</p></div><a class="btn btn--line btn--sm" href="#/reviews">손님 피드 보기</a></div>
+  <div class="adm-hd"><div><h1>후기 관리</h1><p>지금 자비스웹 «후기 관리»(숨기기 · 삭제)에 «사진만 감추기» · «첫 화면에 보이기»를 더한 모습이에요. 감춘 건 손님 화면에서 바로 빠져요.</p></div><a class="btn btn--line btn--sm" href="#/reviews">손님 피드 보기</a></div>
   <nav class="feed-tabs" aria-label="후기 거르기">${tabs.map(function (t) { return `<a href="#/admin/reviews${t[0] === "all" ? "" : "?f=" + t[0]}"${f === t[0] ? ' aria-current="true"' : ""}>${t[1]}</a>`; }).join("")}</nav>
   <div class="mod-list">${list.map(function (p) {
     var m = mods[p.id] || {};
@@ -218,7 +263,7 @@
       </div>
     </div>`;
   }).join("") || '<p class="empty">해당하는 후기가 없어요.</p>'}</div>
-  <p class="demo-note"><span class="demo-tag">시안</span>«첫 화면에 보이기»를 하나도 안 켜면 첫 화면에는 최근 글 후기가 저절로 나와요</p>`, "구매후기 피드 관리");
+  <p class="demo-note"><span class="demo-tag">시안</span>«첫 화면에 보이기»를 하나도 안 켜면 첫 화면에는 최근 글 후기가 저절로 나와요</p>`, "후기 관리");
   };
   H.acts.modSet = function (el) {
     var id = el.dataset.v, k = el.dataset.k, mods = Object.assign({}, H.state.feedMod || {}), m = Object.assign({}, mods[id] || {});

@@ -46,6 +46,92 @@
     }).join("") + moreCard(set);
   }
 
+  /* ---------- 첫 화면 배너 — 5초마다 넘김 · 아래 가운데 [‹][멈춤 · 점][›]
+   * 모양은 하이폰 · 하이스테이션에 대표가 고른 «② 타이머 캡슐»과 같게. 지금 점 안 막대가 5초 차면 넘어간다 ---------- */
+  var BANNERS = [
+    { key: "fold8", name: "갤럭시 Z 폴드8 · 시안 첫 배너" },
+    { key: "iphone18", name: "아이폰 18 프로 사전예약", theme: "ink", to: "#/phone/54", eyebrow: "사전예약", title: "아이폰 18 프로,<br>지금 예약할 수 있어요", sub: "정식 사전예약 기간에만 받아요.<br>월 납부 금액까지 바로 확인하세요.", pill: "예약하기", img: function () { return H.img(H.prod(54), 3); } },
+    { key: "together", name: "휴대폰 + 인터넷 결합", theme: "lav", to: "#/together", eyebrow: "휴대폰 + 인터넷", title: "인터넷도 같이 하면<br>결합 할인이 따로 있어요", sub: "휴대폰 가격은 그대로, 인터넷 요금은<br>속도에 따라 월 5,500~13,200원 할인(3년 약정).", pill: "결합 혜택 보기", icon: "wifi" },
+    { key: "partners", name: "하이유플 파트너스", theme: "plum", to: "#/partner", eyebrow: "하이유플 파트너스", title: "링크 하나로<br>소개하고 수수료 받기", sub: "개통 1건당 20,000원 · 가입비 없음", pill: "파트너스 보기", big: "20,000원" }
+  ];
+  function slideHtml(b, i, n) {
+    var head = `<div class="bn__slide" role="group" aria-roledescription="slide" aria-label="${i + 1} / ${n}">`;
+    if (b.key === "fold8") {
+      return head + `<div class="wrap bn__pc"><section class="hero-card"><div class="hero-card__txt">
+    <h1>제품은 새로워도,<br>사는 건 복잡할 필요 없으니까.</h1>
+    <p>Galaxy Fold8 Ultra · Wide · Flip8<br>복잡한 조건은 덜고, 필요한 기준만 명확하게.</p>
+    <a class="pill" href="#/phones?cat=galaxy&series=z8">구매하기</a></div></section></div>
+  <section class="hero-m bn__mo"><div class="hero-m__txt">
+    <h1>제품은 새로워도,<br>사는 건 복잡할 필요<br>없으니까.</h1>
+    <p>Fold8 Ultra · Wide · Flip8<br>복잡한 조건은 덜고, 필요한 기준만 명확하게.</p>
+    <a class="pill" href="#/phones?cat=galaxy&series=z8">구매하기</a></div>
+    <img src="img/hero-mo.jpg" width="1080" height="891" alt="라벤더 색 갤럭시 Z 폴드8을 든 손"></section></div>`;
+    }
+    var art = b.img ? `<img class="bn-img" src="${b.img()}" alt="">` : b.icon ? H.icon(b.icon, "bn-ic") : `<span class="bn-big num" aria-hidden="true">${b.big}</span>`;
+    var txt = `<p class="bn-eyebrow">${b.eyebrow}</p><h2>${b.title}</h2><p class="bn-sub">${b.sub}</p><span class="pill">${b.pill}</span>`;
+    return head + `<div class="wrap bn__pc"><a class="bn-card bn--${b.theme}" href="${b.to}"><div class="bn-card__txt">${txt}</div>${art}</a></div>
+  <a class="bn-m bn__mo bn--${b.theme}" href="${b.to}">${txt}${art}</a></div>`;
+  }
+  H.BANNERS = BANNERS;
+  H.bannerHtml = function () {
+    var off = H.state.bannerOff || [], list = BANNERS.filter(function (b) { return off.indexOf(b.key) < 0; });
+    if (!list.length) list = BANNERS;
+    var n = list.length;
+    return `<section class="bn" id="bn" aria-roledescription="carousel" aria-label="이번 달 소식">
+  <div class="bn__track" id="bnTrack">${list.map(function (b, i) { return slideHtml(b, i, n); }).join("")}</div>
+  <div class="bn-ctl">
+    <button type="button" class="bn-arrow" data-act="bnStep" data-v="-1" aria-label="이전 배너">${H.icon("chev-l")}</button>
+    <div class="bn-cap"><button type="button" class="bn-pause" data-act="bnPause" aria-label="자동 넘김 멈추기">${H.icon("pause", "ic--pause")}${H.icon("play", "ic--play")}</button>${list.map(function (b, i) {
+      return `<button type="button" class="bn-dot" data-act="bnGo" data-v="${i}" aria-label="${i + 1}번째 배너 보기"><span><i></i></span></button>`;
+    }).join("")}</div>
+    <button type="button" class="bn-arrow" data-act="bnStep" data-v="1" aria-label="다음 배너">${H.icon("chev-r")}</button>
+  </div>
+</section>`;
+  };
+  var bn = { i: 0 };
+  function bnShow(i) {
+    var root = H.$("#bn");
+    if (!root) return;
+    var slides = H.$$(".bn__slide", root), n = slides.length;
+    bn.i = ((i % n) + n) % n;
+    H.$("#bnTrack").style.transform = "translateX(" + -100 * bn.i + "%)";
+    slides.forEach(function (s, k) {
+      s.setAttribute("aria-hidden", String(k !== bn.i));
+      H.$$("a, button", s).forEach(function (a) { if (k === bn.i) a.removeAttribute("tabindex"); else a.setAttribute("tabindex", "-1"); });
+    });
+    H.$$(".bn-dot", root).forEach(function (d, k) {
+      d.classList.remove("is-on");
+      d.setAttribute("aria-current", String(k === bn.i));
+      if (k === bn.i) { void d.offsetWidth; d.classList.add("is-on"); }
+    });
+  }
+  H.initBanner = function () {
+    var root = H.$("#bn");
+    if (!root || root.dataset.ready) return;
+    root.dataset.ready = "1";
+    bn.i = 0;
+    if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) root.classList.add("is-paused");
+    root.addEventListener("animationend", function (e) { if (e.animationName === "bnFill") bnShow(bn.i + 1); });
+    var track = H.$("#bnTrack"), x0 = null, moved = false;
+    track.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; moved = false; root.classList.add("is-held"); }, { passive: true });
+    track.addEventListener("touchmove", function (e) { if (x0 != null && Math.abs(e.touches[0].clientX - x0) > 10) moved = true; }, { passive: true });
+    track.addEventListener("touchend", function (e) {
+      root.classList.remove("is-held");
+      if (x0 == null) return;
+      var dx = e.changedTouches[0].clientX - x0;
+      x0 = null;
+      if (Math.abs(dx) > 40) bnShow(bn.i + (dx < 0 ? 1 : -1));
+    });
+    track.addEventListener("click", function (e) { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
+    bnShow(0);
+  };
+  H.acts.bnStep = function (el) { bnShow(bn.i + Number(el.dataset.v)); };
+  H.acts.bnGo = function (el) { bnShow(Number(el.dataset.v)); };
+  H.acts.bnPause = function (el) {
+    var on = H.$("#bn").classList.toggle("is-paused");
+    el.setAttribute("aria-label", on ? "자동 넘김 다시 켜기" : "자동 넘김 멈추기");
+  };
+
   H.views.home = function () {
     var set = H.homeSet || "all";
     var guides = H.guideList().filter(function (g) { return g.home; });
@@ -54,21 +140,7 @@
     }).join("");
     return {
       html: `
-<div class="wrap"><section class="hero-card" aria-label="이번 달 소식">
-  <div class="hero-card__txt">
-    <h1>제품은 새로워도,<br>사는 건 복잡할 필요 없으니까.</h1>
-    <p>Galaxy Fold8 Ultra · Wide · Flip8<br>복잡한 조건은 덜고, 필요한 기준만 명확하게.</p>
-    <a class="pill" href="#/phones?cat=galaxy&series=z8">구매하기</a>
-  </div>
-</section></div>
-<section class="hero-m" aria-label="이번 달 소식">
-  <div class="hero-m__txt">
-    <h1>제품은 새로워도,<br>사는 건 복잡할 필요<br>없으니까.</h1>
-    <p>Fold8 Ultra · Wide · Flip8<br>복잡한 조건은 덜고, 필요한 기준만 명확하게.</p>
-    <a class="pill" href="#/phones?cat=galaxy&series=z8">구매하기</a>
-  </div>
-  <img src="img/hero-mo.jpg" width="1080" height="891" alt="라벤더 색 갤럭시 Z 폴드8을 든 손">
-</section>
+${H.bannerHtml()}
 <div class="wrap">
   <ul class="trust prop prop--flex" aria-label="하이유플 약속">
     <li>${H.icon("shield")}LG U+ 공식 인증 대리점</li><li>${H.icon("check")}전화 없이 개통까지</li><li>${H.icon("won")}보이는 가격 그대로</li>
@@ -196,11 +268,15 @@
       return `<button type="button" class="choice choice--center" data-act="setOpt" data-k="vol" data-v="${i}" aria-pressed="${s.vol === i}">${v[0]}<small class="num">${H.won(v[1])}</small></button>`;
     }).join("")}</div></div>`;
   }
-  function optColor(p, s) {
-    return `<div class="opt"><div class="opt__t"><h2>색상</h2><span class="hint">${p.colors[s.color][0]}</span></div><div class="opt__body swatches">${p.colors.map(function (c, i) {
-      return `<button type="button" class="sw" data-act="setOpt" data-k="color" data-v="${i}" aria-pressed="${s.color === i}"><i style="background:${c[1]}"></i>${c[0]}</button>`;
-    }).join("")}</div></div>`;
-  }
+  /* 색상 — 휴대폰에서는 동그라미만 한 줄로 두고, 고른 색 이름만 제목 옆에 보여준다(이름을 다 늘어놓지 않는다) */
+  H.colorPicker = function (p, ci, act) {
+    var c = p.colors[ci] || p.colors[0];
+    return `<div class="opt opt--color"><div class="opt__t"><h2>색상</h2><span class="sw-name" aria-live="polite"><i style="background:${c[1]}"></i>${c[0]}</span></div>
+      <div class="opt__body swatches" role="radiogroup" aria-label="색상">${p.colors.map(function (x, i) {
+        return `<button type="button" class="sw" role="radio" aria-checked="${ci === i}" aria-label="${x[0]}" title="${x[0]}" data-act="${act}" data-k="color" data-v="${i}"><i style="background:${x[1]}"></i><span class="sw__t">${x[0]}</span></button>`;
+      }).join("")}</div></div>`;
+  };
+  function optColor(p, s) { return H.colorPicker(p, s.color, "setOpt"); }
   function optPlan(p, s, r) {
     var pl = r.plan;
     return `<div class="opt"><div class="opt__t"><h2>요금제</h2><span class="hint">${p.rows.length}개 중에서 고르기</span></div>
@@ -208,16 +284,53 @@
       <p class="plan-note">${H.icon("info")}185일 이후 월 47,000원까지 낮출 수 있어요<a href="#/guide/plan-down">자세히</a></p></div></div>`;
   }
   function optDiscount(p, s) {
-    var best = H.cheaper(p, s);
+    var both = !!(p.official && p.select && p.rows.length);
+    var canDown = both && H.price(p, s).planFeeBase > H.DOWN.fee;
+    var down = canDown && H.state.cmpDown === true;
+    var best = H.cheaper(p, s, down), when = down ? "185일 뒤 월 47,000원으로 낮추면 24개월 동안" : "24개월 동안";
     var btn = function (key, label, sub, ok) {
       return `<button type="button" class="choice" data-act="setOpt" data-k="discount" data-v="${key}" aria-pressed="${s.discount === key}"${ok ? "" : " disabled"}>${best && best.key === key ? '<span class="save">덜 내요</span>' : ""}${label}<small>${ok ? sub : "이 상품은 안 돼요"}</small></button>`;
     };
+    var basis = canDown ? `<div class="cmp-basis" role="group" aria-label="비교 기준"><button type="button" data-act="cmpBasis" data-v="keep" aria-pressed="${!down}">요금제 그대로</button><button type="button" data-act="cmpBasis" data-v="down" aria-pressed="${down}">185일 뒤 47,000원으로</button></div>` : "";
     var line = "";
-    if (best && best.key !== s.discount) line = `<p class="save-line">${H.icon("spark")}<span>이 조건에선 <b>${best.label}</b>이 24개월 동안 <b class="num">${H.won(best.diff)}</b> 덜 내요.</span><button type="button" data-act="setOpt" data-k="discount" data-v="${best.key}">바꾸기</button></p>`;
-    else if (best) line = `<p class="save-line">${H.icon("check")}<span>지금 고른 <b>${best.label}</b>이 24개월 동안 <b class="num">${H.won(best.diff)}</b> 덜 내요.</span></p>`;
+    if (best && best.key !== s.discount) line = `<p class="save-line">${H.icon("spark")}<span>이 조건에선 <b>${best.label}</b>이 ${when} <b class="num">${H.won(best.diff)}</b> 덜 내요.</span><button type="button" data-act="setOpt" data-k="discount" data-v="${best.key}">바꾸기</button></p>`;
+    else if (best) line = `<p class="save-line">${H.icon("check")}<span>지금 고른 <b>${best.label}</b>이 ${when} <b class="num">${H.won(best.diff)}</b> 덜 내요.</span></p>`;
+    else if (both) line = `<p class="save-line">${H.icon("info")}<span>${down ? "185일 뒤 월 47,000원으로 낮춰도 " : ""}두 방법의 24개월 합계가 같아요.</span></p>`;
+    var more = both ? `<button type="button" class="more-btn" data-act="cmpSheet">24개월 합계 자세히 보기${H.icon("chev-r")}</button>` : "";
     return `<div class="opt"><div class="opt__t"><h2>할인 방법</h2><a class="hint" href="#/guide/support-or-select">어느 쪽이 나아요?</a></div>
-      <div class="opt__body"><div class="choice-row">${btn("official", "이통사지원금", "기기값에서 한 번에 할인", p.official)}${btn("select", "선택약정", "매달 요금 25% 할인", p.select)}</div>${line}</div></div>`;
+      <div class="opt__body"><div class="choice-row">${btn("official", "이통사지원금", "기기값에서 한 번에 할인", p.official)}${btn("select", "선택약정", "매달 요금 25% 할인", p.select)}</div>${basis}${line}${more}</div></div>`;
   }
+  H.acts.cmpBasis = function (el) {
+    H.state.cmpDown = el.dataset.v === "down";
+    H.save();
+    H.refreshProduct();
+    H.refocus(el);
+  };
+  function cmpTable(p, s, down) {
+    var so = Object.assign({}, s, { discount: "official" }), ss = Object.assign({}, s, { discount: "select" });
+    var ro = H.price(p, so), rs = H.price(p, ss);
+    var co = down ? H.costDown(p, so) : H.cost(p, so), cs = down ? H.costDown(p, ss) : H.cost(p, ss);
+    var k = H.DOWN.keep, rest = 24 - k, low = Math.min(ro.planFeeBase, H.DOWN.fee);
+    var row = function (label, a, b) { return `<tr><td>${label}</td><td class="num">${a}</td><td class="num">${b}</td></tr>`; };
+    var fees = down
+      ? row(`요금 1~${k}개월<br><small>월 ${H.won(ro.planFeeBase)}</small>`, H.won(ro.planFee * k), H.won(rs.planFee * k)) + row(`요금 ${k + 1}~24개월<br><small>월 47,000원</small>`, H.won(low * rest), H.won(Math.round(low * 0.75) * rest))
+      : row("요금 24개월", H.won(ro.planFee * 24), H.won(rs.planFee * 24));
+    var win = co === cs ? "" : co < cs ? "a" : "b";
+    return `<table class="cmp-tbl"><thead><tr><th></th><th>이통사지원금</th><th>선택약정</th></tr></thead><tbody>
+      ${row("할부원금", H.won(ro.principal), H.won(rs.principal))}${row("할부 이자", H.won(ro.totalInterest), H.won(rs.totalInterest))}${fees}
+      <tr class="tot"><td>24개월 합계</td><td class="num${win === "a" ? " win" : ""}">${H.won(co)}</td><td class="num${win === "b" ? " win" : ""}">${H.won(cs)}</td></tr></tbody></table>
+      ${win ? `<p class="cmp-res">${win === "a" ? "이통사지원금" : "선택약정"}이 <span class="num">${H.won(Math.abs(co - cs))}</span> 덜 내요.</p>` : ""}`;
+  }
+  H.acts.cmpSheet = function () {
+    var p = H.prod(H.route.parts[1]), s = H.selFor(p), r = H.price(p, s), canDown = r.planFeeBase > H.DOWN.fee;
+    H.openSheet({
+      title: "할인 방법 24개월 합계", wide: true,
+      body: `<p class="plan-note plan-note--top">${H.icon("info")}${p.name} ${p.vols[s.vol][0]} · ${r.plan.name} · ${H.methodLabel(s.method)} · ${r.months ? r.months + "개월 할부" : "일시불"} 기준</p>
+        <section class="cmp-sec"><h3>요금제를 24개월 그대로 쓰면</h3>${cmpTable(p, s, false)}</section>
+        ${canDown ? `<section class="cmp-sec"><h3>185일 뒤 월 47,000원 요금제로 낮추면</h3>${cmpTable(p, s, true)}<p class="help-t">185일은 개통일부터 세요. 185일이 지나는 ${H.DOWN.keep}개월째까지는 고른 요금제, ${H.DOWN.keep + 1}개월째부터 월 47,000원 요금제(${H.DOWN.name})로 계산했어요. 47,000원보다 낮추면 위약금이 생길 수 있어요.</p></section>` : `<p class="help-t">고른 요금제가 월 47,000원 이하라 낮추는 경우는 따로 계산하지 않았어요.</p>`}
+        <p class="help-t">24개월 합계 = 할부원금 + 할부 이자 + 요금. 선택약정 25% 할인은 바꾼 요금제 기준으로 이어져요. 하이유플 ${D.asOf.replace(/-/g, ".")} 가격 기준이에요.</p>`
+    });
+  };
   function optPay(s) {
     var cur = s.payment === "installment" ? String(s.months) : "0";
     return `<div class="opt"><div class="opt__t"><h2>구매 방식</h2><span class="hint">할부 이자 연 5.9%</span></div><div class="opt__body choice-row choice-row--3">${[["0", "일시불"], ["24", "24개월 할부"], ["30", "30개월 할부"]].map(function (o) {
@@ -277,13 +390,25 @@
     <nav class="pd-tabs" aria-label="상품 안내">${tabs.map(function (t, i) { return `<button type="button" data-act="jump" data-id="${t[0]}" class="${i === 0 ? "on" : ""}">${t[1]}</button>`; }).join("")}</nav>
     <section class="pd-sec" id="pdBenefit">
       <h2>구매혜택</h2>
-      <div class="slot"><b>캔바로 만든 상세 그림이 붙는 자리</b><small>가로 1080px · 세로 자유 · 가격·조건 글자는 그림 밖 화면 글자로</small></div>
-      <h2 class="pd-sec__h">이 네 가지, 하나도 걸지 않아요</h2>
-      <ul class="nocond">${["부가서비스 가입 조건 없음", "기존폰 반납 조건 없음", "제휴카드 발급 · 실적 조건 없음", "인터넷 결합 조건 없음"].map(function (t) { return `<li>${H.icon("check")}${t}</li>`; }).join("")}</ul>
+      <p class="lead">조건 없이, 보이는 금액 그대로 사는 방법이에요.</p>
+      <ul class="bf-grid">
+        <li class="bf">${H.icon("shield")}<b>조건 4가지 없음</b><span>부가서비스 · 기존폰 반납 · 제휴카드 · 인터넷 결합</span></li>
+        <li class="bf">${H.icon("won")}<b>택배비 무료</b><span>번호이동은 유심비 7,700원만 따로 내요</span></li>
+        <li class="bf">${H.icon("spark")}<b>가입하면 1만 포인트</b><span>주문할 때 할인으로 바로 써요</span></li>
+        <li class="bf">${H.icon("chat")}<b>전화 없이 개통까지</b><span>신청서 · 가입내역 확인 · 개통 · 배송</span></li>
+      </ul>
+      <div class="nocond-card">
+        <p class="nocond-card__eyebrow">NO CONDITION</p>
+        <h3>이 네 가지, 하나도 걸지 않아요</h3>
+        <ul class="nocond">${["부가서비스 가입 조건", "기존폰 반납 조건", "제휴카드 발급 · 실적 조건", "인터넷 결합 조건"].map(function (t) { return `<li>${H.icon("check")}<span>${t}</span><b>없음</b></li>`; }).join("")}</ul>
+        <p class="nocond-card__foot">위 금액표에서 네 항목이 모두 «없음»으로 보여요. 직접 확인하고 주문하세요.</p>
+      </div>
       <div class="info-cards">
         <article class="info-card"><small>추가 청구 없음</small><h3>지금 보시는 월 납부 금액이 마지막 금액이에요</h3><p>개통 후에 다른 명목으로 더 청구하지 않아요. 할부를 고른 경우에만 연 5.9% 이자가 따로 붙어요.</p></article>
         <article class="info-card"><small>요금제</small><h3>요금제는 185일 뒤에 낮출 수 있어요</h3><p>개통일 기준 185일이 지나면 월 47,000원 이상 요금제로 바꿀 수 있어요. 그보다 낮추면 위약금이 생길 수 있어요.</p><a class="link-arrow" href="#/guide/plan-down">자세히 보기${H.icon("arrow")}</a></article>
       </div>
+      <a class="bf-together" href="#/together"><span><small>선택 혜택</small><b>인터넷도 같이 하면 결합 할인</b><span>휴대폰 가격은 그대로, LG U+ 참 쉬운 가족 결합으로 인터넷 요금이 월 5,500~13,200원 내려가요(3년 약정).</span></span>${H.icon("arrow")}</a>
+      <figure class="slot slot--detail"><span class="slot--detail__img"><img src="${H.img(p, s.color)}" alt=""></span><figcaption><b>상세 그림 자리 · 캔바</b><small>기기 소개 · 색상 · 카메라 사진을 가로 1080px 그림으로 이어 붙여요. 가격 · 조건 글자는 그림에 넣지 않고 위의 화면 글자로 보여줘요.</small></figcaption></figure>
     </section>
     <section class="pd-sec" id="pdGuide">
       <h2>주문부터 개통까지, 네 단계</h2>
@@ -379,9 +504,7 @@
     <div class="pd-gallery"><div class="pd-img" id="pdImg">${H.badge(p)}<img src="${H.img(p, ci)}" alt="${p.name} ${p.colors[ci][0]}"></div></div>
     <div class="pd-main">
       <div class="pd-head"><h1>${p.name}</h1><p>${p.maker} · 출시 전 · 알림 신청 받는 중</p></div>
-      <div class="opt"><div class="opt__t"><h2>색상</h2><span class="hint">${p.colors[ci][0]}</span></div><div class="opt__body swatches">${p.colors.map(function (c, i) {
-        return `<button type="button" class="sw" data-act="launchColor" data-v="${i}" aria-pressed="${ci === i}"><i style="background:${c[1]}"></i>${c[0]}</button>`;
-      }).join("")}</div></div>
+      ${H.colorPicker(p, ci, "launchColor")}
       <div class="opt"><div class="opt__t"><h2>용량 · 가격</h2><span class="hint">출시 후 안내</span></div></div>
       <div class="pbox">
         <div class="pbox__main"><span class="k">가격</span><span class="v v--sm">출시 후 안내</span></div>

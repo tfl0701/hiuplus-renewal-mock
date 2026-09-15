@@ -38,7 +38,7 @@
   function pjoinSample(o) {
     return Object.assign({ name: "김하유", phone: "010-1234-5678", type: "person", biz: "", bank: "", account: "", holder: "김하유", channel: "", agree: [false, false], tried: false }, o);
   }
-  function adminClean() { H.state.guideEdits = {}; H.state.guideNew = []; H.state.guideHidden = []; H.state.feedMod = {}; H.editDraft = null; }
+  function adminClean() { H.state.guideEdits = {}; H.state.guideNew = []; H.state.guideHidden = []; H.state.feedMod = {}; H.state.bannerOff = []; H.editDraft = null; }
   var NEW_GUIDE = {
     slug: "same-number", cat: "가입 방법", title: "휴대폰을 바꿔도 번호는 그대로인가요?", summary: "번호이동도 기기변경도 쓰던 번호 그대로예요.", read: 1, home: false,
     body: [
@@ -65,6 +65,8 @@
         { t: "접수 완료", go: "#/done/" + OID, setup: function () { member(); H.state.orders = orders(0); } },
         { t: "온라인 신청서 작성 창", go: "#/done/" + OID, setup: function () { member(); H.state.orders = orders(0); }, after: function () { H.acts.writeForm({ dataset: { id: OID } }); } },
         { t: "신청서를 쓴 뒤", go: "#/done/" + OID, setup: function () { member(); H.state.orders = orders(1); } },
+        { t: "가입내역 받는 방법 창 · 카카오톡 예시", go: "#/my/order/" + OID, setup: function () { member(); H.state.orders = orders(1); }, after: function () { H.acts.joinInfo({ dataset: { id: OID } }); } },
+        { t: "신청내역 확인 링크 · 로그인 없이", go: "#/receipt/" + OID, setup: function () { member(); H.state.orders = orders(1); } },
         { t: "마이페이지 · 담당자 확인 중", go: "#/my", setup: function () { member(); H.state.orders = orders(1); } },
         { t: "신청내역 상세 · 준비·배송", go: "#/my/order/" + OID, setup: function () { member(); H.state.orders = orders(2); } },
         { t: "배송조회 창 · 송장번호", go: "#/my/order/" + OID, setup: function () { member(); H.state.orders = orders(2); }, after: function () { H.acts.trackSheet({ dataset: { id: OID } }); } },
@@ -117,17 +119,21 @@
     browse: {
       title: "둘러보기", desc: "첫 화면 · 목록 · 상품 · 알고사기 · 구매후기 피드 · 고객센터",
       steps: [
-        { t: "첫 화면", go: "#/" },
+        { t: "첫 화면 · 배너 5초마다 넘김", go: "#/", setup: function () { H.state.bannerOff = []; } },
         { t: "첫 화면 · 후기 한 줄", go: "#/", setup: function () { H.state.feedMod = {}; }, after: scrollToEl(".rv-row") },
         { t: "휴대폰 목록 · 아이폰", go: "#/phones?cat=iphone" },
         { t: "휴대폰 목록 · 갤럭시 Z부터", go: "#/phones?cat=galaxy&series=z8" },
         { t: "상품 화면 · 아이폰 18 프로", go: "#/phone/54", setup: freshProduct },
         { t: "요금제 고르기 창", go: "#/phone/54", setup: freshProduct, after: function () { H.acts.planSheet(); } },
+        { t: "할인 방법 · 185일 뒤 47,000원 기준", go: "#/phone/54", setup: function () { freshProduct(); H.state.cmpDown = true; }, after: scrollToEl(".cmp-basis") },
+        { t: "할인 방법 24개월 합계 창", go: "#/phone/54", setup: function () { freshProduct(); H.state.cmpDown = false; }, after: function () { H.acts.cmpSheet(); } },
+        { t: "상품 화면 · 구매혜택", go: "#/phone/54", setup: freshProduct, after: scrollToEl("#pdBenefit") },
         { t: "출시 전 상품 · 아이폰 듀오", go: "#/phone/56" },
         { t: "출시 알림 신청 창", go: "#/phone/56", after: function () { H.acts.alert({ dataset: { pid: "56" } }); } },
         { t: "알고사기 목록", go: "#/guide" },
         { t: "알고사기 글 · 선택약정 비교", go: "#/guide/support-or-select" },
         { t: "알고사기 글 끝 · 보던 휴대폰으로 가는 단추", go: "#/guide/plan-down", setup: function () { H.state.recent = [54]; }, after: scrollToEl(".art-cta--last") },
+        { t: "휴대폰 + 인터넷 같이 · 결합 할인", go: "#/together" },
         { t: "구매후기 피드", go: "#/reviews", setup: function () { H.state.feedMod = {}; } },
         { t: "구매후기 · 사진만", go: "#/reviews?f=photo", setup: function () { H.state.feedMod = {}; } },
         { t: "후기 한 편", go: "#/review/165", setup: function () { H.state.feedMod = {}; } },
@@ -141,7 +147,8 @@
     admin: {
       title: "직원 관리", desc: "알고사기 글 고치기 · 새 글 · 구매후기 감추기 (실제로는 자비스웹 안)",
       steps: [
-        { t: "관리 첫 화면", go: "#/admin", setup: adminClean },
+        { t: "관리 첫 화면 · 자비스웹 안", go: "#/admin", setup: adminClean },
+        { t: "배너 관리 · 켜기 · 넣는 칸", go: "#/admin/banners", setup: adminClean },
         { t: "알고사기 글 목록 · 한 글 숨김", go: "#/admin/guides", setup: function () { adminClean(); H.state.guideHidden = ["installment"]; } },
         { t: "글 고치기 · 요금제 낮추기 글", go: "#/admin/guide/plan-down", setup: adminClean },
         { t: "새 글 쓰기 · 빈 칸", go: "#/admin/guide/new", setup: adminClean },
@@ -201,6 +208,7 @@
 
   /* 처음 들어온 직원에게 한 번만 안내 */
   H.after.home = function () {
+    if (H.initBanner) H.initBanner();
     if (H.state.welcomed || H.state.tour) return;
     H.state.welcomed = true;
     H.save();

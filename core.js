@@ -87,10 +87,21 @@
   };
   /* 24개월 동안 내는 돈 = 기기값 + 할부 이자 + 요금 24개월 */
   H.cost = function (p, s) { var r = H.price(p, s); return r.principal + r.totalInterest + r.planFee * 24; };
-  H.cheaper = function (p, s) {
+  /* 185일 뒤 월 47,000원 요금제로 낮추는 경우 — 185일이 지나는 7개월째까지 고른 요금제, 8개월째부터 47,000원(자비스웹 요금제표 «데이터플랜9GB»)
+   * 선택약정 25%는 바꾼 요금제에도 이어진다. 기기값 · 할부 이자는 그대로 */
+  H.DOWN = { fee: 47000, name: "데이터플랜9GB", keep: 7 };
+  H.feeTotal = function (p, s, down) {
+    var r = H.price(p, s);
+    if (!down) return r.planFee * 24;
+    var low = Math.min(r.planFeeBase, H.DOWN.fee), rate = s.discount === "select" ? 0.75 : 1;
+    return r.planFee * H.DOWN.keep + Math.round(low * rate) * (24 - H.DOWN.keep);
+  };
+  H.costDown = function (p, s) { var r = H.price(p, s); return r.principal + r.totalInterest + H.feeTotal(p, s, true); };
+  H.cheaper = function (p, s, down) {
     if (!(p.official && p.select) || !p.rows.length) return null;
-    var a = H.cost(p, Object.assign({}, s, { discount: "official" }));
-    var b = H.cost(p, Object.assign({}, s, { discount: "select" }));
+    var f = down ? H.costDown : H.cost;
+    var a = f(p, Object.assign({}, s, { discount: "official" }));
+    var b = f(p, Object.assign({}, s, { discount: "select" }));
     if (a === b) return null;
     return { key: a < b ? "official" : "select", label: a < b ? "이통사지원금" : "선택약정", diff: Math.abs(a - b) };
   };
@@ -124,7 +135,7 @@
     new URLSearchParams(qs).forEach(function (v, k) { q[k] = v; });
     return { path: parts[0] || "", parts: parts, q: q, hash: location.hash || "#/" };
   };
-  var ROUTES = { "": "home", phones: "phones", order: "order", done: "done", my: "my", guide: "guides", reviews: "reviews", review: "review", cs: "cs", search: "search", signup: "signup", screens: "screens", tour: "tour", partner: "partner", admin: "admin" };
+  var ROUTES = { "": "home", phones: "phones", order: "order", done: "done", my: "my", guide: "guides", reviews: "reviews", review: "review", cs: "cs", search: "search", signup: "signup", screens: "screens", tour: "tour", partner: "partner", admin: "admin", together: "together", receipt: "receipt" };
   function viewKey(r) {
     if (r.path === "guide" && r.parts[1]) return "guide";
     if (r.path === "phone") { var p = H.prod(r.parts[1]); return p && p.launch ? "launch" : "product"; }
