@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="하이유플 리뉴얼 시안 기획서 (실제 사이트 아님)">
+<title>하이유플 리뉴얼 기획서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+@font-face { font-family: "Pretendard"; src: url("fonts/Pretendard-Regular.otf") format("opentype"); font-weight: 100 500; font-display: swap; }
+@font-face { font-family: "Pretendard"; src: url("fonts/Pretendard-Bold.otf") format("opentype"); font-weight: 600 900; font-display: swap; }
+:root {
+  --bg: #ffffff; --soft: #f6f5f8; --card: #ffffff; --ink: #141216; --ink-2: #3a3640; --mute: #6e6875; --line: #e8e5eb;
+  --lav: #5d4477; --lav-soft: #f2edf8; --mg: #d61f72; --mg-soft: #fdeef5; --hl: #fff3b0;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131115; --soft: #1c1920; --card: #1a171d; --ink: #efecf2; --ink-2: #cfc9d6; --mute: #9d96a5; --line: #332f39;
+    --lav: #c2acdf; --lav-soft: #2a2233; --mg: #ff6aac; --mg-soft: #3a1b2b; --hl: #4a4020;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #131115; --soft: #1c1920; --card: #1a171d; --ink: #efecf2; --ink-2: #cfc9d6; --mute: #9d96a5; --line: #332f39;
+  --lav: #c2acdf; --lav-soft: #2a2233; --mg: #ff6aac; --mg-soft: #3a1b2b; --hl: #4a4020;
+}
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; font-size: 16px; line-height: 1.7; letter-spacing: -0.01em; word-break: keep-all; overflow-wrap: anywhere; -webkit-font-smoothing: antialiased; }
+h1, h2, h3, h4, p, ul, ol, figure { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+a { color: inherit; }
+h1, h2, h3 { text-wrap: balance; letter-spacing: -0.03em; }
+.mono { font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .88em; letter-spacing: 0; }
+.num { font-variant-numeric: tabular-nums; }
+.page { max-width: 1160px; margin: 0 auto; padding-inline: 20px; padding-block: 40px 96px; }
+.top { padding-bottom: 36px; border-bottom: 1px solid var(--line); }
+.eyebrow { font-size: 13px; font-weight: 600; letter-spacing: .02em; color: var(--lav); }
+.top h1 { margin-top: 10px; font-size: clamp(30px, 4.6vw, 44px); line-height: 1.2; font-weight: 700; }
+.lead { margin-top: 14px; max-width: 62ch; font-size: 17px; color: var(--ink-2); }
+.top__acts { margin-top: 22px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; height: 46px; padding: 0 20px; border-radius: 12px; background: var(--ink); color: var(--bg); font-size: 15px; font-weight: 600; text-decoration: none; }
+.btn:hover { opacity: .9; }
+.meta { font-size: 13px; color: var(--mute); }
+.layout { display: grid; gap: 32px; margin-top: 32px; }
+.toc { font-size: 14px; }
+.toc ol { display: flex; flex-wrap: wrap; gap: 6px; }
+.toc a { display: inline-block; padding: 6px 12px; border-radius: 999px; background: var(--soft); text-decoration: none; color: var(--ink-2); }
+.toc a:hover { color: var(--ink); }
+@media (min-width: 1000px) {
+  .layout { grid-template-columns: 200px minmax(0, 1fr); gap: 56px; }
+  .toc { position: sticky; top: 24px; align-self: start; }
+  .toc ol { flex-direction: column; gap: 2px; }
+  .toc a { padding: 6px 0; background: none; border-radius: 0; }
+  .toc a:hover { color: var(--lav); }
+}
+.doc { min-width: 0; }
+.doc > section { padding-top: 12px; margin-bottom: 64px; scroll-margin-top: 20px; }
+.doc h2 { font-size: 26px; line-height: 1.3; font-weight: 700; }
+.doc h2 + p, .doc h2 + .sub { margin-top: 8px; }
+.sub { max-width: 64ch; color: var(--mute); font-size: 15px; }
+.doc h3 { margin-top: 28px; font-size: 18px; font-weight: 700; }
+.doc p { max-width: 68ch; }
+.tldr { margin-top: 18px; display: grid; gap: 10px; }
+.tldr li { position: relative; padding: 14px 16px 14px 44px; border-radius: 14px; background: var(--soft); }
+.tldr li::before { content: ""; position: absolute; left: 18px; top: 23px; width: 10px; height: 10px; border-radius: 3px; background: var(--lav); }
+.tldr li.ask::before { background: var(--mg); }
+.grid2 { margin-top: 18px; display: grid; gap: 12px; }
+@media (min-width: 720px) { .grid2 { grid-template-columns: 1fr 1fr; } }
+.card { padding: 18px 20px; border-radius: 16px; border: 1px solid var(--line); background: var(--card); }
+.card h4 { font-size: 16px; font-weight: 700; }
+.card p, .card li { font-size: 14.5px; color: var(--ink-2); }
+.card p { margin-top: 6px; }
+.card ul { margin-top: 8px; display: grid; gap: 6px; }
+.card li { position: relative; padding-left: 14px; }
+.card li::before { content: ""; position: absolute; left: 0; top: .75em; width: 5px; height: 5px; border-radius: 50%; background: var(--mute); }
+.tag { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 6px; font-size: 12px; font-weight: 700; background: var(--lav-soft); color: var(--lav); vertical-align: 2px; }
+.tag--mg { background: var(--mg-soft); color: var(--mg); }
+.tag--soft { background: var(--soft); color: var(--mute); }
+.swatches { margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.sw { border-radius: 14px; border: 1px solid var(--line); overflow: hidden; background: var(--card); }
+.sw i { display: block; height: 64px; }
+.sw div { padding: 10px 12px; font-size: 13px; line-height: 1.5; }
+.sw b { display: block; font-size: 14px; }
+.tbl-wrap { margin-top: 16px; overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; }
+table { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 620px; }
+th, td { padding: 12px 14px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+th { font-size: 13px; font-weight: 700; color: var(--mute); background: var(--soft); }
+tr:last-child td { border-bottom: 0; }
+td s { color: var(--mute); }
+.refs { margin-top: 18px; display: grid; gap: 12px; }
+@media (min-width: 720px) { .refs { grid-template-columns: 3fr 1fr; align-items: start; } }
+.refs figure { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--soft); }
+.refs img { display: block; width: 100%; height: auto; }
+.refs .tall { max-height: 520px; overflow-y: auto; }
+.refs figcaption { padding: 8px 12px; font-size: 12px; color: var(--mute); border-top: 1px solid var(--line); background: var(--card); }
+.ia { margin-top: 18px; display: grid; gap: 10px; }
+.ia__row { display: grid; gap: 8px; padding: 14px; border-radius: 14px; background: var(--soft); }
+@media (min-width: 720px) { .ia__row { grid-template-columns: 110px 1fr; align-items: center; } }
+.ia__row > b { font-size: 13px; color: var(--mute); }
+.chain { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.node { display: inline-flex; align-items: center; min-height: 34px; padding: 4px 12px; border-radius: 10px; background: var(--card); border: 1px solid var(--line); font-size: 14px; font-weight: 600; }
+.node--key { border-color: var(--lav); color: var(--lav); }
+.node--new { border-style: dashed; }
+.arr { color: var(--mute); font-size: 14px; }
+.flow { margin-top: 14px; counter-reset: fl; display: grid; gap: 6px; }
+.flow li { counter-increment: fl; display: grid; grid-template-columns: 30px 1fr; gap: 10px; align-items: start; font-size: 15px; }
+.flow li::before { content: counter(fl); display: grid; place-items: center; width: 26px; height: 26px; margin-top: 1px; border-radius: 50%; background: var(--ink); color: var(--bg); font-size: 12px; font-weight: 700; }
+.flow small { color: var(--mute); }
+.formula { margin-top: 14px; padding: 16px 18px; border-radius: 14px; background: var(--soft); display: grid; gap: 8px; font-size: 15px; }
+.formula b { color: var(--lav); }
+.check { margin-top: 14px; display: grid; gap: 8px; }
+.check label { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); cursor: pointer; font-size: 15px; }
+.check input { width: 20px; height: 20px; margin: 3px 0 0; accent-color: var(--lav); flex: none; }
+.check input:checked + span { color: var(--mute); text-decoration: line-through; text-decoration-color: var(--mute); }
+.decide { margin-top: 16px; display: grid; gap: 10px; counter-reset: dc; }
+.decide li { counter-increment: dc; position: relative; padding: 16px 18px 16px 56px; border-radius: 14px; border: 1px solid var(--line); background: var(--card); }
+.decide li::before { content: counter(dc); position: absolute; left: 16px; top: 16px; width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; background: var(--mg-soft); color: var(--mg); font-weight: 700; font-size: 13px; }
+.decide b { display: block; font-size: 16px; }
+.decide p { margin-top: 4px; font-size: 14.5px; color: var(--ink-2); }
+.note { margin-top: 14px; padding: 12px 16px; border-radius: 12px; background: var(--hl); color: var(--ink); font-size: 14.5px; }
+:focus-visible { outline: 2px solid var(--lav); outline-offset: 2px; border-radius: 6px; }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+html { scroll-behavior: smooth; }
+</style>
+
+</head>
+<body>
+<div class="page">
+  <header class="top">
+    <p class="eyebrow">하이유플 · 기획서 · 2026년 9월 15일</p>
+    <h1>하이유플 리뉴얼 기획서</h1>
+    <p class="lead">대표님이 올린 메인 시안을 첫 화면으로 그대로 쓰고, 그 뒤에 이어지는 화면을 같은 모양으로 설계했어요. 모든 화면은 휴대폰과 PC에서 직접 눌러 볼 수 있는 목업으로 만들어 두었어요.</p>
+    <div class="top__acts">
+      <a class="btn" id="mockLink" href="./" >목업 열기</a>
+      <span class="meta">시안 파일 «하이유플메인디자인.zip»(PC · 모바일 · PDF) · 가격은 9월 15일 판매 가격</span>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" aria-label="차례">
+      <ol>
+        <li><a href="#sum">한눈에</a></li>
+        <li><a href="#who">누구를 위한 사이트</a></li>
+        <li><a href="#rules">시안에서 읽은 규칙</a></li>
+        <li><a href="#fix">시안 보완</a></li>
+        <li><a href="#ia">사이트 구조</a></li>
+        <li><a href="#flows">핵심 흐름</a></li>
+        <li><a href="#screens">화면별 설계</a></li>
+        <li><a href="#price">가격 계산</a></li>
+        <li><a href="#make">제작 목록</a></li>
+        <li><a href="#check">확인 점검표</a></li>
+        <li><a href="#decide">결정할 것</a></li>
+        <li><a href="#next">다음 순서</a></li>
+      </ol>
+    </nav>
+
+    <main class="doc">
+      <section id="sum">
+        <h2>한눈에</h2>
+        <ul class="tldr">
+          <li>첫 화면은 시안 그대로 써요. 오타 세 곳만 고쳤어요(이어폰 → 아이폰 등).</li>
+          <li>뒤에 붙는 화면 12개를 시안 모양으로 이어 만들었어요. 검정 머리, 둥근 회색 카드, 계절 색 라벤더, 신청 단추에만 마젠타.</li>
+          <li>고르는 순서와 금액표 줄 이름은 지금 사이트 그대로 둬서 기존 손님이 헤매지 않게 했어요.</li>
+          <li>새로 넣은 건 세 가지예요. 24개월 동안 덜 내는 할인 방법 알려주기, 요금제마다 월 납부 금액 같이 보여주기, 접수 뒤에 할 일을 단추 하나로 보여주기.</li>
+          <li class="ask">대표님이 정해 주셔야 할 것 7가지는 맨 아래 «결정할 것»에 모았어요.</li>
+        </ul>
+      </section>
+
+      <section id="who">
+        <h2>누구를 위한 사이트</h2>
+        <p class="sub">목표는 한 줄이에요. 처음 온 손님이 3분 안에 «내 조건이면 한 달에 얼마»를 알고, 전화 없이 주문서까지 끝내는 것.</p>
+        <div class="grid2">
+          <div class="card"><h4>이런 손님이 와요</h4><ul><li>휴대폰을 새로 사거나 바꾸려는 사람</li><li>어디서 사야 안전한지 고민하는 사람</li><li>매장이나 전화 없이 온라인으로 끝내고 싶은 사람</li><li>LG U+를 쓰거나 옮기려는 사람 중 공식 인증 대리점을 찾는 사람</li></ul></div>
+          <div class="card"><h4>시안이 하는 약속</h4><p>«제품은 새로워도, 사는 건 복잡할 필요 없으니까.» 그래서 모든 화면은 세 가지를 지켜요.</p><ul><li>복잡한 조건은 덜어낸다 — 한 번에 하나만 묻기</li><li>필요한 기준만 보여준다 — 실구매가와 월 납부 금액</li><li>명확하게 말한다 — 쉬운 말, 조건 없음은 «없음»으로</li></ul></div>
+        </div>
+      </section>
+
+      <section id="rules">
+        <h2>시안에서 읽은 규칙</h2>
+        <p class="sub">시안 그림을 2배(PC) · 5배(모바일) 크기에서 재어 옮긴 값이에요. 새 화면은 전부 이 규칙으로만 만들었어요.</p>
+        <div class="refs">
+          <figure><img src="img/design-pc.jpg" width="1200" height="1421" alt="하이유플 메인 시안 PC 화면" loading="lazy"><figcaption>시안 PC (pc.png)</figcaption></figure>
+          <figure><div class="tall"><img src="img/design-mo.jpg" width="420" height="2996" alt="하이유플 메인 시안 모바일 화면" loading="lazy"></div><figcaption>시안 모바일 (위아래로 밀어 보기)</figcaption></figure>
+        </div>
+        <h3>색</h3>
+        <div class="swatches">
+          <div class="sw"><i style="background:#000000"></i><div><b>검정</b><span class="mono">#000000</span><br>머리 · 알림 띠 · 아래 탭</div></div>
+          <div class="sw"><i style="background:#f7f7f7"></i><div><b>회색 카드</b><span class="mono">#F7F7F7</span><br>상품 카드 바탕</div></div>
+          <div class="sw"><i style="background:#151515"></i><div><b>선택된 칩</b><span class="mono">#151515</span><br>칩 기본은 #F5F5F5</div></div>
+          <div class="sw"><i style="background:linear-gradient(90deg,#e0d8ec,#c3b4d6)"></i><div><b>라벤더 (계절 색)</b><span class="mono">#E0D8EC → #C3B4D6</span><br>큰 그림 바탕 · 바뀌는 색</div></div>
+          <div class="sw"><i style="background:#5d4477"></i><div><b>라벤더 단추</b><span class="mono">#5D4477</span><br>큰 그림 «구매하기»에만</div></div>
+          <div class="sw"><i style="background:#e5287e"></i><div><b>마젠타</b><span class="mono">#E5287E</span><br>신청으로 이어지는 단추에만</div></div>
+        </div>
+        <div class="grid2">
+          <div class="card"><h4>글자</h4><ul><li>서체 Pretendard (지금 사이트 저장소에 있는 파일)</li><li>PC 큰 제목 40 · 구역 제목 28 · 카드 이름 20 · 본문 16</li><li>모바일 큰 제목 26 · 구역 제목 20 · 카드 이름 16 · 본문 15</li><li>숫자는 자리 맞춤(표 숫자)</li></ul></div>
+          <div class="card"><h4>모양 · 여백</h4><ul><li>둥글기: 큰 그림 24 · 카드 18(모바일 12) · 알림 띠 14 · 단추 9~12 · 칩은 끝까지 둥글게</li><li>PC 폭 1200 · 구역 사이 100</li><li>모바일 좌우 18 · 구역 사이 64 · 머리 60 · 아래 탭 64</li></ul></div>
+          <div class="card"><h4>말투</h4><ul><li>해요체, 질문으로 시작 — «어떤 휴대폰을 찾으세요?»</li><li>단추는 하는 일 그대로 — «조건 보기» «알림 신청하기»</li><li>어려운 말 대신 손님 말 — 가입유형 대신 «지금 LG U+ 쓰세요?»</li></ul></div>
+          <div class="card"><h4>한 가지 규칙</h4><p>마젠타 단추는 한 화면에 하나만 둬요. 손님이 «다음에 뭘 누르지?»를 고민하지 않게요. 지금 사이트 마젠타는 <span class="mono">#EB2894</span>로 시안과 조금 달라서 시안 값으로 맞추길 제안해요.</p></div>
+        </div>
+      </section>
+
+      <section id="fix">
+        <h2>시안 보완</h2>
+        <p class="sub">시안을 해치지 않는 선에서 고친 것과 제안이에요. 제안은 목업의 노란 «기획 메모» → «제안 보기»로 켜고 끄며 비교할 수 있어요.</p>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>어디</th><th>시안</th><th>목업에서</th><th>구분</th></tr></thead>
+          <tbody>
+            <tr><td>첫 화면 칩</td><td><s>이어폰</s></td><td>아이폰</td><td><span class="tag tag--soft">오타</span></td></tr>
+            <tr><td>모바일 알고사기 링크</td><td><s>조건 보기</s></td><td>전체 글 보기 (PC와 같게)</td><td><span class="tag tag--soft">오타</span></td></tr>
+            <tr><td>모바일 세 번째 카드</td><td><s>아이폰</s></td><td>갤럭시 Z</td><td><span class="tag tag--soft">오타</span></td></tr>
+            <tr><td>칩과 카드</td><td>칩 3개가 카드 3장을 다시 거름</td><td>칩을 누르면 카드가 시리즈로 바뀜 (아이폰 → 18 프로 · 17 · 16)</td><td><span class="tag">동작 정함</span></td></tr>
+            <tr><td>상담 입구</td><td>없음</td><td>오른쪽 아래 상담 단추 (AI 상담 · 카카오톡 · 전화)</td><td><span class="tag">지금 사이트에서 가져옴</span></td></tr>
+            <tr><td>바닥글</td><td>사업자 정보 없음</td><td>상호 · 대표 · 사업자등록번호 · 통신판매업 신고번호 · 주소 · 고객센터</td><td><span class="tag">법으로 표시</span></td></tr>
+            <tr><td>첫 화면 가격</td><td>없음</td><td>카드마다 «실구매가 OO원부터» 한 줄</td><td><span class="tag tag--mg">제안</span></td></tr>
+            <tr><td>공식 인증 표시</td><td>없음</td><td>믿음 띠: LG U+ 공식 인증 대리점 · 전화 없이 개통까지 · 보이는 가격 그대로</td><td><span class="tag tag--mg">제안</span></td></tr>
+            <tr><td>후기</td><td>사진만</td><td>사진 아래 한 줄 후기와 이름</td><td><span class="tag tag--mg">제안</span></td></tr>
+            <tr><td>모바일 머리</td><td>사람 단추 (아래 탭 «내정보»와 겹침)</td><td>검색 단추로 바꾸기</td><td><span class="tag tag--mg">제안</span></td></tr>
+            <tr><td>상품 이름</td><td>아이폰16PRO · 갤럭시 S25울트라 · 갤럭시 Z폴드8 와이드</td><td>아이폰 16 프로 · 갤럭시 S25 울트라 · 갤럭시 Z 폴드8 와이드, «사전예약»은 이름 대신 표시로</td><td><span class="tag tag--mg">제안</span></td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section id="ia">
+        <h2>사이트 구조</h2>
+        <p class="sub">PC 머리는 시안대로 «휴대폰 · 알고사기 · 구매후기», 모바일은 아래 탭 «홈 · 휴대폰 · 알고 사기 · 내정보»예요. 점선은 창(시트)으로 열리는 것.</p>
+        <div class="ia">
+          <div class="ia__row"><b>사기</b><div class="chain"><span class="node node--key">첫 화면</span><span class="arr">→</span><span class="node">휴대폰 목록</span><span class="arr">→</span><span class="node node--key">상품 화면</span><span class="arr">→</span><span class="node node--new">로그인</span><span class="arr">→</span><span class="node">주문서</span><span class="arr">→</span><span class="node">접수 완료</span><span class="arr">→</span><span class="node node--new">온라인 신청서</span><span class="arr">→</span><span class="node">내정보 · 진행 상황</span></div></div>
+          <div class="ia__row"><b>알아보기</b><div class="chain"><span class="node node--key">알고사기</span><span class="arr">→</span><span class="node">글</span><span class="arr">→</span><span class="node">«내 조건으로 보기»</span><span class="arr">→</span><span class="node">상품 화면</span></div></div>
+          <div class="ia__row"><b>믿어보기</b><div class="chain"><span class="node node--key">구매후기</span><span class="arr">→</span><span class="node">후기</span><span class="arr">→</span><span class="node">휴대폰 목록</span></div></div>
+          <div class="ia__row"><b>기다리기</b><div class="chain"><span class="node">출시 전 상품 (아이폰 듀오)</span><span class="arr">→</span><span class="node node--new">출시 알림 신청</span><span class="arr">→</span><span class="node">내정보 · 알림 신청 내역</span></div></div>
+          <div class="ia__row"><b>늘 있는 것</b><div class="chain"><span class="node">머리</span><span class="node">아래 탭(모바일)</span><span class="node node--new">전체 메뉴</span><span class="node">검색</span><span class="node node--new">상담 (AI · 카카오톡 · 전화)</span><span class="node">고객센터</span></div></div>
+        </div>
+      </section>
+
+      <section id="flows">
+        <h2>핵심 흐름</h2>
+        <p class="sub">목업에서 실제로 누른 순서예요. 기본값을 그대로 둘 때 기준.</p>
+        <div class="grid2">
+          <div class="card"><h4>갤럭시 Z 폴드8 사기 <span class="tag">12번 누르기 · 2칸 적기</span></h4>
+            <ol class="flow">
+              <li>첫 화면 «갤럭시 Z» 카드</li><li>갤럭시 Z 폴드8 와이드 고르기</li><li>«다른 통신사예요» 누르기 <small>번호이동 금액으로 바뀜</small></li><li>«주문하기»</li><li>«카카오로 시작하기» <small>고른 조건은 그대로</small></li><li>비상 연락처 적기</li><li>«주소 찾기» → 주소 고르기</li><li>상세 주소 적기</li><li>«모두 동의하기»</li><li>«주문 접수하기»</li><li>«온라인 신청서 작성하기»</li>
+            </ol></div>
+          <div class="card"><h4>알아보고 사기 <span class="tag">4번 누르기</span></h4>
+            <ol class="flow"><li>첫 화면 알고사기 «휴대폰 값 0원, 매달 내는 돈도 0원인가요?»</li><li>«짧게 답하면»과 실제 금액표 읽기</li><li>«내 조건으로 월 납부 금액 보기»</li><li>상품 고르기</li></ol>
+            <h4 style="margin-top:22px">아이폰 듀오 알림 받기 <span class="tag">4번 누르기</span></h4>
+            <ol class="flow"><li>첫 화면 검정 띠 «알림 신청하기»</li><li>이름 · 휴대폰 번호 <small>로그인했으면 채워져 있음</small></li><li>동의 누르기</li><li>«알림 신청하기»</li></ol></div>
+        </div>
+      </section>
+
+      <section id="screens">
+        <h2>화면별 설계</h2>
+        <p class="sub">«가져옴»은 지금 사이트에서 그대로 옮긴 것, «새로»는 이번에 더한 것이에요. 화면마다 목업의 «기획 메모»에도 같은 내용이 있어요.</p>
+        <div class="grid2">
+          <div class="card"><h4>첫 화면</h4><p>시안 그대로. 큰 그림 → 어떤 휴대폰을 찾으세요? → 알고사기 3글 → 아이폰 사전알림 띠 → 먼저 산 손님의 이야기.</p><ul><li>새로: 칩을 누르면 카드가 시리즈로 바뀜</li><li>새로: 카드에 실제 상품 사진</li></ul></div>
+          <div class="card"><h4>휴대폰 목록</h4><p>종류 칩 → «지금 LG U+ 쓰세요?» → 정렬 → 상품 카드(실구매가 크게, 월 납부 작게).</p><ul><li>가져옴: 통신사 질문, 상품별 기본 요금제</li><li>새로: 질문을 창 대신 화면 위에 두고 언제든 바꾸기</li></ul></div>
+          <div class="card"><h4>상품 화면</h4><p>통신사 → 용량 · 색상 → 요금제 → 할인 방법 → 구매 방식 → 금액표 → 주문하기(모바일은 아래 고정).</p><ul><li>가져옴: 고르는 순서, 금액표 줄 이름, 조건 없음 4가지, 네 단계, 주문 안내, 자주 묻는 질문</li><li>새로: 24개월 동안 덜 내는 할인 방법 알려주기</li><li>새로: 요금제 창에서 요금제마다 월 납부 금액</li><li>새로: 캔바 상세 그림이 붙는 자리 표시</li></ul></div>
+          <div class="card"><h4>출시 전 상품</h4><p>대표 사진 · 색상 → «가격 출시 후 안내» → 사전알림과 사전예약 차이 한 줄 → 알림 신청하기.</p><ul><li>가져옴: 출시 알림 상품 방식(용량 · 가격 숨김)</li></ul></div>
+          <div class="card"><h4>로그인 창 · 주문서</h4><p>주문하기 → 카카오 · 네이버 로그인 → 주문서(가입하시는 분 · 받으실 곳 · 포인트 · 약관) → 주문 접수하기.</p><ul><li>가져옴: 로그인 필수, 칸 구성, 회원가입 1만 포인트</li><li>새로: 로그인 정보로 이름 · 생년월일 · 휴대폰 미리 채움</li><li>새로: 빠진 칸은 그 자리에 빨간 안내</li></ul></div>
+          <div class="card"><h4>접수 완료</h4><p>«접수됐어요. 이제 신청서만 쓰면 끝이에요» → 진행 막대 → 지금 할 일 카드(온라인 신청서) → 주문 요약.</p><ul><li>가져옴: 문구, 진행 단계 이름(신청서 · 접수확인 · 준비·배송 · 개통완료)</li><li>새로: 할 일을 검정 카드 하나로</li></ul></div>
+          <div class="card"><h4>내정보</h4><p>로그인 전: 카카오 · 네이버. 로그인 후: 진행 중인 주문(단계 · 지금 할 일) · 알림 신청 내역 · 최근 본 휴대폰.</p><ul><li>새로: 개통 뒤 «요금제를 낮출 수 있을 때까지 185일»</li></ul></div>
+          <div class="card"><h4>알고사기</h4><p>주제 칩 → 글 목록. 글은 «짧게 답하면» → 설명 → 실제 금액표 → «내 조건으로 보기».</p><ul><li>새로: 글 속 금액표가 실제 가격으로 계산됨</li><li>새로: 6개 글 (구매 조건 · 요금제 · 사전알림 · 가입 방법 · 할인 방법 · 할부 이자)</li></ul></div>
+          <div class="card"><h4>구매후기</h4><p>평균 별점 → 사진 후기 거르기 → 후기 카드 → 후기 한 편 → «나도 내 조건으로 보기».</p><ul><li>가져옴: 지금 후기 일부(이름 가림 그대로)</li><li>제안: 후기 쓰기에 «어떤 휴대폰을 샀나요» 고르기</li></ul></div>
+          <div class="card"><h4>고객센터 · 상담 · 검색 · 전체 메뉴</h4><p>상담 세 가지를 한 화면에. 검색은 상품과 알고사기 글을 같이 찾음(폴드8, 18프로, air도 찾음).</p><ul><li>가져옴: 전화 1544-2680 · 운영 시간 · 자주 묻는 질문 4개</li><li>새로: 검색 화면(지금은 목록으로만 넘어감)</li></ul></div>
+        </div>
+      </section>
+
+      <section id="price">
+        <h2>가격 계산</h2>
+        <p class="sub">목업은 지금 사이트 코드와 같은 식으로 계산해요. 그래서 목업 숫자와 지금 사이트 숫자가 같아요.</p>
+        <div class="formula">
+          <span><b>실구매가(할부원금)</b> = 출고가 − 이통사지원금 − 하이유플 자체할인</span>
+          <span><b>하이유플 자체할인</b> = 상품 · 요금제 · 가입 방법마다 정한 금액 · 남은 기기값을 넘지 않음</span>
+          <span><b>선택약정</b> = 이통사지원금 0원 · 월 요금 × 0.75</span>
+          <span><b>월 휴대폰 할부금</b> = 올림(실구매가 × (1 + 0.0625 × 개월 ÷ 24) ÷ 개월)</span>
+          <span><b>월 납부 금액</b> = 같은 식을 내림한 값 + 월 요금</span>
+          <span><b>덜 내는 쪽 비교</b> = 실구매가 + 할부 이자 + 요금 24개월</span>
+        </div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>아이폰 18 프로 256G · 데이터플랜MAX · 번호이동 · 24개월</th><th>이통사지원금</th><th>선택약정</th></tr></thead>
+          <tbody class="num">
+            <tr><td>출고가</td><td>1,991,000원</td><td>1,991,000원</td></tr>
+            <tr><td>이통사지원금 할인</td><td>- 300,000원</td><td>0원</td></tr>
+            <tr><td>하이유플 자체할인</td><td>- 320,000원</td><td>- 320,000원</td></tr>
+            <tr><td>실구매가</td><td>1,371,000원</td><td>1,671,000원</td></tr>
+            <tr><td>월 납부 금액</td><td>145,697원</td><td>137,728원</td></tr>
+            <tr><td>24개월 합계</td><td>3,496,752원</td><td>3,305,496원 · 191,256원 덜 냄</td></tr>
+          </tbody>
+        </table></div>
+        <p class="note">이통사지원금 쪽 숫자(1,371,000원 · 월 145,697원)는 9월 15일 지금 사이트 상품 화면과 같은 것을 확인했어요. 선택약정이 더 싸게 나오는 상품이 있다는 게 «덜 내는 쪽 알려주기»를 넣은 이유예요.</p>
+      </section>
+
+      <section id="make">
+        <h2>제작 목록</h2>
+        <p class="sub">캔바 · 피그마로 만들어 «이어 붙일» 그림과, 화면 글자로 만드는 부분을 나눴어요. 가격 · 조건 · 날짜처럼 바뀌는 글자는 그림에 넣지 않아요. 바뀔 때마다 그림을 다시 만들어야 하고, AI 검색도 그림 속 글자는 못 읽어요.</p>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>무엇</th><th>크기</th><th>어디서</th><th>메모</th></tr></thead>
+          <tbody>
+            <tr><td>첫 화면 큰 그림 (PC)</td><td class="mono">2400 × 1000</td><td>캔바</td><td>화면에서 1200 × 500으로 보여요. 오른쪽 절반에 사진, 왼쪽은 바탕만. 제목 · 단추는 화면 글자. 글자를 뺀 시안 바탕은 목업 img/hero-pc.jpg</td></tr>
+            <tr><td>첫 화면 큰 그림 (모바일)</td><td class="mono">1080 × 890</td><td>캔바</td><td>사진 부분만. 맨 위 줄 색을 <span class="mono">#C8BDD4</span>에 맞추면 글자 바탕과 이어져요</td></tr>
+            <tr><td>상품 상세 그림 (구매혜택)</td><td class="mono">가로 1080 · 세로 자유</td><td>캔바</td><td>상품 화면의 점선 칸 자리. 여러 장이면 위에서 아래로 이어 붙임</td></tr>
+            <tr><td>상품 사진</td><td class="mono">1080 × 1080 투명 PNG</td><td>지금 있는 것</td><td>지금 사이트 상품 사진 그대로. 카드 바탕 #F7F7F7</td></tr>
+            <tr><td>후기 사진</td><td>손님 사진</td><td>손님</td><td>PC 2 : 1, 모바일 약 1.36 : 1로 가운데를 잘라 보여줌</td></tr>
+            <tr><td>알고사기 글 · 알림 띠 · 믿음 띠</td><td>—</td><td>화면 글자</td><td>그림 없이 글자로. 검색 · AI 검색에 걸리게</td></tr>
+            <tr><td>로고</td><td class="mono">SVG 흰색 · 검정</td><td>목업에 있음</td><td>시안 로고를 선으로 다시 그림 (img/logo-white.svg · logo-black.svg)</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section id="check">
+        <h2>확인 점검표</h2>
+        <p class="sub">목업을 휴대폰으로 열고 하나씩 해 보세요. 직원이나 지인 세 명에게 «아이폰 18 프로 한 달에 얼마인지 찾아 주세요»처럼 일만 주고, 옆에서 돕지 말고 멈칫하는 곳을 적으면 가장 정확해요. 체크 표시는 이 브라우저에만 남아요.</p>
+        <h3>편리함</h3>
+        <div class="check" data-group="a">
+          <label><input type="checkbox" id="c1"><span>첫 화면에서 «아이폰 18 프로 월 얼마»까지 세 번 안에 가나요?</span></label>
+          <label><input type="checkbox" id="c2"><span>상품 화면에서 선택약정이 더 싸다는 걸 스스로 알아채나요?</span></label>
+          <label><input type="checkbox" id="c3"><span>요금제 창에서 요금제마다 월 금액을 비교할 수 있나요?</span></label>
+          <label><input type="checkbox" id="c4"><span>주문서에서 새로 적는 칸이 비상 연락처 · 주소뿐이라고 느끼나요?</span></label>
+          <label><input type="checkbox" id="c5"><span>접수 뒤 다음에 무엇을 해야 하는지 바로 아나요?</span></label>
+        </div>
+        <h3>친숙함</h3>
+        <div class="check">
+          <label><input type="checkbox" id="c6"><span>지금 하이유플 손님이 금액표 줄 이름을 그대로 알아보나요?</span></label>
+          <label><input type="checkbox" id="c7"><span>«LG U+ 써요 / 다른 통신사예요» 질문이 헷갈리지 않나요?</span></label>
+          <label><input type="checkbox" id="c8"><span>휴대폰에서 아래 탭과 뒤로 가기가 자연스러운가요?</span></label>
+          <label><input type="checkbox" id="c9"><span>알림 신청을 사전예약과 헷갈리지 않나요?</span></label>
+        </div>
+        <h3>보기 좋음</h3>
+        <div class="check">
+          <label><input type="checkbox" id="c10"><span>첫 화면 라벤더 그림과 아래 상품 사진 색이 따로 놀지 않나요?</span></label>
+          <label><input type="checkbox" id="c11"><span>글자가 작아 읽기 힘든 곳은 없나요? (금액표 작은 줄, 후기 날짜)</span></label>
+          <label><input type="checkbox" id="c12"><span>«제안 보기»를 켰을 때와 껐을 때, 어느 쪽이 더 믿음이 가나요?</span></label>
+        </div>
+      </section>
+
+      <section id="decide">
+        <h2>결정할 것</h2>
+        <p class="sub">대표님이 정해 주시면 그대로 실제 사이트 작업으로 넘길게요.</p>
+        <ol class="decide">
+          <li><b>첫 화면에 가격 한 줄</b><p>시안에는 가격이 없어요. 카드에 «실구매가 OO원부터»를 넣을까요? 목업 «제안 보기»로 비교할 수 있어요.</p></li>
+          <li><b>LG U+ 공식 인증 대리점 표시</b><p>하이유플의 가장 큰 믿을 거리인데 시안에 없어요. 큰 그림 아래 믿음 띠로 둘까요?</p></li>
+          <li><b>개통 순서 안내 통일</b><p>지금 사이트 안에서 서로 달라요. 상품 화면은 «개통 → 배송», 주문서 옆 안내는 «기기수령 및 개통». 번호이동과 기기변경에 따라 다르면 나눠 적어야 해요.</p></li>
+          <li><b>비상 연락처 필수 여부</b><p>필수로 두면 왜 받는지 한 줄 설명을 달면 좋겠어요.</p></li>
+          <li><b>상품 이름 규칙</b><p>띄어쓰기 · 영어 표기(PRO → 프로, AIR → 에어) · «사전예약»을 이름 대신 표시로. 정하면 자비스웹 상품 이름도 같이 바꿔요.</p></li>
+          <li><b>«덜 내는 쪽 알려주기» 넣기</b><p>할인 방법 두 개 중 24개월 동안 덜 내는 쪽을 알려주는 기능이에요. 실제 사이트에도 넣을까요?</p></li>
+          <li><b>마젠타 색 맞추기</b><p>시안 <span class="mono">#E5287E</span>와 지금 사이트 <span class="mono">#EB2894</span>가 조금 달라요. 시안 값으로 맞출까요?</p></li>
+        </ol>
+      </section>
+
+      <section id="next">
+        <h2>다음 순서</h2>
+        <ol class="flow">
+          <li>대표님이 목업을 휴대폰으로 눌러 보고 «결정할 것» 7가지 답 주기</li>
+          <li>제작 목록 크기대로 캔바에서 큰 그림 · 상세 그림 만들기</li>
+          <li>정해진 내용을 작업지시서로 써서 개발 담당이 실제 사이트에 옮기기</li>
+          <li>옮긴 화면을 목업 옆에 두고 한 화면씩 대조하기</li>
+        </ol>
+        <p class="note">상품 · 가격은 9월 15일 저녁 판매 가격이라, 그 뒤 가격이 바뀌면 목업 숫자와 달라질 수 있어요.</p>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script>
+(function () {
+  var KEY = "hiu-plan-check-v1", saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { saved = {}; }
+  document.querySelectorAll(".check input").forEach(function (box) {
+    box.checked = !!saved[box.id];
+    box.addEventListener("change", function () {
+      saved[box.id] = box.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {}
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
