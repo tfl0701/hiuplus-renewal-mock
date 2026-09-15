@@ -1,38 +1,52 @@
-/* 하이유플 리뉴얼 목업 — 로그인 · 주문서 · 접수 완료 · 내정보 */
+/* 하이유플 리뉴얼 목업 — 로그인 창 · 주문서 · 접수 완료 */
 (function () {
   "use strict";
   var H = window.H;
   var STEPS = ["신청서", "접수확인", "준비·배송", "개통완료"];
   var AGREE = ["개인정보 수집 · 이용 동의", "개인정보 제3자 제공 동의 (통신사 가입 처리)", "주문 내용과 유의사항 확인"];
-  var SAMPLE_ADDR = ["서울 강남구 테헤란로 152 (역삼동)", "경기 성남시 분당구 판교역로 235 (삼평동)", "부산 부산진구 중앙대로 672 (부전동)"];
+  H.STEP_NAMES = STEPS;
+  H.SAMPLE_ADDR = ["서울 강남구 테헤란로 152 (역삼동)", "경기 성남시 분당구 판교역로 235 (삼평동)", "부산 부산진구 중앙대로 672 (부전동)"];
 
-  function rerender(el) {
+  H.rerender = function (el) {
     var y = window.scrollY;
     H.render();
     window.scrollTo(0, y);
     if (el) H.refocus(el);
-  }
+  };
+  H.today = function () {
+    var d = new Date();
+    return d.getFullYear() + "." + String(d.getMonth() + 1).padStart(2, "0") + "." + String(d.getDate()).padStart(2, "0");
+  };
   H.tracker = function (step) {
     return '<ol class="tracker" aria-label="진행 단계">' + STEPS.map(function (t, i) {
       return '<li class="' + (i < step ? "is-done" : i === step ? "is-now" : "") + '"' + (i === step ? ' aria-current="step"' : "") + ">" + t + "</li>";
     }).join("") + "</ol>";
   };
-  function memoToggleRow() {
-    return `<button type="button" data-act="toggleMemoHidden">기획 메모 단추 ${H.state.memoHidden ? "다시 보이기" : "숨기기"}<small class="demo-tag">시안</small></button>`;
-  }
+  /* 예시 주문 — 순서 보기 · 내정보 예시에서 같이 쓴다 */
+  H.makeOrder = function (pid, step, id, date) {
+    var p = H.prod(pid), sel = H.defaults(p);
+    sel.method = "move";
+    var r = H.price(p, sel);
+    return { id: id || "HU" + String(Date.now()).slice(-6), pid: pid, sel: sel, monthly: r.monthlyTotal, principal: r.principal, step: step || 0, date: date || H.today(), addr: H.SAMPLE_ADDR[0], addr2: "101동 1001호", usedMileage: 0, example: true };
+  };
 
-  /* ---------- 로그인 ---------- */
+  /* ---------- 로그인 창 (지금 사이트: 회원가입하고 1만 포인트 받기 / 이미 회원이세요? 로그인) ---------- */
   H.acts.login = function (el, next) {
     next = next || (el && el.dataset.next) || "";
+    var signupHref = "#/signup" + (next ? "?next=" + encodeURIComponent(next) : "");
     H.openSheet({
-      title: "로그인하고 주문하기",
-      body: `<p class="perk">${H.icon("spark")}회원가입하고 1만 포인트 받기</p>
-        <p class="help-t help-t--lead">주문은 로그인한 뒤에 이어져요. 고른 조건은 그대로 남아 있어요.</p>
+      title: next === "#/order" ? "주문하려면 로그인이 필요해요" : "로그인",
+      body: `<a class="btn btn--mg btn--block" href="${signupHref}" data-focus>회원가입하고 1만 포인트 받기</a>
+        <p class="or"><span>이미 회원이세요?</span></p>
         <div class="consult-list">
-          <button type="button" class="btn btn--kakao btn--block" data-act="loginDo" data-next="${next}" data-focus>${H.icon("kakao", "ic--fill")}카카오로 시작하기</button>
-          <button type="button" class="btn btn--naver btn--block" data-act="loginDo" data-next="${next}">네이버로 시작하기</button>
+          <button type="button" class="btn btn--kakao btn--block" data-act="loginDo" data-next="${next}">${H.icon("kakao", "ic--fill")}카카오 로그인</button>
+          <button type="button" class="btn btn--naver btn--block" data-act="loginDo" data-next="${next}">네이버 로그인</button>
         </div>
-        <p class="demo-note"><span class="demo-tag">시안</span>누르면 예시 계정(김하유)으로 로그인돼요</p>`
+        <div class="field"><label for="lgId">아이디</label><input id="lgId" class="input" autocomplete="username"></div>
+        <div class="field"><label for="lgPw">비밀번호</label><input id="lgPw" class="input" type="password" autocomplete="current-password"></div>
+        <button type="button" class="btn btn--ink btn--block login-btn" data-act="loginDo" data-next="${next}">로그인</button>
+        <p class="login-links"><button type="button" data-act="toast" data-msg="시안: 아이디 찾기는 지금 사이트 화면을 그대로 써요">아이디 찾기</button><span aria-hidden="true">·</span><button type="button" data-act="toast" data-msg="시안: 비밀번호 찾기는 지금 사이트 화면을 그대로 써요">비밀번호 찾기</button></p>
+        <p class="demo-note"><span class="demo-tag">시안</span>어느 단추를 눌러도 예시 계정(김하유)으로 로그인돼요</p>`
     });
   };
   H.acts.loginDo = function (el) {
@@ -41,10 +55,10 @@
     H.save();
     H.closeSheet(true);
     H.toast(H.state.user.name + "님, 반가워요");
-    if (next) H.go(next); else rerender();
+    if (next) H.go(next); else H.rerender();
   };
 
-  /* ---------- 주문서 ---------- */
+  /* ---------- 주문서 (칸은 지금 주문서와 같게) ---------- */
   function form() {
     if (!H.form) {
       var u = H.state.user;
@@ -52,9 +66,14 @@
     }
     return H.form;
   }
+  H.resetOrderForm = function (tried) { H.form = null; form().tried = !!tried; };
+  H.fillOrderSample = function () {
+    var f = form();
+    f.phone2 = "010-9876-5432"; f.addr = H.SAMPLE_ADDR[0]; f.addr2 = "101동 1001호"; f.agree = [true, true, true]; f.tried = false;
+  };
   function valid(key, v) {
     v = String(v || "");
-    if (key === "birth") return /^\d{6}$/.test(v);
+    if (key === "birth") return /^\d{8}$/.test(v);
     if (key === "phone" || key === "phone2") return v.replace(/\D/g, "").length >= 10;
     return v.trim().length > 0;
   }
@@ -74,14 +93,15 @@
     var flow = ["간편정보 입력", "온라인 신청서 작성", "작성완료 알림", "기기수령 및 개통"].map(function (t, i) { return i === 0 ? "<b>" + t + "</b>" : "<span>" + t + "</span>"; }).join(H.icon("chev-r"));
     var side = `<aside class="order__side"><div class="sum">
         <div class="sum__prod"><div class="sum__th"><img src="${H.img(p, s.color)}" alt=""></div><div><b>${p.name}</b><small>${cond}</small></div></div>
-        <div class="pbox__rows">${H.priceRows(p, s, r)}${f.usePoint ? `<div class="row"><span>포인트 사용</span><b class="num minus">- ${H.num(H.state.points)}P</b></div>` : ""}</div>
+        <div class="pbox__rows">${H.priceRows(p, s, r)}${f.usePoint ? `<div class="row"><span>마일리지 사용</span><b class="num minus">- ${H.num(H.state.mileage)}P</b></div>` : ""}</div>
         <div class="sum__total"><span>월 납부 금액</span><b class="num">${H.won(r.monthlyTotal)}</b></div>
         <div class="order-submit pc-only"><button type="button" class="btn btn--mg btn--block" data-act="submitOrder">주문 접수하기</button><p class="demo-note"><span class="demo-tag">시안</span>실제로 접수되지 않아요</p></div>
       </div><a class="link-arrow pd-more" href="#/phone/${p.id}">조건 바꾸기${H.icon("arrow")}</a></aside>`;
     var body = `<div class="order-form">
+      <div class="demo-tools"><span class="demo-tag">시안</span><button type="button" class="btn btn--soft btn--sm" data-act="orderSample">예시로 채우기</button></div>
       <section class="form-sec"><h2>가입하시는 분</h2><p class="desc">로그인 정보로 채웠어요. 다르면 고쳐 주세요.</p>
         ${field("oName", "name", "이름", { err: "이름을 적어 주세요", attrs: 'autocomplete="name"' })}
-        ${field("oBirth", "birth", "생년월일 6자리", { err: "예) 950312 처럼 6자리로 적어 주세요", attrs: 'inputmode="numeric" maxlength="6" placeholder="예) 950312"' })}
+        ${field("oBirth", "birth", "생년월일", { err: "예) 19990101 처럼 8자리로 적어 주세요", attrs: 'inputmode="numeric" maxlength="8" placeholder="예) 19990101"' })}
         ${field("oPhone", "phone", "휴대폰 번호", { err: "휴대폰 번호를 끝까지 적어 주세요", attrs: 'inputmode="tel" autocomplete="tel" placeholder="010-0000-0000"' })}
         ${field("oPhone2", "phone2", "비상 연락처", { err: "비상 연락처를 적어 주세요", help: "가족 등 연락이 닿는 다른 번호예요", attrs: 'inputmode="tel" placeholder="010-0000-0000"' })}
       </section>
@@ -92,8 +112,8 @@
         ${field("oAddr2", "addr2", "상세 주소", { err: "동 · 호수를 적어 주세요", attrs: 'placeholder="동 · 호수"' })}
         <p class="help-t">택배비는 무료예요. 번호이동은 유심비 7,700원이 따로 들어요.</p>
       </section>
-      <section class="form-sec"><h2>포인트</h2>
-        <div class="point-row"><span>보유 포인트 <b class="num">${H.num(H.state.points)}P</b> 쓰기</span><button type="button" class="switch" role="switch" aria-checked="${f.usePoint}" aria-label="포인트 쓰기" data-act="togglePoint"></button></div>
+      <section class="form-sec"><h2>마일리지</h2>
+        <div class="point-row"><span>보유 마일리지 <b class="num">${H.num(H.state.mileage)}P</b> 쓰기</span><button type="button" class="switch" role="switch" aria-checked="${f.usePoint}" aria-label="마일리지 쓰기" data-act="togglePoint"></button></div>
       </section>
       <section class="form-sec"><h2>약관 동의</h2>
         <div class="agree">
@@ -134,23 +154,24 @@
     f.agree[Number(el.dataset.i)] = el.checked;
     if (all) all.checked = f.agree.every(Boolean);
   };
-  H.acts.togglePoint = function (el) { form().usePoint = !form().usePoint; rerender(el); };
-  H.acts.addrSheet = function () {
+  H.acts.orderSample = function () { H.fillOrderSample(); H.rerender(); H.toast("예시 값으로 채웠어요"); };
+  H.acts.togglePoint = function (el) { form().usePoint = !form().usePoint; H.rerender(el); };
+  H.acts.addrSheet = function (el) {
+    var target = (el && el.dataset.target) || "order";
     H.openSheet({
       title: "주소 찾기",
       body: `<div class="srch__box">${H.icon("search")}<input id="addrQ" placeholder="도로명, 건물명, 지번으로 찾기" aria-label="주소 검색어" data-focus></div>
         <p class="help-t">실제 사이트에서는 카카오 주소 찾기가 열려요. 시안에서는 예시 주소 중에서 골라 주세요.</p>
-        <div>${SAMPLE_ADDR.map(function (a) {
-          return `<button type="button" class="res-row res-row--btn" data-act="pickAddr" data-v="${H.esc(a)}"><span class="th">${H.icon("home")}</span><span><b>${a}</b><small>예시 주소</small></span></button>`;
+        <div>${H.SAMPLE_ADDR.map(function (a) {
+          return `<button type="button" class="res-row res-row--btn" data-act="pickAddr" data-target="${target}" data-v="${H.esc(a)}"><span class="th">${H.icon("home")}</span><span><b>${a}</b><small>예시 주소</small></span></button>`;
         }).join("")}</div>`
     });
   };
   H.acts.pickAddr = function (el) {
-    form().addr = el.dataset.v;
+    if (el.dataset.target === "order") form().addr = el.dataset.v;
+    else if (H.pickAddrFor) H.pickAddrFor(el.dataset.target, el.dataset.v);
     H.closeSheet(true);
-    rerender();
-    var d = H.$("#oAddr2");
-    if (d) d.focus({ preventScroll: true });
+    H.rerender();
   };
   H.acts.submitOrder = function () {
     var f = form(), d = H.state.draft, p = d && H.prod(d.pid);
@@ -159,7 +180,7 @@
     f.tried = true;
     var ok = ["name", "birth", "phone", "phone2", "addr", "addr2"].every(function (k) { return valid(k, f[k]); }) && f.agree.every(Boolean);
     if (!ok) {
-      rerender();
+      H.rerender();
       var first = H.$(".input.bad") || H.$("#agAll");
       if (first) {
         first.scrollIntoView({ block: "center", behavior: "smooth" });
@@ -168,11 +189,8 @@
       H.toast("빠진 칸을 채워 주세요");
       return;
     }
-    var r = H.price(p, d.sel), now = new Date();
-    var o = {
-      id: "HU" + String(now.getTime()).slice(-6), pid: p.id, sel: d.sel, monthly: r.monthlyTotal, principal: r.principal, step: 0,
-      date: now.getFullYear() + "." + String(now.getMonth() + 1).padStart(2, "0") + "." + String(now.getDate()).padStart(2, "0")
-    };
+    var r = H.price(p, d.sel);
+    var o = { id: "HU" + String(Date.now()).slice(-6), pid: p.id, sel: d.sel, monthly: r.monthlyTotal, principal: r.principal, step: 0, date: H.today(), addr: f.addr, addr2: f.addr2, usedMileage: f.usePoint ? H.state.mileage : 0 };
     H.state.orders = [o].concat(H.state.orders).slice(0, 5);
     H.state.draft = null;
     H.form = null;
@@ -190,16 +208,16 @@
       html: `<div class="wrap"><div class="done">
   <div class="done__ic">${H.icon("check")}</div>
   <h1>${formDone ? "신청서까지 받았어요" : "접수됐어요.<br>이제 신청서만 쓰면 끝이에요"}</h1>
-  <p class="lead">${formDone ? "담당자가 확인하면 카카오톡으로 가입내역을 보내드려요. 진행 상황은 내정보에서 볼 수 있어요." : p.name + " 주문을 받았어요. 온라인 신청서를 써 주시면 담당자가 확인하고 개통을 준비해요."}</p>
+  <p class="lead">${formDone ? "담당자가 확인하면 카카오톡으로 가입내역을 보내드려요. 진행 상황은 마이페이지에서 볼 수 있어요." : p.name + " 주문을 받았어요. 온라인 신청서를 써 주시면 담당자가 확인하고 개통을 준비해요."}</p>
   ${H.tracker(o.step)}
   ${formDone ? "" : `<section class="next-card"><small>지금 할 일</small><h2>온라인 신청서 작성하기</h2><p>통신사 가입에 필요한 신청서예요. 3분이면 충분해요. 같은 링크를 카카오톡으로도 보내드렸어요.</p>
     <button type="button" class="btn btn--mg btn--block" data-act="writeForm" data-id="${o.id}">온라인 신청서 작성하기</button>
-    <a class="later" href="#/my">나중에 내정보에서 쓸게요</a></section>`}
+    <a class="later" href="#/my">나중에 마이페이지에서 쓸게요</a></section>`}
   <div class="sum">
     <div class="sum__prod"><div class="sum__th"><img src="${H.img(p, o.sel.color)}" alt=""></div><div><b>${p.name}</b><small class="num">주문번호 ${o.id} · ${o.date}</small></div></div>
     <dl class="kv"><div><dt>통신사</dt><dd>LG U+ ${H.methodLabel(o.sel.method)}</dd></div><div><dt>기기</dt><dd>${p.vols[o.sel.vol][0]} · ${p.colors[o.sel.color][0]}</dd></div><div><dt>할인</dt><dd>${H.discountLabel(o.sel.discount)} · ${H.plan(o.sel.planId).name}</dd></div><div><dt>월 납부 금액</dt><dd class="num">${H.won(o.monthly)}</dd></div></dl>
   </div>
-  <div class="done__acts"><button type="button" class="btn btn--line btn--sm" data-act="kakao">${H.icon("kakao", "ic--fill")}카카오톡으로 물어보기</button><a class="btn btn--soft btn--sm" href="#/">첫 화면으로</a></div>
+  <div class="done__acts"><a class="btn btn--soft btn--sm" href="#/my/order/${o.id}">신청내역 상세 보기</a><button type="button" class="btn btn--line btn--sm" data-act="kakao">${H.icon("kakao", "ic--fill")}카카오톡으로 물어보기</button><a class="btn btn--soft btn--sm" href="#/">첫 화면으로</a></div>
 </div></div>`
     };
   };
@@ -215,97 +233,7 @@
     if (o && o.step < 1) o.step = 1;
     H.save();
     H.closeSheet(true);
-    rerender();
+    H.rerender();
     H.toast("신청서를 받았어요. 확인되면 카카오톡으로 알려드려요");
-  };
-
-  /* ---------- 내정보 ---------- */
-  function orderCard(o) {
-    var p = H.prod(o.pid);
-    var next = [
-      ["온라인 신청서를 써 주세요", "신청서를 쓰면 담당자가 확인을 시작해요.", `<button type="button" class="btn btn--mg btn--block" data-act="writeForm" data-id="${o.id}">온라인 신청서 작성하기</button>`],
-      ["담당자가 신청 내용을 확인하고 있어요", "확인이 끝나면 카카오톡으로 가입내역을 보내드려요.", ""],
-      ["개통과 배송을 준비하고 있어요", "택배를 보내면 송장번호를 알려드려요. 택배비는 무료예요.", ""],
-      ["개통이 끝났어요", "새 휴대폰 잘 쓰세요. 궁금한 점은 고객센터로 물어봐 주세요.", `<a class="btn btn--line btn--block" href="#/reviews">후기 남기기</a>`]
-    ][o.step];
-    return `<div class="order-card">
-      <div class="order-card__top"><span class="num">주문번호 ${o.id}${o.example ? ' <span class="demo-tag">예시</span>' : ""}</span><span class="num">${o.date}</span></div>
-      <div class="sum__prod"><div class="sum__th"><img src="${H.img(p, o.sel.color)}" alt=""></div><div><b>${p.name}</b><small class="num">${p.vols[o.sel.vol][0]} · ${p.colors[o.sel.color][0]} · ${H.plan(o.sel.planId).name} · 월 ${H.won(o.monthly)}</small></div></div>
-      ${H.tracker(o.step)}
-      <p class="order-card__next">${next[0]}</p><p class="help-t">${next[1]}</p>${next[2]}
-      ${o.step === 3 ? `<div class="dday"><span>요금제를 낮출 수 있을 때까지</span><b class="num">185일 남았어요</b><span>개통일 기준 185일이 지나면 월 47,000원 이상 요금제로 바꿀 수 있어요.</span></div>` : ""}
-      <div class="demo-tools"><span class="demo-tag">시안</span><button type="button" class="btn btn--soft btn--sm" data-act="demoStep" data-id="${o.id}">다음 단계 보기</button></div>
-    </div>`;
-  }
-  H.views.my = function () {
-    var s = H.state;
-    if (!s.loggedIn) {
-      return {
-        title: "내정보",
-        html: `<div class="wrap me-narrow">
-  <header class="me-hd"><h1>내정보</h1><p>로그인하면 주문 진행 상황과 알림 신청을 한곳에서 볼 수 있어요.</p></header>
-  <div class="login-box"><p class="perk">${H.icon("spark")}회원가입하고 1만 포인트 받기</p>
-    <button type="button" class="btn btn--kakao btn--block" data-act="loginDo">${H.icon("kakao", "ic--fill")}카카오로 시작하기</button>
-    <button type="button" class="btn btn--naver btn--block" data-act="loginDo">네이버로 시작하기</button>
-    <p class="demo-note"><span class="demo-tag">시안</span>누르면 예시 계정(김하유)으로 로그인돼요</p></div>
-  <nav class="menu-list" aria-label="내정보 메뉴"><a href="#/cs">고객센터${H.icon("chev-r")}</a><a href="#/guide">알고사기${H.icon("chev-r")}</a>${memoToggleRow()}</nav>
-</div>`
-      };
-    }
-    var main = s.orders.length ? s.orders.map(orderCard).join("") :
-      `<div class="order-card"><p class="order-card__next order-card__next--first">진행 중인 주문이 없어요</p><p class="help-t">마음에 드는 휴대폰을 고르면 여기서 진행 상황을 볼 수 있어요.</p>
-        <div class="demo-tools"><a class="btn btn--ink btn--sm" href="#/phones">휴대폰 보러 가기</a><button type="button" class="btn btn--soft btn--sm" data-act="demoOrder">예시 주문 보기</button></div></div>`;
-    return {
-      title: "내정보",
-      html: `<div class="wrap"><div class="me-grid">
-  <div>
-    <header class="me-hd"><h1>${s.user.name}님</h1><p>하이유플 회원 · 포인트 <b class="num">${H.num(s.points)}P</b></p></header>
-    <nav class="menu-list" aria-label="내정보 메뉴">
-      <button type="button" data-act="myAlerts">알림 신청 내역<small class="num">${s.alerts.length}건</small></button>
-      <button type="button" data-act="myRecent">최근 본 휴대폰<small class="num">${s.recent.length}개</small></button>
-      <a href="#/reviews">내 후기${H.icon("chev-r")}</a>
-      <a href="#/cs">고객센터${H.icon("chev-r")}</a>
-      <button type="button" data-act="logout">로그아웃</button>
-      ${memoToggleRow()}
-      <button type="button" data-act="resetMock">목업 처음 상태로 되돌리기<small class="demo-tag">시안</small></button>
-    </nav>
-  </div>
-  <div><h2 class="me-sec-t">진행 중인 주문</h2>${main}</div>
-</div></div>`
-    };
-  };
-  H.acts.demoOrder = function () {
-    var p = H.prod(54), sel = H.defaults(p), r = H.price(p, sel);
-    H.state.orders = [{ id: "HU" + String(Date.now()).slice(-6), pid: 54, sel: sel, monthly: r.monthlyTotal, principal: r.principal, step: 0, date: "2026.09.15", example: true }];
-    H.save();
-    rerender();
-  };
-  H.acts.demoStep = function (el) {
-    var o = H.state.orders.find(function (x) { return x.id === el.dataset.id; });
-    if (o) o.step = (o.step + 1) % 4;
-    H.save();
-    rerender(el);
-  };
-  H.acts.logout = function () { H.state.loggedIn = false; H.save(); H.toast("로그아웃했어요"); rerender(); };
-  H.acts.resetMock = function () { H.reset(); H.form = null; H.homeSet = "all"; H.toast("처음 상태로 되돌렸어요"); H.go("#/"); };
-  H.acts.myAlerts = function () {
-    var a = H.state.alerts;
-    H.openSheet({
-      title: "알림 신청 내역",
-      body: a.length ? a.map(function (x) {
-        var p = H.prod(x.pid);
-        return `<div class="res-row"><span class="th"><img src="${H.img(p, 0)}" alt=""></span><span><b>${p.name}</b><small>${x.date} 신청 · 예약이 열리면 알림톡으로 알려드려요</small></span></div>`;
-      }).join("") : `<p class="empty">알림 신청한 휴대폰이 없어요.</p>`,
-      foot: `<button type="button" class="btn btn--mg btn--block" data-act="alert" data-pid="56">아이폰 듀오 알림 신청하기</button>`
-    });
-  };
-  H.acts.myRecent = function () {
-    var list = H.state.recent.map(H.prod).filter(Boolean);
-    H.openSheet({
-      title: "최근 본 휴대폰",
-      body: list.length ? list.map(function (p) {
-        return `<a class="res-row" href="#/phone/${p.id}"><span class="th"><img src="${H.img(p, H.defaults(p).color)}" alt=""></span><span><b>${p.name}</b><small class="num">${p.launch ? "출시 알림 받기" : "실구매가 " + H.won(H.listPrice(p).principal)}</small></span></a>`;
-      }).join("") : `<p class="empty">아직 본 휴대폰이 없어요.</p>`
-    });
   };
 })();

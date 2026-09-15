@@ -36,11 +36,11 @@
   H.guide = function (slug) { return C.guides.find(function (g) { return g.slug === slug; }); };
 
   /* ---------- 상태(이 브라우저에만 저장) ---------- */
-  var KEY = "hiu-renewal-mock-v1";
+  var KEY = "hiu-renewal-mock-v2";
   var initial = {
-    loggedIn: false, user: { name: "김하유", birth: "950312", phone: "010-1234-5678" },
-    carrier: null, orders: [], alerts: [], recent: [], searches: [], draft: null,
-    proposals: false, memoHidden: false, points: 10000
+    loggedIn: false, user: { id: "hayu95", name: "김하유", birth: "19950312", phone: "010-1234-5678", joined: "2026.09.15" },
+    carrier: null, orders: [], alerts: [], recent: [], searches: [], myReviews: [], draft: null,
+    proposals: false, memoHidden: false, mileage: 10000, tour: null, welcomed: false
   };
   var saved = {};
   try { saved = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { saved = {}; }
@@ -123,10 +123,12 @@
     new URLSearchParams(qs).forEach(function (v, k) { q[k] = v; });
     return { path: parts[0] || "", parts: parts, q: q, hash: location.hash || "#/" };
   };
-  var ROUTES = { "": "home", phones: "phones", order: "order", done: "done", my: "my", guide: "guides", reviews: "reviews", review: "review", cs: "cs", search: "search" };
+  var ROUTES = { "": "home", phones: "phones", order: "order", done: "done", my: "my", guide: "guides", reviews: "reviews", review: "review", cs: "cs", search: "search", signup: "signup", screens: "screens", tour: "tour" };
   function viewKey(r) {
     if (r.path === "guide" && r.parts[1]) return "guide";
     if (r.path === "phone") { var p = H.prod(r.parts[1]); return p && p.launch ? "launch" : "product"; }
+    if (r.path === "my" && r.parts[1]) return "my-" + r.parts[1];
+    if (r.path === "signup" && r.parts[1]) return "signup-" + r.parts[1];
     return ROUTES[r.path] || "home";
   }
   H.go = function (hash) {
@@ -152,7 +154,7 @@
       "</div></div></header>";
   }
   function tabbar(key) {
-    var cur = { home: "home", phones: "phones", product: "phones", launch: "phones", guides: "guide", guide: "guide", my: "my" }[key];
+    var cur = { home: "home", phones: "phones", product: "phones", launch: "phones", guides: "guide", guide: "guide", my: "my" }[key] || (/^(my|signup)/.test(key) ? "my" : "");
     return [["home", "홈", "#/", "home"], ["phones", "휴대폰", "#/phones", "phone"], ["guide", "알고 사기", "#/guide", "doc"], ["my", "내정보", "#/my", "user"]]
       .map(function (t) { return '<a href="' + t[2] + '"' + (cur === t[0] ? ' aria-current="page"' : "") + ">" + H.icon(t[3]) + "<span>" + t[1] + "</span></a>"; })
       .join("");
@@ -171,6 +173,7 @@
   H.render = function () {
     var r = (H.route = H.parse());
     var key = (H.viewKey = viewKey(r));
+    if (key === "tour" && H.runTour) { H.runTour(r); return; }
     var v = (H.views[key] || H.views.home)(r) || {};
     var b = document.body.classList;
     b.toggle("has-tab", v.tab !== false);
@@ -178,10 +181,14 @@
     b.toggle("has-bar", !!v.bar);
     b.toggle("proposals", !!H.state.proposals);
     b.toggle("memo-hidden", !!H.state.memoHidden);
+    b.toggle("has-tour", !!H.state.tour);
     H.$("#app").innerHTML = header(r) + '<main id="main">' + (v.html || "") + "</main>" + (v.footer === false ? "" : footer()) + (v.bar ? '<div class="bar" id="bar">' + v.bar + "</div>" : "");
     H.$("#tab").innerHTML = tabbar(key);
+    var tb = H.$("#tourBar");
+    if (tb) tb.innerHTML = H.tourBar ? H.tourBar() : "";
     document.title = (v.title ? v.title + " — " : "") + "하이유플 리뉴얼 목업";
     if (H.after[key]) H.after[key](r);
+    if (H._tourAfter) { var fn = H._tourAfter; H._tourAfter = null; setTimeout(fn, 80); }
   };
 
   /* ---------- 창 · 서랍 · 알림 ---------- */

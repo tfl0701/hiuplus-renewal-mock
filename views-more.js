@@ -135,7 +135,7 @@
       title: "후기 쓰기",
       body: `<div class="field"><label for="rvProd">어떤 휴대폰을 샀나요? <span class="demo-tag">제안</span></label><select id="rvProd" class="input">${H.ordered().filter(function (p) { return !p.launch; }).map(function (p) { return "<option>" + p.name + "</option>"; }).join("")}</select></div>
         <div class="field"><label for="rvText">후기 내용<span class="req">*</span></label><textarea id="rvText" class="input input--area" rows="5" placeholder="개통 과정, 배송, 상담이 어땠는지 알려 주세요" data-focus></textarea></div>`,
-      foot: `<button type="button" class="btn btn--mg btn--block" data-act="toast" data-msg="시안: 실제로 올라가지 않아요">후기 올리기</button>`
+      foot: `<button type="button" class="btn btn--mg btn--block" data-act="reviewSave">후기 올리기</button>`
     });
   };
 
@@ -335,6 +335,7 @@
         <h3>이 화면에서 정한 것</h3><ul>${n.points.map(function (t) { return li(t); }).join("")}</ul>
         ${n.ask && n.ask.length ? `<h3>대표님 확인이 필요한 것</h3><ul>${n.ask.map(function (t) { return li(t, "ask"); }).join("")}</ul>` : ""}
         <h3>«제안 보기»로 켜지는 것</h3><ul>${N.proposals.map(function (t) { return li(t); }).join("")}</ul>
+        <a class="btn btn--ink btn--block memo-tour" href="#/screens">화면 순서대로 보기 (회원가입 · 주문 · 마이페이지)</a>
         <a class="link-arrow pd-more" href="plan.html">기획서 전체 보기${H.icon("arrow")}</a>
       </div>
       <div class="toggle"><span>제안 보기<small>시안에 없는 제안을 화면에 켜서 비교해요</small></span><button type="button" class="switch" role="switch" aria-checked="${!!H.state.proposals}" data-act="toggleProposals" aria-label="제안 보기"></button></div>
