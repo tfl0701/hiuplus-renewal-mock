@@ -39,6 +39,7 @@
       <div class="order-card__top"><span class="num">신청번호 ${o.id}${o.example ? ' <span class="demo-tag">예시</span>' : ""}</span><span class="num">${o.date}</span></div>
       <a class="sum__prod" href="#/my/order/${o.id}"><span class="sum__th"><img src="${H.img(p, o.sel.color)}" alt=""></span><span><b>${p.name}</b><small class="num">${p.vols[o.sel.vol][0]} · ${p.colors[o.sel.color][0]} · 월 ${H.won(o.monthly)}</small></span></a>
       ${H.tracker(o.step)}
+      ${o.step === 2 ? trackRow(o) : ""}
       <p class="order-card__next">${next[0]}</p><p class="help-t">${next[1]}</p>${next[2]}
       <a class="link-arrow pd-more" href="#/my/order/${o.id}">눌러서 지금 어디쯤인지 보기${H.icon("arrow")}</a>
       ${demoStep(o)}
@@ -48,6 +49,22 @@
     var p = H.prod(o.pid);
     return `<a class="o-row" href="#/my/order/${o.id}"><span class="sum__th"><img src="${H.img(p, o.sel.color)}" alt=""></span><span class="o-row__txt"><b>${p.name}</b><small class="num">${o.date} · 신청번호 ${o.id}</small></span><span class="status-chip${o.step === 3 ? " status-chip--done" : ""}">${stepName(o)}</span></a>`;
   }
+
+  /* 배송조회 — 지금 사이트: «택배사 송장번호 · 눌러서 지금 어디쯤인지 보기 · 배송조회» */
+  function trackRow(o) {
+    return `<div class="track"><span class="track__txt"><b class="num">${H.esc(o.courier || "CJ대한통운")} ${H.esc(o.trackingNo || "123456789012")}</b><small>눌러서 지금 어디쯤인지 보기</small></span><button type="button" class="btn btn--ink btn--sm" data-act="trackSheet" data-id="${o.id}">배송조회</button></div>`;
+  }
+  H.acts.trackSheet = function (el) {
+    var o = findOrder(el.dataset.id) || {};
+    var rows = [["9월 16일 14:02", "상품을 보냈어요", "하이유플"], ["9월 16일 22:40", "이동 중이에요", "택배 터미널"], ["9월 17일 07:10", "배달을 시작했어요", "받으실 곳 근처"]];
+    if (o.step >= 3) rows.push(["9월 17일 13:25", "배달을 마쳤어요", "문 앞"]);
+    H.openSheet({
+      title: "배송조회",
+      body: `<div class="track track--sheet"><span class="track__txt"><b class="num">${H.esc(o.courier || "CJ대한통운")} ${H.esc(o.trackingNo || "123456789012")}</b><small>예시 값이에요</small></span><button type="button" class="btn btn--line btn--sm" data-act="toast" data-msg="송장번호를 복사했어요">번호 복사</button></div>
+        <ol class="tl">${rows.reverse().map(function (x, i) { return `<li class="${i === 0 ? "is-now" : ""}"><b>${x[1]}</b><small class="num">${x[0]} · ${x[2]}</small></li>`; }).join("")}</ol>
+        <p class="a-note">${H.icon("info")}<span>실제 사이트에서는 이 단추가 택배사 조회 화면을 바로 열어요. 우체국 · CJ대한통운 · 한진택배 · 롯데택배 · 로젠택배는 번호까지 넣어 바로 열리고, 그 밖의 택배사는 네이버 택배조회로 가요.</span></p>`
+    });
+  };
 
   /* ---------- 마이페이지 ---------- */
   H.views.my = function () {
@@ -70,7 +87,7 @@
       };
     }
     var cur = s.orders.find(function (o) { return o.step < 3; }) || s.orders[0];
-    var tiles = [["신청건수", s.orders.length + "건", "#/my/orders"], ["마일리지", H.num(H.mileageLeft()) + "P", "#/my/mileage"], ["최근 본 상품", s.recent.length + "개", "#/my/recent"], ["구매 후기", s.myReviews.length + "개", "#/my/reviews"]]
+    var tiles = [["신청건수", s.orders.length + "건", "#/my/orders"], ["마일리지", H.num(H.mileageLeft()) + "P", "#/my/mileage"], ["최근 본 상품", s.recent.length + "개", "#/my/recent"], ["구매 후기", (s.feedPosts || []).length + "개", "#/my/reviews"]]
       .map(function (t) { return `<a class="tile" href="${t[2]}"><small>${t[0]}</small><b class="num">${t[1]}</b></a>`; }).join("");
     var current = cur ? H.orderCard(cur) :
       `<div class="order-card"><p class="order-card__next order-card__next--first">진행 중인 신청이 없어요</p><p class="help-t">마음에 드는 휴대폰을 고르면 여기서 진행 상황을 볼 수 있어요.</p>
@@ -81,7 +98,8 @@
   <div>
     <header class="me-hd"><h1>${H.esc(s.user.name)}님</h1><p>아이디 ${H.esc(s.user.id)} · <a class="me-edit" href="#/my/account">회원정보 수정 ›</a></p></header>
     <div class="tiles">${tiles}</div>
-    <div class="ref-card"><b>내 추천 링크</b><button type="button" class="btn btn--line btn--sm" data-act="copyRef">링크 복사</button></div>
+    ${s.partner ? `<div class="ref-card"><div><b>내 추천 링크</b><small class="num">hiuplus.com/${s.partner.code}</small></div><div class="ref-card__acts"><button type="button" class="btn btn--line btn--sm" data-act="copyRef">복사</button><a class="btn btn--ink btn--sm" href="#/partner/stats">내 실적</a></div></div>`
+      : `<a class="ref-card ref-card--join" href="#/partner"><div><b>하이유플 파트너스</b><small>지인에게 링크를 보내고 개통 1건당 20,000원 받기</small></div>${H.icon("chev-r")}</a>`}
     <div class="quick">
       <button type="button" data-act="consult"><b>중고폰 팔기</b><small>쓰던 폰 시세 조회·판매</small></button>
       <button type="button" data-act="consult"><b>인터넷 가입</b><small>인터넷·TV 신청 상담</small></button>
@@ -130,6 +148,7 @@
   <div class="order-card">
     <div class="sum__prod"><span class="sum__th"><img src="${H.img(p, s.color)}" alt=""></span><span><b>${p.name}</b><small>${p.vols[s.vol][0]} · ${p.colors[s.color][0]}</small></span></div>
     ${H.tracker(o.step)}
+    ${o.step >= 2 ? trackRow(o) : ""}
     <p class="order-card__next">${next[0]}</p><p class="help-t">${next[1]}</p>${next[2]}
     ${o.step === 3 ? `<div class="dday"><span>요금제를 낮출 수 있을 때까지</span><b class="num">185일 남았어요</b><span>개통일 기준 185일이 지나면 월 47,000원 이상 요금제로 바꿀 수 있어요.</span></div>` : ""}
     ${demoStep(o)}
@@ -145,7 +164,7 @@
   <section class="form-sec"><h2>받으실 곳</h2><dl class="kv">
     <div><dt>주소</dt><dd>${H.esc(o.addr || "-")}</dd></div>
     <div><dt>상세 주소</dt><dd>${H.esc(o.addr2 || "-")}</dd></div>
-    <div><dt>송장번호</dt><dd>${o.step >= 2 ? '<span class="num">예시 1234-5678-9012</span>' : "택배를 보내면 알려드려요"}</dd></div>
+    <div><dt>송장번호</dt><dd>${o.step >= 2 ? `<span class="num">${H.esc(o.courier || "CJ대한통운")} ${H.esc(o.trackingNo || "123456789012")}</span> <span class="demo-tag">예시</span>` : "택배를 보내면 알려드려요"}</dd></div>
   </dl></section>
   <div class="done__acts">${o.step >= 2 ? '<button type="button" class="btn btn--line btn--sm" data-act="caseAsk">케이스 요청하기</button>' : ""}<button type="button" class="btn btn--line btn--sm" data-act="kakao">${H.icon("kakao", "ic--fill")}카카오톡으로 물어보기</button></div>
 </div>`
@@ -181,26 +200,18 @@
 
   H.views["my-reviews"] = function () {
     if (!H.state.loggedIn) return needLogin("내가 쓴 후기");
-    var list = H.state.myReviews;
+    var list = H.state.feedPosts || [];
     return {
       title: "내가 쓴 후기",
       html: `<div class="wrap me-narrow">${back("#/my", "마이페이지")}
         <header class="ph ph--tight"><h1>내가 쓴 후기</h1></header>
-        ${list.length ? `<div class="rv-list rv-list--mine">${list.map(function (x) {
-          return `<div class="rv-card"><div class="rv-card__body"><div class="rv-card__top">${H.stars(5)}<span class="num">${x.date}</span></div><span class="rv-card__tag">${H.esc(x.prod)}</span><p>${H.esc(x.text)}</p></div></div>`;
-        }).join("")}</div><button type="button" class="btn btn--ink btn--block pd-more" data-act="writeReview">후기 쓰기</button>`
+        ${list.length ? `<div class="rv-list rv-list--mine">${list.map(function (p) {
+          var m = H.feedMod(p.id);
+          return H.reviewCard(p) + (m.hide ? '<p class="help-t">하이유플이 감춘 후기예요. 나에게만 보여요.</p>' : m.hidePhoto ? '<p class="help-t">사진은 하이유플이 감췄어요.</p>' : "");
+        }).join("")}</div><button type="button" class="btn btn--ink btn--block pd-more" data-act="writeReview">후기 올리기</button>`
           : `<div class="empty">아직 쓰신 후기가 없어요.<br>사용해 보신 이야기를 남겨주세요.<br><br><button type="button" class="btn btn--ink btn--sm" data-act="writeReview">후기 쓰기</button></div>`}
       </div>`
     };
-  };
-  H.acts.reviewSave = function () {
-    var t = ((H.$("#rvText") || {}).value || "").trim(), prod = (H.$("#rvProd") || {}).value || "";
-    if (t.length < 5) { H.toast("후기 내용을 조금 더 적어 주세요"); return; }
-    H.state.myReviews.unshift({ prod: prod, text: t, date: H.today() });
-    H.save();
-    H.closeSheet(true);
-    H.toast("후기를 올렸어요 (시안이라 사이트에는 안 올라가요)");
-    H.go("#/my/reviews");
   };
 
   /* ---------- 회원정보 수정 ---------- */

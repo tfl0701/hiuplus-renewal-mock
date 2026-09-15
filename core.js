@@ -40,7 +40,8 @@
   var initial = {
     loggedIn: false, user: { id: "hayu95", name: "김하유", birth: "19950312", phone: "010-1234-5678", joined: "2026.09.15" },
     carrier: null, orders: [], alerts: [], recent: [], searches: [], myReviews: [], draft: null,
-    proposals: false, memoHidden: false, mileage: 10000, tour: null, welcomed: false
+    proposals: false, memoHidden: false, mileage: 10000, tour: null, welcomed: false,
+    feedPosts: [], feedMod: {}, guideEdits: {}, guideNew: [], guideHidden: [], partner: null
   };
   var saved = {};
   try { saved = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { saved = {}; }
@@ -123,12 +124,14 @@
     new URLSearchParams(qs).forEach(function (v, k) { q[k] = v; });
     return { path: parts[0] || "", parts: parts, q: q, hash: location.hash || "#/" };
   };
-  var ROUTES = { "": "home", phones: "phones", order: "order", done: "done", my: "my", guide: "guides", reviews: "reviews", review: "review", cs: "cs", search: "search", signup: "signup", screens: "screens", tour: "tour" };
+  var ROUTES = { "": "home", phones: "phones", order: "order", done: "done", my: "my", guide: "guides", reviews: "reviews", review: "review", cs: "cs", search: "search", signup: "signup", screens: "screens", tour: "tour", partner: "partner", admin: "admin" };
   function viewKey(r) {
     if (r.path === "guide" && r.parts[1]) return "guide";
     if (r.path === "phone") { var p = H.prod(r.parts[1]); return p && p.launch ? "launch" : "product"; }
     if (r.path === "my" && r.parts[1]) return "my-" + r.parts[1];
     if (r.path === "signup" && r.parts[1]) return "signup-" + r.parts[1];
+    if (r.path === "partner" && r.parts[1]) return "partner-" + r.parts[1];
+    if (r.path === "admin") return "admin-" + (r.parts[1] || "home");
     return ROUTES[r.path] || "home";
   }
   H.go = function (hash) {
@@ -154,7 +157,7 @@
       "</div></div></header>";
   }
   function tabbar(key) {
-    var cur = { home: "home", phones: "phones", product: "phones", launch: "phones", guides: "guide", guide: "guide", my: "my" }[key] || (/^(my|signup)/.test(key) ? "my" : "");
+    var cur = { home: "home", phones: "phones", product: "phones", launch: "phones", guides: "guide", guide: "guide", my: "my" }[key] || (/^(my|signup|partner)/.test(key) ? "my" : "");
     return [["home", "홈", "#/", "home"], ["phones", "휴대폰", "#/phones", "phone"], ["guide", "알고 사기", "#/guide", "doc"], ["my", "내정보", "#/my", "user"]]
       .map(function (t) { return '<a href="' + t[2] + '"' + (cur === t[0] ? ' aria-current="page"' : "") + ">" + H.icon(t[3]) + "<span>" + t[1] + "</span></a>"; })
       .join("");
@@ -163,7 +166,7 @@
     var cs = C.cs, soon = "시안: 약관 화면은 지금 사이트 것을 그대로 써요";
     return '<footer class="ftr"><div class="wrap">' +
       '<div class="ftr__top"><img src="img/logo-black.svg" alt="HIU+">' +
-      '<nav class="ftr__links" aria-label="바닥 메뉴"><a href="#/guide">알고 사기</a><a href="#/cs">고객센터</a>' +
+      '<nav class="ftr__links" aria-label="바닥 메뉴"><a href="#/guide">알고 사기</a><a href="#/cs">고객센터</a><a href="#/partner">파트너스</a>' +
       '<button type="button" data-act="toast" data-msg="' + soon + '">이용약관</button><button type="button" data-act="toast" data-msg="' + soon + '">개인정보 처리방침</button></nav>' +
       '<p class="ftr__tag">좋은 선택이 더 특별한 일상이 되는 곳, HIU+</p></div>' +
       '<p class="ftr__biz"><span>이 페이지는 하이유플 리뉴얼 시안이에요 · 실제 주문은 hiuplus.com</span><span>' + cs.biz + "</span><span>" + cs.addr + "</span><span>고객센터 " + cs.phone + "</span></p>" +

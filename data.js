@@ -21,12 +21,10 @@ window.HIU = {
     19: { name: "LTE 데이터 33", fee: 33000, net: "LTE", data: "1.5GB", after: "", voice: "유무선 무제한", extra: "110분", sms: "무제한" }
   },
 
+  /* 휴대폰 메뉴는 아이폰 · 갤럭시 두 개(대표 2026-09-15). 상품의 cat 은 묶음(시리즈) 구분에만 쓴다 */
   cats: [
-    { key: "all", label: "전체" },
-    { key: "iphone", label: "아이폰" },
-    { key: "galaxy-z", label: "갤럭시 Z" },
-    { key: "galaxy-s", label: "갤럭시 S" },
-    { key: "kids", label: "키즈·효도폰" }
+    { key: "iphone", label: "아이폰", series: ["iphone18", "iphone17", "iphone16"] },
+    { key: "galaxy", label: "갤럭시", series: ["z8", "s26", "s25", "a"] }
   ],
 
   series: {
@@ -36,7 +34,7 @@ window.HIU = {
     z8: "갤럭시 Z 폴드8 · 플립8",
     s26: "갤럭시 S26 시리즈",
     s25: "갤럭시 S25 시리즈",
-    a: "갤럭시 A"
+    a: "갤럭시 A · 효도폰 · 키즈폰"
   },
 
   /* 지금 사이트 «지금 많이 선택하는 상품» 순서 = 목업의 추천순 */

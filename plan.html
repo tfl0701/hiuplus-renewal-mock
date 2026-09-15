@@ -163,11 +163,12 @@ html { scroll-behavior: smooth; }
         <h2>한눈에</h2>
         <ul class="tldr">
           <li>첫 화면은 시안 그대로 써요. 오타 세 곳만 고쳤어요(이어폰 → 아이폰 등).</li>
-          <li>뒤에 붙는 화면 20여 개를 시안 모양으로 이어 만들었어요. 검정 머리, 둥근 회색 카드, 계절 색 라벤더, 신청 단추에만 마젠타.</li>
+          <li>뒤에 붙는 화면 30여 개를 시안 모양으로 이어 만들었어요. 검정 머리, 둥근 회색 카드, 계절 색 라벤더, 신청 단추에만 마젠타.</li>
           <li>고르는 순서와 금액표 줄 이름은 지금 사이트 그대로 둬서 기존 손님이 헤매지 않게 했어요.</li>
           <li>새로 넣은 건 세 가지예요. 24개월 동안 덜 내는 할인 방법 알려주기, 요금제마다 월 납부 금액 같이 보여주기, 접수 뒤에 할 일을 단추 하나로 보여주기.</li>
-          <li>로그인이나 입력 없이 한 화면씩 넘겨 보는 «화면 순서대로 보기»를 넣었어요. 주문하기 14 · 회원가입 8 · 마이페이지 11 · 둘러보기 13화면.</li>
-          <li class="ask">대표님이 정해 주셔야 할 것 8가지는 맨 아래 «결정할 것»에 모았어요.</li>
+          <li>로그인이나 입력 없이 한 화면씩 넘겨 보는 «화면 순서대로 보기»를 넣었어요. 주문하기 15 · 회원가입 8 · 마이페이지 11 · 파트너스 9 · 둘러보기 19 · 직원 관리 9화면.</li>
+          <li>2차 피드백을 반영했어요. 구매후기는 손님이 올리는 피드로 바꾸고 직원이 감출 수 있게 했고, 알고사기 글을 고치는 직원 관리 화면, 파트너스 안내 · 가입, 배송조회를 더했어요.</li>
+          <li class="ask">대표님이 정해 주셔야 할 것 10가지는 맨 아래 «결정할 것»에 모았어요.</li>
         </ul>
       </section>
 
@@ -218,7 +219,11 @@ html { scroll-behavior: smooth; }
             <tr><td>바닥글</td><td>사업자 정보 없음</td><td>상호 · 대표 · 사업자등록번호 · 통신판매업 신고번호 · 주소 · 고객센터</td><td><span class="tag">법으로 표시</span></td></tr>
             <tr><td>첫 화면 가격</td><td>없음</td><td>카드마다 «실구매가 OO원부터» 한 줄</td><td><span class="tag tag--mg">제안</span></td></tr>
             <tr><td>공식 인증 표시</td><td>없음</td><td>믿음 띠: LG U+ 공식 인증 대리점 · 전화 없이 개통까지 · 보이는 가격 그대로</td><td><span class="tag tag--mg">제안</span></td></tr>
-            <tr><td>후기</td><td>사진만</td><td>사진 아래 한 줄 후기와 이름</td><td><span class="tag tag--mg">제안</span></td></tr>
+            <tr><td>첫 화면 후기</td><td>사진 카드 두 줄</td><td>사진 없이 글 카드 한 줄 (모바일은 옆으로 밀기)</td><td><span class="tag">피드백 반영</span></td></tr>
+            <tr><td>모바일 첫 화면 카드</td><td>세 장 · 한 칸 빔</td><td>네 번째 칸에 «전체 보기» 카드</td><td><span class="tag">피드백 반영</span></td></tr>
+            <tr><td>휴대폰 메뉴</td><td>시안에 없음</td><td>아이폰 · 갤럭시 두 개, 안은 시리즈 제목으로</td><td><span class="tag">피드백 반영</span></td></tr>
+            <tr><td>알고사기 메뉴</td><td>시안에 없음</td><td>한 줄 탭 (PC는 왼쪽 목록 · 글 개수)</td><td><span class="tag">피드백 반영</span></td></tr>
+            <tr><td>알고사기 글 끝 단추</td><td>시안에 없음</td><td>손님이 보던 휴대폰으로 (요금제 글은 요금제 창까지)</td><td><span class="tag">피드백 반영</span></td></tr>
             <tr><td>모바일 머리</td><td>사람 단추 (아래 탭 «내정보»와 겹침)</td><td>검색 단추로 바꾸기</td><td><span class="tag tag--mg">제안</span></td></tr>
             <tr><td>상품 이름</td><td>아이폰16PRO · 갤럭시 S25울트라 · 갤럭시 Z폴드8 와이드</td><td>아이폰 16 프로 · 갤럭시 S25 울트라 · 갤럭시 Z 폴드8 와이드, «사전예약»은 이름 대신 표시로</td><td><span class="tag tag--mg">제안</span></td></tr>
           </tbody>
@@ -229,9 +234,11 @@ html { scroll-behavior: smooth; }
         <h2>사이트 구조</h2>
         <p class="sub">PC 머리는 시안대로 «휴대폰 · 알고사기 · 구매후기», 모바일은 아래 탭 «홈 · 휴대폰 · 알고 사기 · 내정보»예요. 점선은 창(시트)으로 열리는 것.</p>
         <div class="ia">
-          <div class="ia__row"><b>사기</b><div class="chain"><span class="node node--key">첫 화면</span><span class="arr">→</span><span class="node">휴대폰 목록</span><span class="arr">→</span><span class="node node--key">상품 화면</span><span class="arr">→</span><span class="node node--new">로그인 · 회원가입</span><span class="arr">→</span><span class="node">주문서</span><span class="arr">→</span><span class="node">접수 완료</span><span class="arr">→</span><span class="node node--new">온라인 신청서</span><span class="arr">→</span><span class="node">마이페이지 · 신청내역 상세</span></div></div>
+          <div class="ia__row"><b>사기</b><div class="chain"><span class="node node--key">첫 화면</span><span class="arr">→</span><span class="node">휴대폰 목록</span><span class="arr">→</span><span class="node node--key">상품 화면</span><span class="arr">→</span><span class="node node--new">로그인 · 회원가입</span><span class="arr">→</span><span class="node">주문서</span><span class="arr">→</span><span class="node">접수 완료</span><span class="arr">→</span><span class="node node--new">온라인 신청서</span><span class="arr">→</span><span class="node">마이페이지 · 신청내역 상세</span><span class="arr">→</span><span class="node node--new">배송조회</span></div></div>
           <div class="ia__row"><b>알아보기</b><div class="chain"><span class="node node--key">알고사기</span><span class="arr">→</span><span class="node">글</span><span class="arr">→</span><span class="node">«내 조건으로 보기»</span><span class="arr">→</span><span class="node">상품 화면</span></div></div>
-          <div class="ia__row"><b>믿어보기</b><div class="chain"><span class="node node--key">구매후기</span><span class="arr">→</span><span class="node">후기</span><span class="arr">→</span><span class="node">휴대폰 목록</span></div></div>
+          <div class="ia__row"><b>믿어보기</b><div class="chain"><span class="node node--key">구매후기 피드</span><span class="arr">→</span><span class="node">후기 한 편</span><span class="arr">→</span><span class="node">휴대폰 목록</span><span class="node node--new">올리기 (로그인)</span></div></div>
+          <div class="ia__row"><b>소개하기</b><div class="chain"><span class="node">마이페이지 · 전체 메뉴 · 바닥글</span><span class="arr">→</span><span class="node node--key">파트너스 안내</span><span class="arr">→</span><span class="node">가입 (로그인)</span><span class="arr">→</span><span class="node">추천코드</span><span class="arr">→</span><span class="node">실적</span></div></div>
+          <div class="ia__row"><b>직원</b><div class="chain"><span class="node node--key">관리 첫 화면</span><span class="arr">→</span><span class="node">알고사기 글 (고치기 · 새 글 · 숨김)</span><span class="node">구매후기 피드 (감추기 · 첫 화면)</span><span class="arr">→</span><span class="node">손님 화면에 바로 반영</span></div></div>
           <div class="ia__row"><b>기다리기</b><div class="chain"><span class="node">출시 전 상품 (아이폰 듀오)</span><span class="arr">→</span><span class="node node--new">출시 알림 신청</span><span class="arr">→</span><span class="node">내정보 · 알림 신청 내역</span></div></div>
           <div class="ia__row"><b>회원</b><div class="chain"><span class="node node--key">마이페이지</span><span class="arr">→</span><span class="node">신청내역</span><span class="node">마일리지</span><span class="node">최근 본 상품</span><span class="node">내가 쓴 후기</span><span class="node">회원정보 수정</span></div></div>
           <div class="ia__row"><b>늘 있는 것</b><div class="chain"><span class="node">머리</span><span class="node">아래 탭(모바일)</span><span class="node node--new">전체 메뉴</span><span class="node">검색</span><span class="node node--new">상담 (AI · 카카오톡 · 전화)</span><span class="node">고객센터</span></div></div>
@@ -241,7 +248,7 @@ html { scroll-behavior: smooth; }
       <section id="flows">
         <h2>핵심 흐름</h2>
         <p class="sub">목업에서 실제로 누른 순서예요. 기본값을 그대로 둘 때 기준.</p>
-        <p class="note">로그인이나 입력 없이 한 화면씩 넘겨 보려면 <a href="https://tfl0701.github.io/hiuplus-renewal-mock/#/screens">화면 순서대로 보기</a>를 여세요. 주문하기 14화면 · 회원가입 8화면 · 마이페이지 11화면 · 둘러보기 13화면이 순서대로 들어 있어요.</p>
+        <p class="note">로그인이나 입력 없이 한 화면씩 넘겨 보려면 <a href="https://tfl0701.github.io/hiuplus-renewal-mock/#/screens">화면 순서대로 보기</a>를 여세요. 주문하기 15화면 · 회원가입 8화면 · 마이페이지 11화면 · 파트너스 9화면 · 둘러보기 19화면 · 직원 관리 9화면이 순서대로 들어 있어요.</p>
         <div class="grid2">
           <div class="card"><h4>갤럭시 Z 폴드8 사기 <span class="tag">12번 누르기 · 2칸 적기</span></h4>
             <ol class="flow">
@@ -259,15 +266,17 @@ html { scroll-behavior: smooth; }
         <p class="sub">«가져옴»은 지금 사이트에서 그대로 옮긴 것, «새로»는 이번에 더한 것이에요. 화면마다 목업의 «기획 메모»에도 같은 내용이 있어요.</p>
         <div class="grid2">
           <div class="card"><h4>첫 화면</h4><p>시안 그대로. 큰 그림 → 어떤 휴대폰을 찾으세요? → 알고사기 3글 → 아이폰 사전알림 띠 → 먼저 산 손님의 이야기.</p><ul><li>새로: 칩을 누르면 카드가 시리즈로 바뀜</li><li>새로: 카드에 실제 상품 사진</li></ul></div>
-          <div class="card"><h4>휴대폰 목록</h4><p>종류 칩 → «지금 LG U+ 쓰세요?» → 정렬 → 상품 카드(실구매가 크게, 월 납부 작게).</p><ul><li>가져옴: 통신사 질문, 상품별 기본 요금제</li><li>새로: 질문을 창 대신 화면 위에 두고 언제든 바꾸기</li></ul></div>
+          <div class="card"><h4>휴대폰 목록</h4><p>아이폰 · 갤럭시 탭 → «지금 LG U+ 쓰세요?» → 시리즈 제목별 상품 카드(실구매가 크게, 월 납부 작게).</p><ul><li>가져옴: 통신사 질문, 상품별 기본 요금제</li><li>새로: 질문을 창 대신 화면 위에 두고 언제든 바꾸기</li></ul></div>
           <div class="card"><h4>상품 화면</h4><p>통신사 → 용량 · 색상 → 요금제 → 할인 방법 → 구매 방식 → 금액표 → 주문하기(모바일은 아래 고정).</p><ul><li>가져옴: 고르는 순서, 금액표 줄 이름, 조건 없음 4가지, 네 단계, 주문 안내, 자주 묻는 질문</li><li>새로: 24개월 동안 덜 내는 할인 방법 알려주기</li><li>새로: 요금제 창에서 요금제마다 월 납부 금액</li><li>새로: 캔바 상세 그림이 붙는 자리 표시</li></ul></div>
           <div class="card"><h4>출시 전 상품</h4><p>대표 사진 · 색상 → «가격 출시 후 안내» → 사전알림과 사전예약 차이 한 줄 → 알림 신청하기.</p><ul><li>가져옴: 출시 알림 상품 방식(용량 · 가격 숨김)</li></ul></div>
           <div class="card"><h4>로그인 창 · 주문서</h4><p>주문하기 → 카카오 · 네이버 로그인 → 주문서(가입하시는 분 · 받으실 곳 · 포인트 · 약관) → 주문 접수하기.</p><ul><li>가져옴: 로그인 필수, 칸 구성, 회원가입 1만 포인트</li><li>새로: 로그인 정보로 이름 · 생년월일 · 휴대폰 미리 채움</li><li>새로: 빠진 칸은 그 자리에 빨간 안내</li></ul></div>
           <div class="card"><h4>접수 완료</h4><p>«접수됐어요. 이제 신청서만 쓰면 끝이에요» → 진행 막대 → 지금 할 일 카드(온라인 신청서) → 주문 요약.</p><ul><li>가져옴: 문구, 진행 단계 이름(신청서 · 접수확인 · 준비·배송 · 개통완료)</li><li>새로: 할 일을 검정 카드 하나로</li></ul></div>
           <div class="card"><h4>회원가입</h4><p>카카오로 간편가입 · 네이버로 간편가입 · 일반 회원가입(아이디 중복확인 · 비밀번호 · 이름 · 생년월일 · 휴대폰 · 배송지 · 추천인 · 약관 5개) → 가입 완료(1만 포인트).</p><ul><li>가져옴: 세 갈래 가입, 칸 이름과 약관 문구, «배송지 주소는 주문 후 입력하셔도 돼요»</li><li>새로: 칸을 묶음으로 나눔, 주문하다 가입하면 «고르던 주문 이어서 하기»</li></ul></div>
-          <div class="card"><h4>마이페이지</h4><p>신청건수 · 마일리지 · 최근 본 상품 · 구매 후기 → 진행 중인 신청 → 최근 신청내역 → 신청내역 상세 · 마일리지 · 최근 본 상품 · 내가 쓴 후기 · 회원정보 수정.</p><ul><li>가져옴: 메뉴 구성, 내 추천 링크, 중고폰 팔기 · 인터넷 가입, 연락처 문자 인증</li><li>새로: 상세 화면 제목을 지금 단계 이름으로, 개통 뒤 «요금제를 낮출 수 있을 때까지 185일»</li></ul></div>
-          <div class="card"><h4>알고사기</h4><p>주제 칩 → 글 목록. 글은 «짧게 답하면» → 설명 → 실제 금액표 → «내 조건으로 보기».</p><ul><li>새로: 글 속 금액표가 실제 가격으로 계산됨</li><li>새로: 6개 글 (구매 조건 · 요금제 · 사전알림 · 가입 방법 · 할인 방법 · 할부 이자)</li></ul></div>
-          <div class="card"><h4>구매후기</h4><p>평균 별점 → 사진 후기 거르기 → 후기 카드 → 후기 한 편 → «나도 내 조건으로 보기».</p><ul><li>가져옴: 지금 후기 일부(이름 가림 그대로)</li><li>제안: 후기 쓰기에 «어떤 휴대폰을 샀나요» 고르기</li></ul></div>
+          <div class="card"><h4>마이페이지</h4><p>신청건수 · 마일리지 · 최근 본 상품 · 구매 후기 → 진행 중인 신청 → 최근 신청내역 → 신청내역 상세 · 마일리지 · 최근 본 상품 · 내가 쓴 후기 · 회원정보 수정.</p><ul><li>가져옴: 메뉴 구성, 내 추천 링크, 중고폰 팔기 · 인터넷 가입, 연락처 문자 인증</li><li>새로: 상세 화면 제목을 지금 단계 이름으로, 개통 뒤 «요금제를 낮출 수 있을 때까지 185일»</li><li>가져옴: 준비·배송부터 송장번호와 «배송조회» (우체국 · CJ대한통운 · 한진 · 롯데 · 로젠은 조회 화면 바로, 나머지는 네이버 택배조회)</li></ul></div>
+          <div class="card"><h4>알고사기</h4><p>주제 탭(글 개수) → 글 목록. 글은 «짧게 답하면» → 설명 → 실제 금액표 → 보던 휴대폰으로 가는 단추.</p><ul><li>새로: 글 속 금액표가 실제 가격으로 계산됨</li><li>새로: 직원 관리 화면에서 고치기 · 새 글 · 숨김</li><li>새로: 6개 글 (구매 조건 · 요금제 · 사전알림 · 가입 방법 · 할인 방법 · 할부 이자)</li></ul></div>
+          <div class="card"><h4>구매후기 피드</h4><p>정사각형 칸 피드(전체 · 사진만) → 후기 한 편 → «나도 내 조건으로 보기». 손님은 «올리기»로 사진 한 장 · 별점 · 글을 올려요.</p><ul><li>가져옴: 지금 후기 일부(이름 가림 그대로)</li><li>새로: 직원이 게시물 감추기 · 사진만 감추기 · 첫 화면에 보이기</li><li>새로: 후기 쓰기에 «어떤 휴대폰을 샀나요» 고르기</li></ul></div>
+          <div class="card"><h4>파트너스</h4><p>안내(개통 1건당 20,000원 · 진행 3단계 · 활동 방법 · 수수료 기준 · 자주 묻는 질문 10개) → 가입(회원만) → 추천 링크 · 실적 링크 → 실적(원천징수 3.3%를 뺀 실지급 예상).</p><ul><li>가져옴: 지금 hiuplus.com/partner 문구와 규칙 그대로</li><li>새로: 가입 전에 준비할 것 목록, 계좌는 나중에 넣어도 됨, «주민등록번호는 받지 않습니다»</li></ul></div>
+          <div class="card"><h4>직원 관리 (시안)</h4><p>알고사기 글 목록(공개 스위치) → 글 고치기(칸 쌓기 · ↑ ↓ · 미리보기) · 구매후기 피드(감추기 스위치). 실제로는 자비스웹 안에 들어갈 화면이에요.</p><ul><li>새로: 고친 내용이 손님 화면에 바로 반영 (목업은 이 브라우저에만 저장)</li></ul></div>
           <div class="card"><h4>고객센터 · 상담 · 검색 · 전체 메뉴</h4><p>상담 세 가지를 한 화면에. 검색은 상품과 알고사기 글을 같이 찾음(폴드8, 18프로, air도 찾음).</p><ul><li>가져옴: 전화 1544-2680 · 운영 시간 · 자주 묻는 질문 4개</li><li>새로: 검색 화면(지금은 목록으로만 넘어감)</li></ul></div>
         </div>
       </section>
@@ -307,7 +316,7 @@ html { scroll-behavior: smooth; }
             <tr><td>첫 화면 큰 그림 (모바일)</td><td class="mono">1080 × 890</td><td>캔바</td><td>사진 부분만. 맨 위 줄 색을 <span class="mono">#C8BDD4</span>에 맞추면 글자 바탕과 이어져요</td></tr>
             <tr><td>상품 상세 그림 (구매혜택)</td><td class="mono">가로 1080 · 세로 자유</td><td>캔바</td><td>상품 화면의 점선 칸 자리. 여러 장이면 위에서 아래로 이어 붙임</td></tr>
             <tr><td>상품 사진</td><td class="mono">1080 × 1080 투명 PNG</td><td>지금 있는 것</td><td>지금 사이트 상품 사진 그대로. 카드 바탕 #F7F7F7</td></tr>
-            <tr><td>후기 사진</td><td>손님 사진</td><td>손님</td><td>PC 2 : 1, 모바일 약 1.36 : 1로 가운데를 잘라 보여줌</td></tr>
+            <tr><td>후기 사진</td><td>손님 사진</td><td>손님이 올림</td><td>피드에서 정사각형으로 가운데를 잘라 보여줌. 알맞지 않으면 직원이 감춤</td></tr>
             <tr><td>알고사기 글 · 알림 띠 · 믿음 띠</td><td>—</td><td>화면 글자</td><td>그림 없이 글자로. 검색 · AI 검색에 걸리게</td></tr>
             <tr><td>로고</td><td class="mono">SVG 흰색 · 검정</td><td>목업에 있음</td><td>시안 로고를 선으로 다시 그림 (img/logo-white.svg · logo-black.svg)</td></tr>
           </tbody>
@@ -352,13 +361,15 @@ html { scroll-behavior: smooth; }
           <li><b>«덜 내는 쪽 알려주기» 넣기</b><p>할인 방법 두 개 중 24개월 동안 덜 내는 쪽을 알려주는 기능이에요. 실제 사이트에도 넣을까요?</p></li>
           <li><b>마젠타 색 맞추기</b><p>시안 <span class="mono">#E5287E</span>와 지금 사이트 <span class="mono">#EB2894</span>가 조금 달라요. 시안 값으로 맞출까요?</p></li>
           <li><b>회원가입 · 마이페이지 확인 3가지</b><p>간편가입 뒤에 휴대폰 번호 같은 추가 정보를 받는지, 가입 포인트 1만이 «마일리지»로 들어가는지, «케이스 요청하기»를 언제부터 보여줄지.</p></li>
+          <li><b>구매후기 공개 방식과 감추는 기준</b><p>손님이 올리면 바로 보여주고 나중에 감출까요(목업 방식), 직원이 본 뒤에 보여줄까요? 감추는 기준도 정해야 해요. 예) 얼굴 · 주소 · 전화번호 · 송장이 보이는 사진, 상관없는 사진, 욕설 · 광고 글.</p></li>
+          <li><b>알고사기 · 후기 관리 화면 자리</b><p>자비스웹 어느 메뉴에 둘지, 알고사기 글을 저장하면 바로 공개할지 대표님 확인 뒤 공개할지.</p></li>
         </ol>
       </section>
 
       <section id="next">
         <h2>다음 순서</h2>
         <ol class="flow">
-          <li>대표님이 목업을 휴대폰으로 눌러 보고 «결정할 것» 8가지 답 주기</li>
+          <li>대표님이 목업을 휴대폰으로 눌러 보고 «결정할 것» 10가지 답 주기</li>
           <li>제작 목록 크기대로 캔바에서 큰 그림 · 상세 그림 만들기</li>
           <li>정해진 내용을 작업지시서로 써서 개발 담당이 실제 사이트에 옮기기</li>
           <li>옮긴 화면을 목업 옆에 두고 한 화면씩 대조하기</li>

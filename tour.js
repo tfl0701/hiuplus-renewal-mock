@@ -26,6 +26,30 @@
     return orders(step).concat([old]);
   }
 
+  function copy(o) { return JSON.parse(JSON.stringify(o)); }
+  function scrollToEl(sel) {
+    return function () { setTimeout(function () { var el = H.$(sel); if (el) el.scrollIntoView({ block: "center" }); }, 80); };
+  }
+  function noPartner() { H.state.partner = null; H.pjoin = null; }
+  function samplePartner() {
+    H.pjoin = null;
+    H.state.partner = { code: "K7M2QX", name: "김하유", phone: "010-1234-5678", type: "person", biz: "", bank: "국민", account: "123456-01-234567", holder: "김하유", channel: "", joined: "2026.09.15" };
+  }
+  function pjoinSample(o) {
+    return Object.assign({ name: "김하유", phone: "010-1234-5678", type: "person", biz: "", bank: "", account: "", holder: "김하유", channel: "", agree: [false, false], tried: false }, o);
+  }
+  function adminClean() { H.state.guideEdits = {}; H.state.guideNew = []; H.state.guideHidden = []; H.state.feedMod = {}; H.editDraft = null; }
+  var NEW_GUIDE = {
+    slug: "same-number", cat: "가입 방법", title: "휴대폰을 바꿔도 번호는 그대로인가요?", summary: "번호이동도 기기변경도 쓰던 번호 그대로예요.", read: 1, home: false,
+    body: [
+      { t: "answer", text: "네. 번호이동도 기기변경도 쓰던 번호를 그대로 써요." },
+      { t: "h", text: "가입 방법별로 보면" },
+      { t: "list", items: ["번호이동 — SKT · KT · 알뜰폰에서 LG U+로 통신사만 옮기고, 번호는 그대로예요", "기기변경 — 지금 쓰는 LG U+ 번호 그대로 휴대폰만 바꿔요"] },
+      { t: "cta", label: "내 조건으로 월 납부 금액 보기", to: "#/phones", last: true }
+    ]
+  };
+  var MOD = { "8": { hide: true }, "164": { hidePhoto: true }, "165": { home: true }, "10": { home: true }, "9": { home: true } };
+
   var FLOWS = {
     order: {
       title: "주문하기", desc: "상품에서 로그인 · 주문서 · 접수 완료 · 진행 상황까지",
@@ -43,6 +67,7 @@
         { t: "신청서를 쓴 뒤", go: "#/done/" + OID, setup: function () { member(); H.state.orders = orders(1); } },
         { t: "마이페이지 · 담당자 확인 중", go: "#/my", setup: function () { member(); H.state.orders = orders(1); } },
         { t: "신청내역 상세 · 준비·배송", go: "#/my/order/" + OID, setup: function () { member(); H.state.orders = orders(2); } },
+        { t: "배송조회 창 · 송장번호", go: "#/my/order/" + OID, setup: function () { member(); H.state.orders = orders(2); }, after: function () { H.acts.trackSheet({ dataset: { id: OID } }); } },
         { t: "신청내역 상세 · 개통완료", go: "#/my/order/" + OID, setup: function () { member(); H.state.orders = orders(3); } }
       ]
     },
@@ -56,7 +81,7 @@
         { t: "일반 회원가입 · 빠진 칸 안내", go: "#/signup/form", setup: function () { guest(); H.resetSignup(true); } },
         { t: "일반 회원가입 · 다 채운 모습", go: "#/signup/form", setup: function () { guest(); H.resetSignup(false); H.fillSignupSample(); } },
         { t: "가입 완료", go: "#/signup/done", setup: member },
-        { t: "마이페이지 · 가입 직후", go: "#/my", setup: function () { member(); H.state.orders = []; H.state.recent = []; H.state.myReviews = []; } }
+        { t: "마이페이지 · 가입 직후", go: "#/my", setup: function () { member(); H.state.orders = []; H.state.recent = []; H.state.feedPosts = []; } }
       ]
     },
     my: {
@@ -68,33 +93,67 @@
         { t: "신청내역 상세 · 개통 끝난 주문", go: "#/my/order/" + OLD, setup: function () { member(); H.state.orders = ordersWithPast(1); } },
         { t: "마일리지", go: "#/my/mileage", setup: member },
         { t: "최근 본 상품", go: "#/my/recent", setup: function () { member(); H.state.recent = [54, 51, 35, 42]; } },
-        { t: "내가 쓴 후기 · 아직 없음", go: "#/my/reviews", setup: function () { member(); H.state.myReviews = []; } },
-        { t: "후기 쓰기 창", go: "#/my/reviews", setup: function () { member(); H.state.myReviews = []; }, after: function () { H.acts.writeReview(); } },
+        { t: "내가 쓴 후기 · 아직 없음", go: "#/my/reviews", setup: function () { member(); H.state.feedPosts = []; } },
+        { t: "후기 쓰기 창", go: "#/my/reviews", setup: function () { member(); H.state.feedPosts = []; }, after: function () { H.acts.writeReview(); } },
         { t: "알림 신청 내역", go: "#/my", setup: function () { member(); H.state.alerts = [{ pid: 56, date: "9월 15일" }]; }, after: function () { H.acts.myAlerts(); } },
         { t: "회원정보 수정", go: "#/my/account", setup: function () { member(); H.acc = null; } },
         { t: "연락처 바꾸기 창", go: "#/my/account", setup: member, after: function () { H.acts.phoneSheet(); } }
       ]
     },
+    partner: {
+      title: "파트너스", desc: "마이페이지 입구 · 안내 · 가입 · 추천코드 · 실적",
+      steps: [
+        { t: "마이페이지 · 파트너스 입구", go: "#/my", setup: function () { member(); noPartner(); H.state.orders = []; } },
+        { t: "파트너스 안내", go: "#/partner", setup: function () { member(); noPartner(); } },
+        { t: "파트너 가입 · 로그인 안 했을 때", go: "#/partner/join", setup: function () { guest(); noPartner(); } },
+        { t: "파트너 가입 · 처음 모습", go: "#/partner/join", setup: function () { member(); noPartner(); } },
+        { t: "파트너 가입 · 빠진 칸 안내", go: "#/partner/join", setup: function () { member(); noPartner(); H.pjoin = pjoinSample({ type: "biz", bank: "국민", tried: true }); } },
+        { t: "파트너 가입 · 다 채운 모습", go: "#/partner/join", setup: function () { member(); noPartner(); H.pjoin = pjoinSample({ bank: "국민", account: "123456-01-234567", agree: [true, true] }); } },
+        { t: "추천코드를 만든 뒤", go: "#/partner/done", setup: function () { member(); samplePartner(); } },
+        { t: "파트너 실적 · 예시", go: "#/partner/stats", setup: function () { member(); samplePartner(); } },
+        { t: "마이페이지 · 내 추천 링크", go: "#/my", setup: function () { member(); samplePartner(); H.state.orders = []; } }
+      ]
+    },
     browse: {
-      title: "둘러보기", desc: "첫 화면 · 목록 · 상품 · 알고사기 · 후기 · 고객센터",
+      title: "둘러보기", desc: "첫 화면 · 목록 · 상품 · 알고사기 · 구매후기 피드 · 고객센터",
       steps: [
         { t: "첫 화면", go: "#/" },
-        { t: "휴대폰 목록 · 갤럭시 Z", go: "#/phones?cat=galaxy-z" },
+        { t: "첫 화면 · 후기 한 줄", go: "#/", setup: function () { H.state.feedMod = {}; }, after: scrollToEl(".rv-row") },
+        { t: "휴대폰 목록 · 아이폰", go: "#/phones?cat=iphone" },
+        { t: "휴대폰 목록 · 갤럭시 Z부터", go: "#/phones?cat=galaxy&series=z8" },
         { t: "상품 화면 · 아이폰 18 프로", go: "#/phone/54", setup: freshProduct },
         { t: "요금제 고르기 창", go: "#/phone/54", setup: freshProduct, after: function () { H.acts.planSheet(); } },
         { t: "출시 전 상품 · 아이폰 듀오", go: "#/phone/56" },
         { t: "출시 알림 신청 창", go: "#/phone/56", after: function () { H.acts.alert({ dataset: { pid: "56" } }); } },
         { t: "알고사기 목록", go: "#/guide" },
         { t: "알고사기 글 · 선택약정 비교", go: "#/guide/support-or-select" },
-        { t: "구매후기", go: "#/reviews" },
+        { t: "알고사기 글 끝 · 보던 휴대폰으로 가는 단추", go: "#/guide/plan-down", setup: function () { H.state.recent = [54]; }, after: scrollToEl(".art-cta--last") },
+        { t: "구매후기 피드", go: "#/reviews", setup: function () { H.state.feedMod = {}; } },
+        { t: "구매후기 · 사진만", go: "#/reviews?f=photo", setup: function () { H.state.feedMod = {}; } },
+        { t: "후기 한 편", go: "#/review/165", setup: function () { H.state.feedMod = {}; } },
+        { t: "후기 올리기 창", go: "#/reviews", setup: member, after: function () { H.acts.writeReview(); } },
         { t: "고객센터", go: "#/cs" },
         { t: "AI 상담 창", go: "#/cs", after: function () { H.acts.chat(); } },
         { t: "검색 · «폴드8»", go: "#/search?q=%ED%8F%B4%EB%93%9C8" },
         { t: "전체 메뉴", go: "#/", after: function () { H.acts.menu(); } }
       ]
+    },
+    admin: {
+      title: "직원 관리", desc: "알고사기 글 고치기 · 새 글 · 구매후기 감추기 (실제로는 자비스웹 안)",
+      steps: [
+        { t: "관리 첫 화면", go: "#/admin", setup: adminClean },
+        { t: "알고사기 글 목록 · 한 글 숨김", go: "#/admin/guides", setup: function () { adminClean(); H.state.guideHidden = ["installment"]; } },
+        { t: "글 고치기 · 요금제 낮추기 글", go: "#/admin/guide/plan-down", setup: adminClean },
+        { t: "새 글 쓰기 · 빈 칸", go: "#/admin/guide/new", setup: adminClean },
+        { t: "새 글 쓰기 · 채운 모습", go: "#/admin/guide/new", setup: function () { adminClean(); H.editDraft = Object.assign(copy(NEW_GUIDE), { _slug: "new", _isNew: true }); } },
+        { t: "저장한 뒤 미리보기", go: "#/guide/same-number?preview=1", setup: function () { adminClean(); H.state.guideNew = [copy(NEW_GUIDE)]; } },
+        { t: "구매후기 피드 관리", go: "#/admin/reviews", setup: function () { adminClean(); H.state.feedMod = copy(MOD); } },
+        { t: "감춘 뒤 손님 피드", go: "#/reviews", setup: function () { adminClean(); H.state.feedMod = copy(MOD); } },
+        { t: "첫 화면 후기 줄 · 고른 후기만", go: "#/", setup: function () { adminClean(); H.state.feedMod = copy(MOD); }, after: scrollToEl(".rv-row") }
+      ]
     }
   };
-  var ORDER = ["order", "signup", "my", "browse"];
+  var ORDER = ["order", "signup", "my", "partner", "browse", "admin"];
 
   H.runTour = function (r) {
     var key = r.parts[1], flow = FLOWS[key];
@@ -152,7 +211,7 @@
         body: `<p class="help-t help-t--lead">직원 검토용 시안이에요. 실제로 주문 · 가입되지 않아요.</p>
           <div class="consult-list">
             <a class="cs-card cs-card--dark" href="#/tour/order/1"><span class="cs-card__ic">${H.icon("arrow")}</span><b>주문 흐름 순서대로 보기</b><small>상품 → 로그인 · 회원가입 → 주문서 → 접수 완료 → 진행 상황 (${FLOWS.order.steps.length}화면)</small></a>
-            <a class="cs-card" href="#/screens"><span class="cs-card__ic">${H.icon("doc")}</span><b>화면 순서대로 보기 목록</b><small>회원가입 · 마이페이지 · 둘러보기</small></a>
+            <a class="cs-card" href="#/screens"><span class="cs-card__ic">${H.icon("doc")}</span><b>화면 순서대로 보기 목록</b><small>회원가입 · 마이페이지 · 파트너스 · 둘러보기 · 직원 관리</small></a>
             <button type="button" class="cs-card" data-act="closeSheet"><span class="cs-card__ic">${H.icon("home")}</span><b>그냥 둘러보기</b><small>노란 연필 단추에서 언제든 다시 열 수 있어요</small></button>
           </div>`
       });

@@ -25,7 +25,7 @@ window.HIU_CONTENT = {
           "할부 이자가 붙는지 — 하이유플은 연 5.9%, 일시불이면 이자가 없어요."
         ] },
         { t: "note", text: "하이유플은 부가서비스·카드 발급·기존 폰 반납·인터넷 결합 조건을 걸지 않아요. 상품 화면 금액표에 네 가지가 모두 «없음»으로 나와요." },
-        { t: "cta", label: "내 조건으로 월 납부 금액 보기", to: "#/phones" }
+        { t: "cta", label: "내 조건으로 월 납부 금액 보기", to: "#/phones", last: true }
       ]
     },
     {
@@ -42,7 +42,7 @@ window.HIU_CONTENT = {
         { t: "h", text: "날짜는 어디서 확인하나요?" },
         { t: "p", text: "내정보에서 개통일과 지난 날짜를 볼 수 있어요. 185일이 지난 뒤 요청하시면 변경을 도와드려요." },
         { t: "note", text: "너겟 요금제 같은 무약정 요금제로는 바꿀 수 없어요. 바꾸면 위약금이 생겨요." },
-        { t: "cta", label: "요금제별 월 납부 금액 보기", to: "#/phones" }
+        { t: "cta", label: "요금제별 월 납부 금액 보기", to: "#/phones", last: true, plan: true }
       ]
     },
     {
@@ -76,7 +76,7 @@ window.HIU_CONTENT = {
         { t: "compare", pid: 42, plan: 50, vol: 0, months: 24, neutral: true, caption: "아이폰 17 256G · 데이터플랜MAX · 이통사지원금 · 24개월 할부",
           a: { label: "번호이동", method: "move", discount: "official" }, b: { label: "기기변경", method: "change", discount: "official" } },
         { t: "note", text: "번호이동은 유심비 7,700원이 따로 들어요." },
-        { t: "cta", label: "내 통신사로 금액 보기", to: "#/phones" }
+        { t: "cta", label: "내 통신사로 금액 보기", to: "#/phones", last: true }
       ]
     },
     {
@@ -94,7 +94,7 @@ window.HIU_CONTENT = {
         { t: "compare", pid: 54, plan: 50, vol: 0, months: 24, total: true, caption: "아이폰 18 프로 256G · 데이터플랜MAX · 번호이동 · 24개월 할부",
           a: { label: "이통사지원금", method: "move", discount: "official" }, b: { label: "선택약정", method: "move", discount: "select" } },
         { t: "p", text: "하이유플 상품 화면에서 두 방법을 눌러 보면 월 납부 금액이 바로 바뀌어요. 24개월 동안 덜 내는 쪽도 함께 알려드려요." },
-        { t: "cta", label: "내 조건으로 비교하기", to: "#/phone/54" }
+        { t: "cta", label: "내 조건으로 비교하기", to: "#/phones", last: true }
       ]
     },
     {
@@ -106,7 +106,7 @@ window.HIU_CONTENT = {
         { t: "h", text: "실제 금액으로 볼게요" },
         { t: "calc", pid: 54, plan: 50, vol: 0, method: "move", discount: "official", months: 24, interest: true, caption: "아이폰 18 프로 256G · 데이터플랜MAX · 번호이동 · 24개월 할부" },
         { t: "note", text: "할부 중간에 남은 금액을 한 번에 갚으면, 갚은 날 이후의 이자는 붙지 않아요." },
-        { t: "cta", label: "일시불·할부 금액 비교하기", to: "#/phone/54" }
+        { t: "cta", label: "일시불·할부 금액 비교하기", to: "#/phones", last: true }
       ]
     }
   ],

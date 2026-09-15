@@ -27,7 +27,7 @@
     var p = H.prod(pid), sel = H.defaults(p);
     sel.method = "move";
     var r = H.price(p, sel);
-    return { id: id || "HU" + String(Date.now()).slice(-6), pid: pid, sel: sel, monthly: r.monthlyTotal, principal: r.principal, step: step || 0, date: date || H.today(), addr: H.SAMPLE_ADDR[0], addr2: "101동 1001호", usedMileage: 0, example: true };
+    return { id: id || "HU" + String(Date.now()).slice(-6), pid: pid, sel: sel, monthly: r.monthlyTotal, principal: r.principal, step: step || 0, date: date || H.today(), addr: H.SAMPLE_ADDR[0], addr2: "101동 1001호", usedMileage: 0, courier: "CJ대한통운", trackingNo: "123456789012", example: true };
   };
 
   /* ---------- 로그인 창 (지금 사이트: 회원가입하고 1만 포인트 받기 / 이미 회원이세요? 로그인) ---------- */
@@ -190,7 +190,7 @@
       return;
     }
     var r = H.price(p, d.sel);
-    var o = { id: "HU" + String(Date.now()).slice(-6), pid: p.id, sel: d.sel, monthly: r.monthlyTotal, principal: r.principal, step: 0, date: H.today(), addr: f.addr, addr2: f.addr2, usedMileage: f.usePoint ? H.state.mileage : 0 };
+    var o = { id: "HU" + String(Date.now()).slice(-6), pid: p.id, sel: d.sel, monthly: r.monthlyTotal, principal: r.principal, step: 0, date: H.today(), addr: f.addr, addr2: f.addr2, usedMileage: f.usePoint ? H.state.mileage : 0, courier: "CJ대한통운", trackingNo: "123456789012" };
     H.state.orders = [o].concat(H.state.orders).slice(0, 5);
     H.state.draft = null;
     H.form = null;

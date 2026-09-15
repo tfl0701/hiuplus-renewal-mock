@@ -4,11 +4,22 @@
   var H = window.H, D = H.D, C = H.C, N = H.N;
   var ASOF = D.asOf.replace(/-/g, ".");
 
+  /* 알고사기 글 목록 — 관리 화면에서 고친 내용(이 브라우저에 저장)을 덮어쓴다 */
+  H.guideList = function (opt) {
+    var st = H.state, edits = st.guideEdits || {}, hidden = st.guideHidden || [];
+    var list = C.guides.map(function (g) { return edits[g.slug] || g; }).concat(st.guideNew || []);
+    if (opt && opt.all) return list;
+    return list.filter(function (g) { return hidden.indexOf(g.slug) < 0; });
+  };
+  H.guide = function (slug) { return H.guideList({ all: true }).find(function (g) { return g.slug === slug; }); };
+
   /* ---------- 여러 화면이 같이 쓰는 조각 ---------- */
+  /* 글 후기 카드 — 첫 화면 한 줄 · 상품 화면에서 쓴다(사진 없이) */
   H.reviewCard = function (r) {
-    return `<a class="rv-card" href="#/review/${r.id}">${r.photo ? '<div class="rv-card__ph"><img src="img/review-photo.jpg" alt="" loading="lazy"></div>' : ""}
-      <div class="rv-card__body"><div class="rv-card__top">${H.stars(r.rating)}<span class="num">${r.date.replace(/-/g, ".")}</span></div>
-      ${r.tag ? `<span class="rv-card__tag">${r.tag}</span>` : ""}<p>${H.esc(r.text)}</p><p class="rv-card__who">${r.name}</p></div></a>`;
+    return `<a class="rv-card2" href="#/review/${r.id}">
+      <span class="rv-card2__top">${H.stars(r.rating)}<span class="num">${r.date.replace(/-/g, ".")}</span></span>
+      <span class="rv-card2__txt">${H.esc(r.text)}</span>
+      <span class="rv-card2__who">${H.esc(r.name)}${r.tag ? " · " + H.esc(r.tag) : ""}</span></a>`;
   };
   H.faqHtml = function () {
     return '<div class="faq">' + C.faq.map(function (f) {
@@ -57,33 +68,46 @@
       case "pairs": return `<div class="pairs">${b.items.map(function (i) { return "<div><b>" + i[0] + "</b><p>" + i[1] + "</p></div>"; }).join("")}</div>`;
       case "calc": return calc(b);
       case "compare": return compare(b);
-      case "cta": return b.act ? `<button type="button" class="btn btn--mg btn--block art-cta" data-act="${b.act}" data-pid="56">${b.label}</button>` : `<a class="btn btn--ink btn--block art-cta" href="${b.to}">${b.label}</a>`;
+      case "cta": {
+        if (b.act) return `<button type="button" class="btn btn--mg btn--block art-cta" data-act="${b.act}" data-pid="56">${b.label}</button>`;
+        var lp = b.last && H.state.recent.map(H.prod).find(function (p) { return p && !p.launch; });
+        if (lp) return `<button type="button" class="btn btn--ink btn--block art-cta art-cta--last" data-act="lastProduct" data-pid="${lp.id}"${b.plan ? ' data-plan="1"' : ""}><small>보던 휴대폰 · ${lp.name}</small>${b.label}</button>`;
+        return `<a class="btn btn--ink btn--block art-cta" href="${b.to}">${b.label}</a>`;
+      }
     }
     return "";
   }
   H.views.guides = function (r) {
-    var cat = r.q.cat || "전체";
-    var list = C.guides.filter(function (g) { return cat === "전체" || g.cat === cat; });
+    var cat = r.q.cat || "전체", all = H.guideList();
+    var cats = C.guideCats.filter(function (c) { return c === "전체" || all.some(function (g) { return g.cat === c; }); });
+    var count = function (c) { return c === "전체" ? all.length : all.filter(function (g) { return g.cat === c; }).length; };
+    var list = all.filter(function (g) { return cat === "전체" || g.cat === cat; });
     return {
       title: "알고사기",
       html: `<div class="wrap"><div class="g-layout">
-  <div><header class="ph"><h1>알고사기</h1><p>헷갈리는 조건을 쉬운 말로 풀어드려요.</p></header>
-    <nav class="g-cats" aria-label="글 주제">${C.guideCats.map(function (c) {
-      return `<a class="chip" href="#/guide${c === "전체" ? "" : "?cat=" + encodeURIComponent(c)}"${cat === c ? ' aria-current="true"' : ""}>${c}</a>`;
+  <div class="g-side"><header class="ph"><h1>알고사기</h1><p>헷갈리는 조건을 쉬운 말로 풀어드려요.</p></header>
+    <nav class="g-tabs" aria-label="글 주제">${cats.map(function (c) {
+      return `<a href="#/guide${c === "전체" ? "" : "?cat=" + encodeURIComponent(c)}"${cat === c ? ' aria-current="true"' : ""}>${c}<small class="num">${count(c)}</small></a>`;
     }).join("")}</nav></div>
   <div class="g-list">${list.map(function (g) {
-    return `<a class="g-item" href="#/guide/${g.slug}"><small>${g.cat}</small><h3>${g.title}</h3><p>${g.summary}</p><p class="meta">${g.read}분이면 읽어요</p></a>`;
+    return `<a class="g-item" href="#/guide/${g.slug}"><small>${g.cat}</small><h3>${H.esc(g.title)}</h3><p>${H.esc(g.summary)}</p><p class="meta">${g.read}분이면 읽어요</p></a>`;
   }).join("") || '<p class="empty">아직 글이 없어요.</p>'}</div>
 </div></div>`
     };
   };
+  H.acts.lastProduct = function (el) {
+    if (el.dataset.plan) H._tourAfter = function () { H.acts.planSheet(); };
+    H.go("#/phone/" + el.dataset.pid);
+  };
   H.views.guide = function (r) {
     var g = H.guide(r.parts[1]);
+    if (g && (H.state.guideHidden || []).indexOf(g.slug) >= 0 && r.q.preview !== "1") g = null;
     if (!g) return { title: "알고사기", html: `<div class="wrap"><p class="empty">글을 찾을 수 없어요.<br><br><a class="btn btn--ink btn--sm" href="#/guide">알고사기 전체 보기</a></p></div>` };
-    var related = C.guides.filter(function (x) { return x.slug !== g.slug; }).slice(0, 3);
+    var related = H.guideList().filter(function (x) { return x.slug !== g.slug; }).slice(0, 3);
     return {
       title: g.title,
       html: `<div class="wrap"><article class="art">
+  ${r.q.preview === "1" ? '<p class="preview-bar">미리보기예요. 관리 화면에서 저장한 내용이 이렇게 보여요. <a href="#/admin/guides">관리로 돌아가기</a></p>' : ""}
   <a class="back" href="#/guide">${H.icon("chev-l")}알고사기</a>
   <p class="eyebrow">${g.cat}</p><h1>${g.title}</h1><p class="meta">${g.read}분이면 읽어요 · ${ASOF} 기준</p>
   <div class="art__body">${g.body.map(block).join("")}</div>
@@ -97,46 +121,120 @@
     };
   };
 
-  /* ---------- 구매후기 ---------- */
+  /* ---------- 구매후기 = 손님 피드 ---------- */
+  var SAMPLE_IMG = { 165: "img/feed-1.jpg", 10: "img/feed-3.jpg", 9: "img/feed-2.jpg", 8: "img/feed-5.jpg", 164: "img/feed-6.jpg", 158: "img/feed-4.jpg" };
+  H.feedAll = function () {
+    var mine = (H.state.feedPosts || []).map(function (p) { return Object.assign({ mine: true }, p); });
+    var base = C.reviews.map(function (r) {
+      return { id: String(r.id), name: r.name, rating: r.rating, date: r.date, text: r.text, img: SAMPLE_IMG[r.id] || null, tag: r.tag || "", sample: true };
+    });
+    return mine.concat(base);
+  };
+  H.feedMod = function (id) { return (H.state.feedMod || {})[id] || {}; };
+  H.feedVisible = function () {
+    return H.feedAll().filter(function (p) { return !H.feedMod(p.id).hide; }).map(function (p) {
+      return H.feedMod(p.id).hidePhoto && p.img ? Object.assign({}, p, { img: null, photoHidden: true }) : p;
+    });
+  };
+  H.homeReviews = function () {
+    var list = H.feedVisible(), picked = list.filter(function (p) { return H.feedMod(p.id).home; });
+    return (picked.length ? picked : list.filter(function (p) { return p.text.length > 30; })).slice(0, 6);
+  };
+  function tile(p) {
+    return p.img
+      ? `<a class="ft ft--ph" href="#/review/${p.id}"><img src="${p.img}" alt="${H.esc(p.name)} 손님 사진" loading="lazy"><span class="ft__ov">${H.icon("star", "ic--fill")}${p.rating} · ${H.esc(p.name)}</span></a>`
+      : `<a class="ft ft--txt" href="#/review/${p.id}"><span class="ft__q">${H.esc(p.text)}</span><span class="ft__who">${H.esc(p.name)}</span></a>`;
+  }
+  H.feedTile = tile;
+  function maskName(n) {
+    n = String(n || "손님");
+    return n.length <= 1 ? n : n.length === 2 ? n[0] + "*" : n[0] + "*".repeat(n.length - 2) + n[n.length - 1];
+  }
   H.views.reviews = function (r) {
-    var f = r.q.f || "all";
-    var list = C.reviews.filter(function (x) { return f === "all" || x.photo; });
-    var avg = (C.reviews.reduce(function (a, x) { return a + x.rating; }, 0) / C.reviews.length).toFixed(1);
+    var f = r.q.f || "all", list = H.feedVisible();
+    var shown = f === "photo" ? list.filter(function (p) { return p.img; }) : list;
+    var avg = list.length ? (list.reduce(function (a, x) { return a + x.rating; }, 0) / list.length).toFixed(1) : "0.0";
     return {
       title: "구매후기",
-      html: `<div class="wrap">
-  <header class="ph"><h1>구매후기</h1><p>하이유플에서 먼저 산 손님들의 이야기예요.</p></header>
-  <div class="rv-sum"><span class="score num">${avg}</span><div>${H.stars(5)}<small>지금 사이트 후기 중 ${C.reviews.length}개를 옮겨 온 평균이에요</small></div></div>
-  <div class="rv-filters">${[["all", "전체"], ["photo", "사진 후기"]].map(function (c) {
-    return `<a class="chip" href="#/reviews${c[0] === "all" ? "" : "?f=" + c[0]}"${f === c[0] ? ' aria-current="true"' : ""}>${c[1]}</a>`;
-  }).join("")}<button type="button" class="chip" data-act="writeReview">${H.icon("pencil", "ic--sm")}후기 쓰기</button></div>
-  <div class="rv-list">${list.map(H.reviewCard).join("")}</div>
+      html: `<div class="wrap feed">
+  <header class="feed-hd">
+    <div><h1>구매후기</h1><p>하이유플에서 산 손님들이 올린 사진과 이야기예요.</p></div>
+    <button type="button" class="btn btn--mg feed-up" data-act="writeReview">${H.icon("camera")}올리기</button>
+  </header>
+  <div class="feed-stats"><span><b class="num">${list.length}</b>개의 이야기</span><span class="feed-stats__star">${H.stars(5)}<b class="num">${avg}</b></span></div>
+  <nav class="feed-tabs" aria-label="후기 보기">${[["all", "전체"], ["photo", "사진만"]].map(function (c) {
+    return `<a href="#/reviews${c[0] === "all" ? "" : "?f=photo"}"${f === c[0] ? ' aria-current="true"' : ""}>${c[1]}</a>`;
+  }).join("")}</nav>
+  <div class="feed-grid">${shown.map(tile).join("")}</div>
+  <p class="demo-note"><span class="demo-tag">시안</span>알맞지 않은 사진이나 글은 하이유플이 감출 수 있어요 · 사진은 예시</p>
 </div>`
     };
   };
   H.views.review = function (r) {
-    var x = C.reviews.find(function (v) { return v.id === Number(r.parts[1]); });
-    if (!x) return { title: "구매후기", html: `<div class="wrap"><p class="empty">후기를 찾을 수 없어요.<br><br><a class="btn btn--ink btn--sm" href="#/reviews">구매후기 전체 보기</a></p></div>` };
+    var list = H.feedVisible(), p = list.find(function (x) { return x.id === r.parts[1]; });
+    if (!p) return { title: "구매후기", html: `<div class="wrap"><p class="empty">후기를 찾을 수 없어요. 하이유플이 감춘 후기일 수 있어요.<br><br><a class="btn btn--ink btn--sm" href="#/reviews">구매후기 보기</a></p></div>` };
+    var more = list.filter(function (x) { return x.id !== p.id && x.img; }).slice(0, 6);
     return {
       title: "구매후기",
-      html: `<div class="wrap"><article class="rvd">
+      html: `<div class="wrap"><article class="post">
   <a class="back" href="#/reviews">${H.icon("chev-l")}구매후기</a>
-  ${x.photo ? `<div class="rvd__ph"><img src="img/review-photo.jpg" alt="${x.name} 손님 후기 사진"></div>` : ""}
-  <div class="rv-card__top">${H.stars(x.rating)}<span class="num">${x.date.replace(/-/g, ".")}</span></div>
-  ${x.tag ? `<span class="rv-card__tag">${x.tag}</span>` : ""}
-  <p class="rvd__txt">${H.esc(x.text)}</p><p class="rv-card__who">${x.name}</p>
-  <div class="art-foot"><a class="btn btn--ink btn--block" href="#/phones">나도 내 조건으로 보기</a></div>
+  <header class="post__hd"><span class="post__av">${H.esc(p.name.charAt(0))}</span><div><b>${H.esc(p.name)}</b><small class="num">${p.date.replace(/-/g, ".")}${p.tag ? " · " + H.esc(p.tag) : ""}</small></div>${p.mine ? '<span class="demo-tag">내가 올림</span>' : ""}</header>
+  ${p.img ? `<div class="post__ph"><img src="${p.img}" alt="${H.esc(p.name)} 손님 사진"></div>` : ""}
+  <div class="post__body">${H.stars(p.rating)}<p class="post__txt">${H.esc(p.text)}</p>${p.photoHidden ? '<p class="help-t">사진은 하이유플이 감췄어요.</p>' : ""}</div>
+  <div class="post__acts"><a class="btn btn--ink btn--block" href="#/phones">나도 내 조건으로 보기</a><button type="button" class="link-row" data-act="toast" data-msg="시안: 신고가 들어오면 직원이 보고 감출 수 있어요">이 후기 신고하기</button></div>
+  ${more.length ? `<h2 class="post__more-t">다른 손님 사진</h2><div class="feed-grid feed-grid--sm">${more.map(tile).join("")}</div>` : ""}
 </article></div>`
     };
   };
   H.acts.writeReview = function () {
     if (!H.state.loggedIn) { H.acts.login(null, "#/reviews"); return; }
+    H.upload = { img: null, rating: 5 };
     H.openSheet({
-      title: "후기 쓰기",
-      body: `<div class="field"><label for="rvProd">어떤 휴대폰을 샀나요? <span class="demo-tag">제안</span></label><select id="rvProd" class="input">${H.ordered().filter(function (p) { return !p.launch; }).map(function (p) { return "<option>" + p.name + "</option>"; }).join("")}</select></div>
-        <div class="field"><label for="rvText">후기 내용<span class="req">*</span></label><textarea id="rvText" class="input input--area" rows="5" placeholder="개통 과정, 배송, 상담이 어땠는지 알려 주세요" data-focus></textarea></div>`,
-      foot: `<button type="button" class="btn btn--mg btn--block" data-act="reviewSave">후기 올리기</button>`
+      title: "구매후기 올리기",
+      body: `<label class="up-ph" id="upPh"><input type="file" id="upFile" accept="image/*" data-change="upFile"><span class="up-ph__in">${H.icon("camera")}<b>사진 고르기</b><small>한 장 · 휴대폰으로 찍은 사진 그대로 괜찮아요</small></span></label>
+        <div class="field"><label for="rvProd">어떤 휴대폰을 샀나요?</label><select id="rvProd" class="input">${H.ordered().filter(function (p) { return !p.launch; }).map(function (p) { return "<option>" + p.name + "</option>"; }).join("")}</select></div>
+        <div class="field"><span class="field-label">별점</span><div class="star-pick" role="radiogroup" aria-label="별점">${[1, 2, 3, 4, 5].map(function (n) {
+          return `<button type="button" role="radio" class="on" aria-checked="${n === 5}" aria-label="${n}점" data-act="upStar" data-v="${n}">${H.icon("star", "ic--fill")}</button>`;
+        }).join("")}</div></div>
+        <div class="field"><label for="rvText">이야기<span class="req">*</span></label><textarea id="rvText" class="input input--area" rows="4" placeholder="개통 과정, 배송, 상담이 어땠는지 알려 주세요" data-focus></textarea></div>
+        <p class="help-t">올린 사진과 글은 바로 보여요. 알맞지 않은 사진이나 글은 하이유플이 감출 수 있어요.</p>`,
+      foot: `<button type="button" class="btn btn--mg btn--block" data-act="reviewSave">올리기</button><p class="demo-note"><span class="demo-tag">시안</span>올린 후기는 이 휴대폰 안에서만 보여요</p>`
     });
+  };
+  H.inputs.upFile = function (el) {
+    var file = el.files && el.files[0];
+    if (!file) return;
+    var url = URL.createObjectURL(file), img = new Image();
+    img.onload = function () {
+      var size = 640, side = Math.min(img.width, img.height), cv = document.createElement("canvas");
+      cv.width = size; cv.height = size;
+      cv.getContext("2d").drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, 0, 0, size, size);
+      H.upload.img = cv.toDataURL("image/jpeg", 0.8);
+      URL.revokeObjectURL(url);
+      var ph = H.$("#upPh");
+      if (ph) { ph.classList.add("has"); ph.style.backgroundImage = "url(" + H.upload.img + ")"; }
+    };
+    img.src = url;
+  };
+  H.acts.upStar = function (el) {
+    var n = Number(el.dataset.v);
+    H.upload.rating = n;
+    H.$$(".star-pick button").forEach(function (b) {
+      var v = Number(b.dataset.v);
+      b.classList.toggle("on", v <= n);
+      b.setAttribute("aria-checked", String(v === n));
+    });
+  };
+  H.acts.reviewSave = function () {
+    var t = ((H.$("#rvText") || {}).value || "").trim(), prod = (H.$("#rvProd") || {}).value || "";
+    if (t.length < 5) { H.toast("이야기를 조금 더 적어 주세요"); return; }
+    var up = H.upload || {};
+    var post = { id: "u" + Date.now(), name: maskName(H.state.user.name), rating: up.rating || 5, date: new Date().toISOString().slice(0, 10), text: t, img: up.img || null, tag: prod };
+    H.state.feedPosts = [post].concat(H.state.feedPosts || []);
+    H.save();
+    H.closeSheet(true);
+    H.toast("올렸어요. 구매후기 맨 앞에 보여요");
+    H.go("#/reviews");
   };
 
   /* ---------- 고객센터 ---------- */
@@ -178,7 +276,7 @@
     var hit = function (text) { var t = norm(text); return toks.every(function (k) { return t.indexOf(k) >= 0 || t.indexOf(k.replace(/기$/, "")) >= 0; }); };
     return {
       prods: H.ordered().filter(function (p) { return hit(p.name + " " + p.db + " " + (D.series[p.series] || "")); }),
-      guides: C.guides.filter(function (g) { return hit(g.title + " " + g.summary + " " + g.cat + " " + (KW[g.slug] || "")); })
+      guides: H.guideList().filter(function (g) { return hit(g.title + " " + g.summary + " " + g.cat + " " + (KW[g.slug] || "")); })
     };
   }
   function resultsHtml(q) {
@@ -242,10 +340,11 @@
         <a class="dr-search" href="#/search">${H.icon("search")}휴대폰이나 궁금한 말 찾기</a>
         <nav class="dr-nav" aria-label="전체 메뉴">
           <a href="#/phones">휴대폰${H.icon("chev-r")}</a>
-          <div class="dr-sub">${D.cats.slice(1).map(function (c) { return `<a href="#/phones?cat=${c.key}">${c.label}</a>`; }).join("")}</div>
+          <div class="dr-sub">${D.cats.map(function (c) { return `<a href="#/phones?cat=${c.key}">${c.label}</a>`; }).join("")}</div>
           <a href="#/guide">알고사기${H.icon("chev-r")}</a>
           <a href="#/reviews">구매후기${H.icon("chev-r")}</a>
           <a href="#/cs">고객센터${H.icon("chev-r")}</a>
+          <a href="#/partner">파트너스${H.icon("chev-r")}</a>
           <a href="#/my">${H.state.loggedIn ? "내정보" : "로그인"}${H.icon("chev-r")}</a>
         </nav>
         <button type="button" class="btn btn--mg btn--block" data-act="alert" data-pid="56">${H.icon("bell")}아이폰 듀오 알림 신청</button>
@@ -336,6 +435,7 @@
         ${n.ask && n.ask.length ? `<h3>대표님 확인이 필요한 것</h3><ul>${n.ask.map(function (t) { return li(t, "ask"); }).join("")}</ul>` : ""}
         <h3>«제안 보기»로 켜지는 것</h3><ul>${N.proposals.map(function (t) { return li(t); }).join("")}</ul>
         <a class="btn btn--ink btn--block memo-tour" href="#/screens">화면 순서대로 보기 (회원가입 · 주문 · 마이페이지)</a>
+        <a class="btn btn--line btn--block memo-tour2" href="#/admin">직원용 관리 화면 (알고사기 글 · 후기 감추기)</a>
         <a class="link-arrow pd-more" href="plan.html">기획서 전체 보기${H.icon("arrow")}</a>
       </div>
       <div class="toggle"><span>제안 보기<small>시안에 없는 제안을 화면에 켜서 비교해요</small></span><button type="button" class="switch" role="switch" aria-checked="${!!H.state.proposals}" data-act="toggleProposals" aria-label="제안 보기"></button></div>

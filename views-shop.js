@@ -6,9 +6,9 @@
   /* ---------- 첫 화면 ---------- */
   var HOME_SETS = {
     all: [
-      { label: "아이폰", pid: 54, ci: 3, to: "#/phones?cat=iphone", f: { cat: "iphone" } },
-      { label: "갤럭시 S", pid: 37, ci: 0, to: "#/phones?cat=galaxy-s", f: { cat: "galaxy-s" } },
-      { label: "갤럭시 Z", pid: 51, ci: 0, to: "#/phones?cat=galaxy-z", f: { cat: "galaxy-z" } }
+      { label: "아이폰", pid: 54, ci: 3, to: "#/phones?cat=iphone", f: { group: "iphone" } },
+      { label: "갤럭시 S", pid: 37, ci: 0, to: "#/phones?cat=galaxy&series=s26", f: { cats: ["galaxy-s"] } },
+      { label: "갤럭시 Z", pid: 51, ci: 0, to: "#/phones?cat=galaxy&series=z8", f: { cats: ["galaxy-z"] } }
     ],
     iphone: [
       { label: "아이폰 18 프로", badge: "pre", pid: 54, ci: 3, to: "#/phones?cat=iphone&series=iphone18", f: { series: "iphone18" } },
@@ -16,16 +16,24 @@
       { label: "아이폰 16", pid: 50, ci: 0, to: "#/phones?cat=iphone&series=iphone16", f: { series: "iphone16" } }
     ],
     galaxy: [
-      { label: "갤럭시 Z 폴드8 · 플립8", badge: "new", pid: 53, ci: 0, to: "#/phones?cat=galaxy-z", f: { cat: "galaxy-z" } },
-      { label: "갤럭시 S26", pid: 35, ci: 0, to: "#/phones?cat=galaxy-s&series=s26", f: { series: "s26" } },
-      { label: "갤럭시 S25", pid: 47, ci: 0, to: "#/phones?cat=galaxy-s&series=s25", f: { series: "s25" } }
+      { label: "갤럭시 Z 폴드8 · 플립8", badge: "new", pid: 53, ci: 0, to: "#/phones?cat=galaxy&series=z8", f: { series: "z8" } },
+      { label: "갤럭시 S26", pid: 35, ci: 0, to: "#/phones?cat=galaxy&series=s26", f: { series: "s26" } },
+      { label: "갤럭시 S25", pid: 47, ci: 0, to: "#/phones?cat=galaxy&series=s25", f: { series: "s25" } }
     ]
   };
   function lowest(f) {
-    var list = H.ordered().filter(function (p) { return !p.launch && (!f.cat || p.cat === f.cat) && (!f.series || p.series === f.series); });
+    var list = H.ordered().filter(function (p) { return !p.launch && (!f.group || H.group(p) === f.group) && (!f.cats || f.cats.indexOf(p.cat) >= 0) && (!f.series || p.series === f.series); });
     var min = Infinity;
     list.forEach(function (p) { min = Math.min(min, H.listPrice(p).principal); });
     return { min: min, n: list.length };
+  }
+  /* 모바일은 두 칸씩이라 세 장이면 한 칸이 빈다 → 네 번째에 «전체 보기» 카드(PC는 시안대로 세 장) */
+  var MORE = { all: ["휴대폰 전체 보기", "#/phones", null], iphone: ["아이폰 전체 보기", "#/phones?cat=iphone", "iphone"], galaxy: ["갤럭시 전체 보기", "#/phones?cat=galaxy", "galaxy"] };
+  function moreCard(set) {
+    var m = MORE[set], n = H.ordered().filter(function (p) { return !m[2] || H.group(p) === m[2]; }).length;
+    return `<a class="cat-card cat-card--more mo-only" href="${m[1]}">
+      <div class="cat-card__img"><span class="more-n"><b class="num">${n}</b>개 모델</span>${H.icon("arrow", "more-ic")}</div>
+      <div class="cat-card__meta"><strong>${m[0]}</strong><span class="link-arrow">모두 보기${H.icon("arrow")}</span></div></a>`;
   }
   function catCards(set) {
     return HOME_SETS[set].map(function (c) {
@@ -35,13 +43,12 @@
         <div class="cat-card__img"><img src="${H.img(p, c.ci)}" alt=""></div>
         <div class="cat-card__meta"><strong>${c.label}${badge}</strong><span class="link-arrow">조건 보기${H.icon("arrow")}</span>
           <p class="cat-card__price prop prop--block">${m.n}개 모델 · 실구매가 <b class="num">${H.won(m.min)}</b>부터</p></div></a>`;
-    }).join("");
+    }).join("") + moreCard(set);
   }
 
   H.views.home = function () {
     var set = H.homeSet || "all";
-    var guides = C.guides.filter(function (g) { return g.home; });
-    var photos = C.reviews.filter(function (r) { return r.photo; }).slice(0, 3);
+    var guides = H.guideList().filter(function (g) { return g.home; });
     var chips = [["all", "전체"], ["iphone", "아이폰"], ["galaxy", "갤럭시"]].map(function (c) {
       return `<button type="button" class="chip" data-act="homeSet" data-v="${c[0]}" aria-pressed="${set === c[0]}">${c[1]}</button>`;
     }).join("");
@@ -51,14 +58,14 @@
   <div class="hero-card__txt">
     <h1>제품은 새로워도,<br>사는 건 복잡할 필요 없으니까.</h1>
     <p>Galaxy Fold8 Ultra · Wide · Flip8<br>복잡한 조건은 덜고, 필요한 기준만 명확하게.</p>
-    <a class="pill" href="#/phones?cat=galaxy-z">구매하기</a>
+    <a class="pill" href="#/phones?cat=galaxy&series=z8">구매하기</a>
   </div>
 </section></div>
 <section class="hero-m" aria-label="이번 달 소식">
   <div class="hero-m__txt">
     <h1>제품은 새로워도,<br>사는 건 복잡할 필요<br>없으니까.</h1>
     <p>Fold8 Ultra · Wide · Flip8<br>복잡한 조건은 덜고, 필요한 기준만 명확하게.</p>
-    <a class="pill" href="#/phones?cat=galaxy-z">구매하기</a>
+    <a class="pill" href="#/phones?cat=galaxy&series=z8">구매하기</a>
   </div>
   <img src="img/hero-mo.jpg" width="1080" height="891" alt="라벤더 색 갤럭시 Z 폴드8을 든 손">
 </section>
@@ -94,12 +101,7 @@
 
   <section class="sec" aria-labelledby="rvT">
     <div class="sec-hd"><h2 id="rvT">먼저 산 손님의 이야기</h2><a class="link-arrow" href="#/reviews">구매후기 보기${H.icon("arrow")}</a></div>
-    <div class="rv-grid">${photos.map(function (r) {
-      return `<a class="rv-tile" href="#/review/${r.id}">
-        <div class="rv-tile__ph"><img src="img/review-photo.jpg" alt="${r.name} 손님 후기 사진" loading="lazy"></div>
-        <p class="rv-tile__cap prop prop--block">${H.esc(r.text)}</p>
-        <p class="rv-tile__who prop prop--block">${r.name} · ${r.date.replace(/-/g, ".")}</p></a>`;
-    }).join("")}</div>
+    <div class="rv-row" tabindex="0" aria-label="후기, 옆으로 밀어서 더 보기">${H.homeReviews().map(H.reviewCard).join("")}</div>
   </section>
 </div>`
     };
@@ -111,7 +113,7 @@
   };
 
   /* ---------- 휴대폰 목록 ---------- */
-  var NEW_RANK = [56, 54, 55, 51, 52, 53, 35, 36, 37, 40, 41, 42, 45, 46, 47, 49, 50, 34];
+  H.group = function (p) { return p.cat === "iphone" ? "iphone" : "galaxy"; };
   H.productCard = function (p) {
     var s = H.defaults(p);
     var head = `<div class="p-card__img">${H.badge(p)}<img src="${H.img(p, s.color)}" alt="" loading="lazy"></div><p class="p-card__name">${p.name}</p>`;
@@ -129,52 +131,41 @@
       <button type="button" data-act="setCarrier" data-v="lgu" aria-pressed="${c === "lgu"}">네, 써요</button>
       <button type="button" data-act="setCarrier" data-v="other" aria-pressed="${c === "other"}">아니요</button></div>`;
   }
+  /* 휴대폰 메뉴는 아이폰 · 갤럭시 두 개. 그 안은 시리즈 제목으로 나눈다(갤럭시 Z · S · A 는 갤럭시 안으로) */
   H.views.phones = function (r) {
-    var cat = r.q.cat || "all", series = r.q.series || "", sort = r.q.sort || "rec";
-    var list = H.ordered().filter(function (p) { return (cat === "all" || p.cat === cat) && (!series || p.series === series); });
-    if (sort === "low") {
-      list = list.filter(function (p) { return !p.launch; })
-        .sort(function (a, b) { return H.listPrice(a).monthlyTotal - H.listPrice(b).monthlyTotal; })
-        .concat(list.filter(function (p) { return p.launch; }));
-    } else if (sort === "new") {
-      list.sort(function (a, b) { return NEW_RANK.indexOf(a.id) - NEW_RANK.indexOf(b.id); });
-    }
-    var link = function (o) {
-      var q = Object.assign({ cat: cat, series: series, sort: sort }, o), u = new URLSearchParams();
-      if (q.cat && q.cat !== "all") u.set("cat", q.cat);
-      if (q.series) u.set("series", q.series);
-      if (q.sort && q.sort !== "rec") u.set("sort", q.sort);
-      var s = u.toString();
-      return "#/phones" + (s ? "?" + s : "");
-    };
+    var q = r.q.cat || "", last = H.prod(H.state.recent[0]);
+    var group = q === "iphone" ? "iphone" : q && q !== "all" ? "galaxy" : last ? H.group(last) : "iphone";
+    var cat = D.cats.find(function (k) { return k.key === group; });
     var c = H.state.carrier;
     var small = c === "lgu" ? "기기변경 금액으로 보여드려요" : c === "other" ? "SKT · KT · 알뜰폰에서 옮기는 번호이동 금액이에요" : "고르기 전에는 번호이동 금액으로 보여드려요";
     var tabs = D.cats.map(function (k) {
-      return `<a class="chip" href="${link({ cat: k.key, series: "" })}"${cat === k.key ? ' aria-current="true"' : ""}>${k.label}</a>`;
-    }).join("") + (series ? `<a class="chip" aria-current="true" href="${link({ series: "" })}">${D.series[series]}${H.icon("close", "ic--xs")}</a>` : "");
-    var opts = [["rec", "추천순"], ["low", "월 납부 적은 순"], ["new", "새로 나온 순"]].map(function (o) {
-      return `<option value="${o[0]}"${sort === o[0] ? " selected" : ""}>${o[1]}</option>`;
+      return `<a class="brand-tab" href="#/phones?cat=${k.key}"${k.key === group ? ' aria-current="true"' : ""}>${k.label}</a>`;
+    }).join("");
+    var total = 0;
+    var sections = cat.series.map(function (sk) {
+      var list = H.ordered().filter(function (p) { return p.series === sk; });
+      total += list.length;
+      if (!list.length) return "";
+      return `<section class="series" id="s-${sk}" aria-labelledby="st-${sk}"><h2 class="series__t" id="st-${sk}">${D.series[sk]}<small class="num">${list.length}</small></h2><div class="p-grid">${list.map(H.productCard).join("")}</div></section>`;
     }).join("");
     return {
       title: "휴대폰",
       html: `
 <div class="wrap">
   <header class="ph"><h1>휴대폰</h1><p>LG U+ 공식 인증 대리점 · 보이는 가격 그대로</p></header>
-  <nav class="cat-tabs" aria-label="휴대폰 종류">${tabs}</nav>
+  <nav class="brand-tabs" aria-label="휴대폰 종류">${tabs}</nav>
   <div class="cond"><p class="cond__q">지금 LG U+ 쓰세요?<small>${small}</small></p>${carrierSeg()}</div>
-  <div class="list-tools"><span class="num">${list.length}개</span>
-    <label class="sortbox"><span class="sr">정렬</span><select id="sortSel" data-change="sort">${opts}</select>${H.icon("chev-d")}</label></div>
-  <div class="p-grid">${list.map(H.productCard).join("") || '<p class="empty">조건에 맞는 휴대폰이 없어요.</p>'}</div>
+  <p class="list-count num">${cat.label} ${total}개</p>
+  ${sections}
 </div>`
     };
   };
-  H.inputs.sort = function (el) {
-    var q = H.route.q, u = new URLSearchParams();
-    if (q.cat) u.set("cat", q.cat);
-    if (q.series) u.set("series", q.series);
-    if (el.value !== "rec") u.set("sort", el.value);
-    var s = u.toString();
-    location.hash = "#/phones" + (s ? "?" + s : "");
+  H.after.phones = function (r) {
+    if (!r.q.series) return;
+    var el = H.$("#s-" + r.q.series);
+    if (!el) return;
+    var hdr = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--hdr"), 10) || 60;
+    setTimeout(function () { window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - hdr - 12); }, 40);
   };
   H.acts.setCarrier = function (el) {
     H.state.carrier = el.dataset.v;
@@ -271,7 +262,7 @@
       title: p.name, tab: false, bar: H.productBar(p),
       html: `
 <div class="wrap">
-  <a class="back mo-only" href="#/phones?cat=${p.cat}">${H.icon("chev-l")}휴대폰</a>
+  <a class="back mo-only" href="#/phones?cat=${H.group(p)}&series=${p.series}">${H.icon("chev-l")}휴대폰</a>
   <div class="pd">
     <div class="pd-gallery">
       <div class="pd-img" id="pdImg">${H.badge(p)}<img src="${H.img(p, s.color)}" alt="${p.name}"></div>
@@ -302,7 +293,7 @@
     </section>
     <section class="pd-sec" id="pdReviews">
       <h2>구매후기</h2>
-      <div class="rv-list rv-list--2">${C.reviews.slice(0, 2).map(H.reviewCard).join("")}</div>
+      <div class="rv-list rv-list--2">${H.homeReviews().slice(0, 2).map(H.reviewCard).join("")}</div>
       <a class="link-arrow pd-more" href="#/reviews">구매후기 전체 보기${H.icon("arrow")}</a>
     </section>
     <section class="pd-sec" id="pdFaq"><h2>자주 묻는 질문</h2>${H.faqHtml()}${H.helpBox()}</section>
@@ -383,7 +374,7 @@
       bar: `<div class="bar__price"><small>${p.name}</small><b>출시 알림 받기</b></div><button type="button" class="btn btn--mg" data-act="alert" data-pid="${p.id}">알림 신청하기</button>`,
       html: `
 <div class="wrap">
-  <a class="back mo-only" href="#/phones?cat=${p.cat}">${H.icon("chev-l")}휴대폰</a>
+  <a class="back mo-only" href="#/phones?cat=${H.group(p)}&series=${p.series}">${H.icon("chev-l")}휴대폰</a>
   <div class="pd">
     <div class="pd-gallery"><div class="pd-img" id="pdImg">${H.badge(p)}<img src="${H.img(p, ci)}" alt="${p.name} ${p.colors[ci][0]}"></div></div>
     <div class="pd-main">
