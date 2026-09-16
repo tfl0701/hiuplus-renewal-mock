@@ -152,7 +152,7 @@
 
   function header(r) {
     var cur = r.path === "phone" ? "phones" : r.path === "review" ? "reviews" : r.path;
-    var nav = [["phones", "휴대폰", "#/phones"], ["guide", "알고사기", "#/guide"], ["reviews", "구매후기", "#/reviews"]];
+    var nav = [["phones", "휴대폰", "#/phones"], ["guide", "하유 가이드", "#/guide"], ["reviews", "구매후기", "#/reviews"]];
     var me = H.state.loggedIn ? "내정보" : "로그인";
     return '<header class="hdr"><div class="wrap hdr__in">' +
       '<a class="logo" href="#/" aria-label="하이유플 첫 화면"><img src="img/logo-white.svg" alt="HIU+"></a>' +
@@ -169,7 +169,7 @@
   }
   function tabbar(key) {
     var cur = { home: "home", phones: "phones", product: "phones", launch: "phones", guides: "guide", guide: "guide", my: "my" }[key] || (/^(my|signup|partner)/.test(key) ? "my" : "");
-    return [["home", "홈", "#/", "home"], ["phones", "휴대폰", "#/phones", "phone"], ["guide", "알고 사기", "#/guide", "doc"], ["my", "내정보", "#/my", "user"]]
+    return [["home", "홈", "#/", "home"], ["phones", "휴대폰", "#/phones", "phone"], ["guide", "하유 가이드", "#/guide", "doc"], ["my", "내정보", "#/my", "user"]]
       .map(function (t) { return '<a href="' + t[2] + '"' + (cur === t[0] ? ' aria-current="page"' : "") + ">" + H.icon(t[3]) + "<span>" + t[1] + "</span></a>"; })
       .join("");
   }
@@ -177,7 +177,7 @@
     var cs = C.cs, soon = "시안: 약관 화면은 지금 사이트 것을 그대로 써요";
     return '<footer class="ftr"><div class="wrap">' +
       '<div class="ftr__top"><img src="img/logo-black.svg" alt="HIU+">' +
-      '<nav class="ftr__links" aria-label="바닥 메뉴"><a href="#/guide">알고 사기</a><a href="#/cs">고객센터</a><a href="#/partner">파트너스</a>' +
+      '<nav class="ftr__links" aria-label="바닥 메뉴"><a href="#/guide">하유 가이드</a><a href="#/cs">고객센터</a><a href="#/partner">파트너스</a>' +
       '<button type="button" data-act="toast" data-msg="' + soon + '">이용약관</button><button type="button" data-act="toast" data-msg="' + soon + '">개인정보 처리방침</button></nav>' +
       '<p class="ftr__tag">좋은 선택이 더 특별한 일상이 되는 곳, HIU+</p></div>' +
       '<p class="ftr__biz"><span>이 페이지는 하이유플 리뉴얼 시안이에요 · 실제 주문은 hiuplus.com</span><span>' + cs.biz + "</span><span>" + cs.addr + "</span><span>고객센터 " + cs.phone + "</span></p>" +

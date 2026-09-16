@@ -1,4 +1,4 @@
-/* 하이유플 리뉴얼 목업 — 직원용 관리(시안): 알고사기 글 편집 · 구매후기 피드 감추기
+/* 하이유플 리뉴얼 목업 — 직원용 관리(시안): 하유 가이드 글 편집 · 구매후기 피드 감추기
  * 실제로는 자비스웹 안에 들어갈 화면. 목업에서는 고친 내용이 이 브라우저에만 저장된다.
  */
 (function () {
@@ -11,7 +11,7 @@
    * 자비스웹과 손님몰은 한 프로그램(labadmin) · 같은 DB. 탭 옆 표시: 있음 = 지금 메뉴 · 고침 = 칸 더하기 · 새로 = 새 메뉴 */
   var TAG = { "있음": "have", "고침": "fix", "새로": "new" };
   function shell(tab, inner, title, extra) {
-    var tabs = [["home", "관리 첫 화면", "#/admin", ""], ["banners", "배너 관리", "#/admin/banners", "있음"], ["reviews", "후기 관리", "#/admin/reviews", "고침"], ["guides", "알고사기 글", "#/admin/guides", "새로"]];
+    var tabs = [["home", "관리 첫 화면", "#/admin", ""], ["banners", "배너 관리", "#/admin/banners", "있음"], ["reviews", "후기 관리", "#/admin/reviews", "고침"], ["guides", "하유 가이드 글", "#/admin/guides", "새로"]];
     return Object.assign({
       title: title, tab: false, footer: false,
       html: `<div class="adm">
@@ -40,7 +40,7 @@
   <div class="adm-cards">
     <a class="adm-card" href="#/admin/banners"><small>배너 관리 <span class="adm-tag adm-tag--have">있음</span></small><b class="num">${bnOn}장 켜짐</b><span>순서 · 노출 기간 · 켜기 · PC/모바일 그림</span></a>
     <a class="adm-card" href="#/admin/reviews"><small>후기 관리 <span class="adm-tag adm-tag--fix">고침</span></small><b class="num">${feed.length}개</b><span>감춤 ${hidePosts}개 · 사진만 감춤 ${hidePhotos}개</span></a>
-    <a class="adm-card" href="#/admin/guides"><small>알고사기 글 <span class="adm-tag adm-tag--new">새로</span></small><b class="num">${guides.length}개</b><span>숨김 ${hidden}개 · 새 글 쓰기 · 고치기</span></a>
+    <a class="adm-card" href="#/admin/guides"><small>하유 가이드 글 <span class="adm-tag adm-tag--new">새로</span></small><b class="num">${guides.length}개</b><span>숨김 ${hidden}개 · 새 글 쓰기 · 고치기</span></a>
   </div>
   <p class="demo-note"><span class="demo-tag">시안</span>파트너스 · 인터넷+TV · 상담 접수 · 접수 관리는 지금 자비스웹 화면을 그대로 써요</p>`, "관리");
   };
@@ -81,11 +81,11 @@
     H.toast(i >= 0 ? "배너를 켰어요. 첫 화면에 다시 보여요" : "배너를 껐어요. 첫 화면에서 빠졌어요");
   };
 
-  /* ---------- 알고사기 글 목록 ---------- */
+  /* ---------- 하유 가이드 글 목록 ---------- */
   H.views["admin-guides"] = function () {
     var list = H.guideList({ all: true }), hid = H.state.guideHidden || [], edits = H.state.guideEdits || {};
     return shell("guides", `
-  <div class="adm-hd"><div><h1>알고사기 글</h1><p class="num">${list.length}개 · 손님 화면에 보이는 순서</p></div><a class="btn btn--mg btn--sm" href="#/admin/guide/new">${H.icon("pencil", "ic--sm")}새 글 쓰기</a></div>
+  <div class="adm-hd"><div><h1>하유 가이드 글</h1><p class="num">${list.length}개 · 손님 화면에 보이는 순서</p></div><a class="btn btn--mg btn--sm" href="#/admin/guide/new">${H.icon("pencil", "ic--sm")}새 글 쓰기</a></div>
   <div class="adm-list">${list.map(function (g) {
     var isHid = hid.indexOf(g.slug) >= 0, isNew = !C.guides.some(function (x) { return x.slug === g.slug; });
     return `<div class="adm-row">
@@ -98,7 +98,7 @@
       </div>
     </div>`;
   }).join("")}</div>
-  <p class="demo-note"><span class="demo-tag">시안</span>스위치를 끄면 손님 화면의 알고사기 목록 · 첫 화면에서 바로 빠져요</p>`, "알고사기 글 관리");
+  <p class="demo-note"><span class="demo-tag">시안</span>스위치를 끄면 손님 화면의 하유 가이드 목록 · 첫 화면에서 바로 빠져요</p>`, "하유 가이드 글 관리");
   };
   H.acts.admGuideVis = function (el) {
     var slug = el.dataset.v, hid = (H.state.guideHidden || []).slice(), i = hid.indexOf(slug);
@@ -147,7 +147,7 @@
     if (!g.body) return shell("guides", `<p class="empty">글을 찾을 수 없어요.</p>`, "글 고치기");
     var cats = C.guideCats.filter(function (c) { return c !== "전체"; });
     return shell("guides", `
-  <a class="back" href="#/admin/guides">${H.icon("chev-l")}알고사기 글</a>
+  <a class="back" href="#/admin/guides">${H.icon("chev-l")}하유 가이드 글</a>
   <div class="adm-hd"><div><h1>${g._isNew ? "새 글 쓰기" : "글 고치기"}</h1><p>고친 뒤 «저장»을 눌러야 손님 화면에 반영돼요.</p></div></div>
   <div class="adm-editor">
     <section class="adm-sec"><h2>글 정보</h2>
@@ -156,7 +156,7 @@
       <div class="field"><label for="edSum">목록에 보일 한 줄</label><input id="edSum" class="input" value="${H.esc(g.summary)}" data-input="edField" data-f="summary"></div>
       <div class="field-2">
         <div class="field"><label for="edRead">읽는 시간(분)</label><input id="edRead" class="input" inputmode="numeric" value="${g.read}" data-input="edField" data-f="read"></div>
-        <div class="toggle toggle--box"><span>첫 화면에 보이기<small>첫 화면 «알고사기»에 나와요</small></span><button type="button" class="switch" role="switch" aria-checked="${!!g.home}" data-act="edHome" aria-label="첫 화면에 보이기"></button></div>
+        <div class="toggle toggle--box"><span>첫 화면에 보이기<small>첫 화면 «하유 가이드»에 나와요</small></span><button type="button" class="switch" role="switch" aria-checked="${!!g.home}" data-act="edHome" aria-label="첫 화면에 보이기"></button></div>
       </div>
     </section>
     <section class="adm-sec"><h2>본문</h2><p class="help-t">위에서부터 순서대로 보여요. 칸마다 ↑ ↓ 로 옮기고, 필요 없으면 지워요.</p>

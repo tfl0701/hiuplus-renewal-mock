@@ -154,14 +154,14 @@ ${H.bannerHtml()}
     <div class="cat-grid" id="catGrid">${catCards(set)}</div>
   </section>
 
-  <section class="know" aria-labelledby="knowT">
-    <div class="know__head">
-      <h2 id="knowT">알고사기</h2>
-      <p>헷갈리는 조건을<br class="pc-only"> 쉬운 말로 풀어드려요.</p>
+  <section class="gcard" aria-labelledby="gcT">
+    <div class="gcard__head">
+      <span class="gcard__pill">하유 가이드</span>
+      <h2 id="gcT">헷갈리는 조건을<br>쉬운 말로 풀어드려요.</h2>
       <a class="link-arrow" href="#/guide">전체 글 보기${H.icon("arrow")}</a>
     </div>
-    <div class="know__list">${guides.map(function (g) {
-      return `<a class="know-item" href="#/guide/${g.slug}"><div><small>${g.cat}</small><span>${g.title}</span></div>${H.icon("arrow")}</a>`;
+    <div class="gcard__list">${guides.map(function (g) {
+      return `<a class="gc-item" href="#/guide/${g.slug}"><span class="gc-item__txt"><small>${H.esc(g.cat)}</small><b>${H.esc(g.title)}</b></span>${H.icon("arrow", "gc-item__go")}</a>`;
     }).join("")}</div>
   </section>
 

@@ -1,10 +1,10 @@
-/* 하이유플 리뉴얼 목업 — 알고사기 · 구매후기 · 고객센터 · 검색 · 전체 메뉴 · 알림 신청 · 상담 · 기획 메모 */
+/* 하이유플 리뉴얼 목업 — 하유 가이드 · 구매후기 · 고객센터 · 검색 · 전체 메뉴 · 알림 신청 · 상담 · 기획 메모 */
 (function () {
   "use strict";
   var H = window.H, D = H.D, C = H.C, N = H.N;
   var ASOF = D.asOf.replace(/-/g, ".");
 
-  /* 알고사기 글 목록 — 관리 화면에서 고친 내용(이 브라우저에 저장)을 덮어쓴다 */
+  /* 하유 가이드 글 목록 — 관리 화면에서 고친 내용(이 브라우저에 저장)을 덮어쓴다 */
   H.guideList = function (opt) {
     var st = H.state, edits = st.guideEdits || {}, hidden = st.guideHidden || [];
     var list = C.guides.map(function (g) { return edits[g.slug] || g; }).concat(st.guideNew || []);
@@ -33,7 +33,7 @@
       <div class="help__acts"><button type="button" class="btn btn--kakao" data-act="kakao">${H.icon("kakao", "ic--fill")}카카오톡 상담</button><button type="button" class="btn btn--line" data-act="chat">${H.icon("spark")}AI 상담</button></div></div>`;
   };
 
-  /* ---------- 알고사기 ---------- */
+  /* ---------- 하유 가이드 ---------- */
   function sel(b, o) {
     return Object.assign({ vol: b.vol || 0, color: 0, planId: b.plan, method: b.method, discount: b.discount, payment: "installment", months: b.months || 24 }, o || {});
   }
@@ -80,7 +80,7 @@
     }
     return "";
   }
-  /* 알고사기 목록 — 대표 글 → 주제별 묶음 → 찾는 답이 없을 때 상담 */
+  /* 하유 가이드 목록 — 대표 글 → 주제별 묶음 → 찾는 답이 없을 때 상담 */
   function plain(t) { return String(t || "").replace(/<[^>]+>/g, ""); }
   function hasTable(g) { return (g.body || []).some(function (b) { return b.t === "calc" || b.t === "compare"; }); }
   function glMeta(g) {
@@ -111,10 +111,10 @@
       return `<section class="gl-sec"><header class="gl-sec__hd"><h2>${c}</h2>${desc[c] ? `<p>${desc[c]}</p>` : ""}</header><div class="gl-list">${list.map(glRow).join("")}</div></section>`;
     }).join("");
     return {
-      title: "알고사기",
+      title: "하유 가이드",
       html: `<div class="wrap"><div class="gl">
   <div class="gl-side">
-    <header class="gl-hd"><h1>알고사기</h1><p>휴대폰 살 때 헷갈리는 조건을 쉬운 말로 풀어드려요.</p><p class="gl-hd__meta num">글 ${all.length}개 · 금액은 ${ASOF} 판매 가격으로 계산</p></header>
+    <header class="gl-hd"><h1>하유 가이드</h1><p>휴대폰 살 때 헷갈리는 조건을 쉬운 말로 풀어드려요.</p><p class="gl-hd__meta num">글 ${all.length}개 · 금액은 ${ASOF} 판매 가격으로 계산</p></header>
     <a class="gl-search" href="#/search">${H.icon("search")}<span>궁금한 말로 찾기</span></a>
     <nav class="gl-nav" aria-label="글 주제">${nav}</nav>
   </div>
@@ -131,13 +131,13 @@
   H.views.guide = function (r) {
     var g = H.guide(r.parts[1]);
     if (g && (H.state.guideHidden || []).indexOf(g.slug) >= 0 && r.q.preview !== "1") g = null;
-    if (!g) return { title: "알고사기", html: `<div class="wrap"><p class="empty">글을 찾을 수 없어요.<br><br><a class="btn btn--ink btn--sm" href="#/guide">알고사기 전체 보기</a></p></div>` };
+    if (!g) return { title: "하유 가이드", html: `<div class="wrap"><p class="empty">글을 찾을 수 없어요.<br><br><a class="btn btn--ink btn--sm" href="#/guide">하유 가이드 전체 보기</a></p></div>` };
     var related = H.guideList().filter(function (x) { return x.slug !== g.slug; }).slice(0, 3);
     return {
       title: g.title,
       html: `<div class="wrap"><article class="art">
   ${r.q.preview === "1" ? '<p class="preview-bar">미리보기예요. 관리 화면에서 저장한 내용이 이렇게 보여요. <a href="#/admin/guides">관리로 돌아가기</a></p>' : ""}
-  <a class="back" href="#/guide">${H.icon("chev-l")}알고사기</a>
+  <a class="back" href="#/guide">${H.icon("chev-l")}하유 가이드</a>
   <p class="eyebrow">${g.cat}</p><h1>${g.title}</h1><p class="meta">${g.read}분이면 읽어요 · ${ASOF} 기준</p>
   <div class="art__body">${g.body.map(block).join("")}</div>
   <footer class="art-foot">
@@ -321,7 +321,7 @@
     return (res.prods.length ? `<h2>휴대폰 ${res.prods.length}</h2><div>${res.prods.map(function (p) {
       return `<a class="res-row" href="#/phone/${p.id}"><span class="th"><img src="${H.img(p, H.defaults(p).color)}" alt=""></span><span><b>${p.name}</b><small class="num">${p.launch ? "출시 알림 받기" : "실구매가 " + H.won(H.listPrice(p).principal)}</small></span></a>`;
     }).join("")}</div>` : "") +
-      (res.guides.length ? `<h2>알고사기 ${res.guides.length}</h2><div>${res.guides.map(function (g) {
+      (res.guides.length ? `<h2>하유 가이드 ${res.guides.length}</h2><div>${res.guides.map(function (g) {
         return `<a class="res-row" href="#/guide/${g.slug}"><span class="th">${H.icon("doc")}</span><span><b>${g.title}</b><small>${g.cat}</small></span></a>`;
       }).join("")}</div>` : "");
   }
@@ -370,7 +370,7 @@
         <nav class="dr-nav" aria-label="전체 메뉴">
           <a href="#/phones">휴대폰${H.icon("chev-r")}</a>
           <div class="dr-sub">${D.cats.map(function (c) { return `<a href="#/phones?cat=${c.key}">${c.label}</a>`; }).join("")}</div>
-          <a href="#/guide">알고사기${H.icon("chev-r")}</a>
+          <a href="#/guide">하유 가이드${H.icon("chev-r")}</a>
           <a href="#/reviews">구매후기${H.icon("chev-r")}</a>
           <a href="#/cs">고객센터${H.icon("chev-r")}</a>
           <a href="#/partner">파트너스${H.icon("chev-r")}</a>
@@ -464,7 +464,7 @@
         ${n.ask && n.ask.length ? `<h3>대표님 확인이 필요한 것</h3><ul>${n.ask.map(function (t) { return li(t, "ask"); }).join("")}</ul>` : ""}
         <h3>«제안 보기»로 켜지는 것</h3><ul>${N.proposals.map(function (t) { return li(t); }).join("")}</ul>
         <a class="btn btn--ink btn--block memo-tour" href="#/screens">화면 순서대로 보기 (회원가입 · 주문 · 마이페이지)</a>
-        <a class="btn btn--line btn--block memo-tour2" href="#/admin">직원용 관리 화면 (알고사기 글 · 후기 감추기)</a>
+        <a class="btn btn--line btn--block memo-tour2" href="#/admin">직원용 관리 화면 (하유 가이드 글 · 후기 감추기)</a>
         <a class="link-arrow pd-more" href="plan.html">기획서 전체 보기${H.icon("arrow")}</a>
       </div>
       <div class="toggle"><span>제안 보기<small>시안에 없는 제안을 화면에 켜서 비교해요</small></span><button type="button" class="switch" role="switch" aria-checked="${!!H.state.proposals}" data-act="toggleProposals" aria-label="제안 보기"></button></div>

@@ -117,7 +117,7 @@
       ]
     },
     browse: {
-      title: "둘러보기", desc: "첫 화면 · 목록 · 상품 · 알고사기 · 구매후기 피드 · 고객센터",
+      title: "둘러보기", desc: "첫 화면 · 목록 · 상품 · 하유 가이드 · 구매후기 피드 · 고객센터",
       steps: [
         { t: "첫 화면 · 배너 5초마다 넘김", go: "#/", setup: function () { H.state.bannerOff = []; } },
         { t: "첫 화면 · 후기 한 줄", go: "#/", setup: function () { H.state.feedMod = {}; }, after: scrollToEl(".rv-row") },
@@ -130,9 +130,9 @@
         { t: "상품 화면 · 구매혜택", go: "#/phone/54", setup: freshProduct, after: scrollToEl("#pdBenefit") },
         { t: "출시 전 상품 · 아이폰 듀오", go: "#/phone/56" },
         { t: "출시 알림 신청 창", go: "#/phone/56", after: function () { H.acts.alert({ dataset: { pid: "56" } }); } },
-        { t: "알고사기 목록", go: "#/guide" },
-        { t: "알고사기 글 · 선택약정 비교", go: "#/guide/support-or-select" },
-        { t: "알고사기 글 끝 · 보던 휴대폰으로 가는 단추", go: "#/guide/plan-down", setup: function () { H.state.recent = [54]; }, after: scrollToEl(".art-cta--last") },
+        { t: "하유 가이드 목록", go: "#/guide" },
+        { t: "하유 가이드 글 · 선택약정 비교", go: "#/guide/support-or-select" },
+        { t: "하유 가이드 글 끝 · 보던 휴대폰으로 가는 단추", go: "#/guide/plan-down", setup: function () { H.state.recent = [54]; }, after: scrollToEl(".art-cta--last") },
         { t: "휴대폰 + 인터넷 같이 · 결합 할인", go: "#/together" },
         { t: "구매후기 피드", go: "#/reviews", setup: function () { H.state.feedMod = {}; } },
         { t: "구매후기 · 사진만", go: "#/reviews?f=photo", setup: function () { H.state.feedMod = {}; } },
@@ -145,11 +145,11 @@
       ]
     },
     admin: {
-      title: "직원 관리", desc: "알고사기 글 고치기 · 새 글 · 구매후기 감추기 (실제로는 자비스웹 안)",
+      title: "직원 관리", desc: "하유 가이드 글 고치기 · 새 글 · 구매후기 감추기 (실제로는 자비스웹 안)",
       steps: [
         { t: "관리 첫 화면 · 자비스웹 안", go: "#/admin", setup: adminClean },
         { t: "배너 관리 · 켜기 · 넣는 칸", go: "#/admin/banners", setup: adminClean },
-        { t: "알고사기 글 목록 · 한 글 숨김", go: "#/admin/guides", setup: function () { adminClean(); H.state.guideHidden = ["installment"]; } },
+        { t: "하유 가이드 글 목록 · 한 글 숨김", go: "#/admin/guides", setup: function () { adminClean(); H.state.guideHidden = ["installment"]; } },
         { t: "글 고치기 · 요금제 낮추기 글", go: "#/admin/guide/plan-down", setup: adminClean },
         { t: "새 글 쓰기 · 빈 칸", go: "#/admin/guide/new", setup: adminClean },
         { t: "새 글 쓰기 · 채운 모습", go: "#/admin/guide/new", setup: function () { adminClean(); H.editDraft = Object.assign(copy(NEW_GUIDE), { _slug: "new", _isNew: true }); } },
