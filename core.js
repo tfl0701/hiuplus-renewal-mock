@@ -105,6 +105,21 @@
     if (a === b) return null;
     return { key: a < b ? "official" : "select", label: a < b ? "이통사지원금" : "선택약정", diff: Math.abs(a - b) };
   };
+  /* 인터넷 같이 상담 — 상품 화면 · 결합 화면 · 주문서 세 곳이 같은 값을 쓴다 (대표 지시 2026-09-16
+   * «설명화면으로 넘어가고 설명화면 에도 설명화면 누르기전에도 체크 하는게 있어야되») */
+  H.netAsk = function () { return H.state.netAsk === true; };
+  H.acts.netAskToggle = function () { H.state.netAsk = !H.state.netAsk; H.save(); H.render(); };
+  H.netAskCard = function (eyebrow, title, desc, noMore) {
+    var on = H.netAsk();
+    return `<div class="bf-net${on ? " on" : ""}">
+      <button type="button" class="bf-net__chk" data-act="netAskToggle" aria-pressed="${on}">
+        <span class="box">${H.icon("check")}</span>
+        <span class="bf-net__t"><small>${H.esc(eyebrow)}</small><b>${H.esc(title)}</b><span>${H.esc(desc)}</span></span></button>
+      ${noMore ? "" : `<a class="bf-net__more" href="#/together">결합 할인 자세히 보기${H.icon("arrow")}</a>`}
+      <p class="bf-net__note">${on ? "접수할 때 «인터넷 상담 원함»으로 같이 들어가요." : "체크하면 접수할 때 같이 들어가요. 휴대폰 가격은 그대로예요."}</p>
+    </div>`;
+  };
+
   H.listPrice = function (p) { var s = H.defaults(p); return Object.assign(H.price(p, s), { sel: s }); };
   H.methodLabel = function (m) { return m === "change" ? "기기변경" : "번호이동"; };
   H.discountLabel = function (d) { return d === "select" ? "선택약정" : "이통사지원금"; };

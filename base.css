@@ -1,6 +1,7 @@
 /* 하이유플 리뉴얼 목업 — 바탕 · 머리 · 아래 탭 · 바닥글 · 첫 화면
  * 색·크기는 시안(pc.png 2배 · mobile.png 5배)에서 재어 옮김. 손님몰은 밝은 화면 하나로 간다(시안 그대로).
  */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
 :root {
   color-scheme: light;
   --black: #000000;
@@ -35,8 +36,9 @@
   :root { --hdr: 78px; --gut: 24px; }
 }
 
-@font-face { font-family: "Pretendard"; src: url("fonts/Pretendard-Regular.otf") format("opentype"); font-weight: 100 500; font-display: swap; }
-@font-face { font-family: "Pretendard"; src: url("fonts/Pretendard-Bold.otf") format("opentype"); font-weight: 600 900; font-display: swap; }
+/* 실제 사이트와 같은 글꼴 파일을 쓴다 — 전에는 Regular·Bold 두 개만 넣어서
+   500 이 400 처럼, 600 이 700 처럼 그려졌다. 그래서 목업과 사이트의 굵기가 달라 보였다.
+   (2026-09-16 대표 «글자가 깨지는 것 같다» 제보로 확인) */
 
 *, *::before, *::after { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -45,7 +47,7 @@ body {
   margin: 0;
   background: #ffffff;
   color: var(--text);
-  font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
   font-size: 15px;
   line-height: 1.55;
   letter-spacing: -0.01em;
@@ -75,12 +77,12 @@ h1, h2, h3 { text-wrap: balance; }
 .hdr__in { position: relative; height: 100%; display: flex; align-items: center; justify-content: space-between; }
 .logo { display: inline-flex; align-items: center; height: 100%; }
 .logo img { height: 17px; width: auto; }
-.hdr__nav { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 40px; font-size: 15px; font-weight: 600; }
+.hdr__nav { position: absolute; left: 50%; transform: translateX(-50%); display: flex; gap: 40px; font-size: 15px; font-weight: 700; }
 .hdr__nav a { position: relative; padding: 8px 2px; color: rgba(255, 255, 255, .92); }
 .hdr__nav a:hover, .hdr__nav a[aria-current="page"] { color: #fff; }
 .hdr__nav a[aria-current="page"]::after { content: ""; position: absolute; left: 2px; right: 2px; bottom: 0; height: 2px; background: #fff; border-radius: 2px; }
 .hdr__act { display: flex; align-items: center; gap: 22px; }
-.hdr__btn { display: inline-flex; align-items: center; gap: 6px; height: 40px; font-size: 13px; font-weight: 600; }
+.hdr__btn { display: inline-flex; align-items: center; gap: 6px; height: 40px; font-size: 13px; font-weight: 700; }
 .hdr__btn .ic { width: 22px; height: 22px; }
 @media (max-width: 1023.98px) {
   .hdr__act { gap: 18px; margin-right: -4px; }
@@ -99,7 +101,7 @@ h1, h2, h3 { text-wrap: balance; }
   background: var(--black); color: #8f8f8f;
   display: grid; grid-template-columns: repeat(4, 1fr);
 }
-.tab a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 12px; font-weight: 500; }
+.tab a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 12px; font-weight: 400; }
 .tab a .ic { width: 22px; height: 22px; }
 .tab a[aria-current="page"] { color: #fff; }
 body.has-tab #app { padding-bottom: calc(var(--tab) + env(safe-area-inset-bottom)); }
@@ -126,7 +128,7 @@ body.no-tab .tab { display: none; }
 }
 
 /* ---------- 단추 · 칩 · 화살표 글 ---------- */
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 52px; padding: 0 22px; border-radius: 12px; font-size: 16px; font-weight: 600; transition: background-color .15s var(--ease), transform .1s var(--ease), border-color .15s; white-space: nowrap; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 52px; padding: 0 22px; border-radius: 12px; font-size: 16px; font-weight: 700; transition: background-color .15s var(--ease), transform .1s var(--ease), border-color .15s; white-space: nowrap; }
 .btn:active { transform: scale(.985); }
 .btn--mg { background: var(--mg); color: #fff; }
 .btn--mg:hover { background: var(--mg-dark); }
@@ -137,10 +139,10 @@ body.no-tab .tab { display: none; }
 .btn--block { width: 100%; }
 .btn--sm { height: 40px; padding: 0 16px; font-size: 14px; border-radius: 10px; }
 .btn[disabled] { background: #e6e6e6; color: #9a9a9a; cursor: not-allowed; }
-.pill { display: inline-flex; align-items: center; height: 55px; padding: 0 29px; border-radius: 999px; background: var(--lav-cta); color: #fff; font-size: 17px; font-weight: 500; transition: filter .15s; }
+.pill { display: inline-flex; align-items: center; height: 55px; padding: 0 29px; border-radius: 999px; background: var(--lav-cta); color: #fff; font-size: 17px; font-weight: 400; transition: filter .15s; }
 .pill:hover { filter: brightness(1.12); }
 .chips { display: flex; gap: 10px; }
-.chip { display: inline-flex; align-items: center; justify-content: center; height: 39px; padding: 0 22px; border-radius: 999px; background: var(--chip); color: var(--ink); font-size: 14px; font-weight: 500; white-space: nowrap; transition: background-color .15s, color .15s; }
+.chip { display: inline-flex; align-items: center; justify-content: center; height: 39px; padding: 0 22px; border-radius: 999px; background: var(--chip); color: var(--ink); font-size: 14px; font-weight: 400; white-space: nowrap; transition: background-color .15s, color .15s; }
 .chip:hover { background: #ececec; }
 .chip[aria-pressed="true"] { background: var(--ink-2); color: #fff; }
 .link-arrow { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; color: var(--g3); white-space: nowrap; }
@@ -171,7 +173,7 @@ body.no-tab .tab { display: none; }
 /* 제안: 믿음 띠 */
 .trust { display: flex; gap: 8px; overflow-x: auto; padding: 16px 0 0; scrollbar-width: none; }
 .trust::-webkit-scrollbar { display: none; }
-.trust li { display: inline-flex; align-items: center; gap: 6px; flex: none; height: 32px; padding: 0 12px; border-radius: 999px; background: var(--lav-tint); color: #3d2f52; font-size: 13px; font-weight: 600; }
+.trust li { display: inline-flex; align-items: center; gap: 6px; flex: none; height: 32px; padding: 0 12px; border-radius: 999px; background: var(--lav-tint); color: #3d2f52; font-size: 13px; font-weight: 700; }
 .trust .ic { width: 15px; height: 15px; stroke-width: 2; color: var(--lav-cta); }
 @media (min-width: 1024px) {
   .trust { padding: 20px 0 0; gap: 10px; }
@@ -228,7 +230,7 @@ body.no-tab .tab { display: none; }
 .gcard__list { margin-top: 22px; }
 .gc-item { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 17px 0; border-top: 1px solid #e2e2e2; }
 .gc-item__txt small { display: block; font-size: 12px; color: var(--g3); }
-.gc-item__txt b { display: block; margin-top: 7px; font-size: 15px; line-height: 1.45; font-weight: 600; letter-spacing: -0.02em; color: var(--black); }
+.gc-item__txt b { display: block; margin-top: 7px; font-size: 15px; line-height: 1.45; font-weight: 700; letter-spacing: -0.02em; color: var(--black); }
 .gc-item__go { width: 17px; height: 17px; flex: none; color: var(--g4); transition: transform .2s var(--ease), color .2s; }
 .gc-item:hover .gc-item__go { color: var(--ink); transform: translateX(3px); }
 .gc-item:hover .gc-item__txt b { text-decoration: underline; text-underline-offset: 4px; }

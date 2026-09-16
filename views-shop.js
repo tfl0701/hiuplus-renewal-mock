@@ -283,6 +283,27 @@ ${H.bannerHtml()}
       <div class="opt__body"><button type="button" class="plan-btn" data-act="planSheet"><span><b>${pl.name}</b><small>데이터 ${pl.data}${pl.after ? " · 다 쓰면 " + pl.after : ""} · 통화 ${pl.voice}</small></span><span class="fee num">월 ${H.won(pl.fee)}${H.icon("chev-r", "ic--sm")}</span></button>
       <p class="plan-note">${H.icon("info")}185일 이후 월 47,000원까지 낮출 수 있어요<a href="#/guide/plan-down">자세히</a></p></div></div>`;
   }
+  /* 상세 구역 — 우리 자료로만 만든다(색상·용량·값). 제조사 사양을 지어내지 않는다.
+   * 대표 지시 2026-09-16 «등록된상세정보가 없다고 하는데 그것도 만들어서 보여줘» */
+  function detailBlock(p, s) {
+    var cols = p.colors.map(function (c, i) {
+      return `<button type="button" class="dt-col" data-act="setOpt" data-k="color" data-v="${i}" aria-pressed="${s.color === i}">
+        <span class="dt-col__img"><img src="${c[2]}" alt="" loading="lazy"></span>
+        <span class="dt-col__n"><i style="background:${c[1]}"></i>${H.esc(c[0])}</span></button>`;
+    }).join("");
+    var rows = p.vols.map(function (v, i) {
+      var r = H.price(p, Object.assign({}, s, { vol: i }));
+      return `<tr${s.vol === i ? ' class="on"' : ''}><th>${v[0]}</th><td class="num">${H.won(v[1])}</td><td class="num">${H.won(r.principal)}</td><td class="num">${r.months ? "월 " + H.won(r.monthlyTotal) : "일시불"}</td></tr>`;
+    }).join("");
+    return `<div class="dt">
+      <h3>색상 ${p.colors.length}가지</h3>
+      <div class="dt-cols">${cols}</div>
+      <h3>용량별로 얼마인가요?</h3>
+      <div class="tbl-wrap"><table class="dt-tbl"><thead><tr><th>용량</th><th>출고가</th><th>실구매가</th><th>월 납부</th></tr></thead><tbody>${rows}</tbody></table></div>
+      <p class="asof">지금 고르신 조건(${H.esc(H.plan(s.planId) ? H.plan(s.planId).name : "요금제")} · ${H.methodLabel(s.method)} · ${H.discountLabel(s.discount)}) 기준이에요. 위에서 조건을 바꾸면 이 표도 같이 바뀌어요.</p>
+    </div>`;
+  }
+
   function optDiscount(p, s) {
     var both = !!(p.official && p.select && p.rows.length);
     var canDown = both && H.price(p, s).planFeeBase > H.DOWN.fee;
@@ -291,7 +312,7 @@ ${H.bannerHtml()}
     var btn = function (key, label, sub, ok) {
       return `<button type="button" class="choice" data-act="setOpt" data-k="discount" data-v="${key}" aria-pressed="${s.discount === key}"${ok ? "" : " disabled"}>${best && best.key === key ? '<span class="save">덜 내요</span>' : ""}${label}<small>${ok ? sub : "이 상품은 안 돼요"}</small></button>`;
     };
-    var basis = canDown ? `<div class="cmp-basis" role="group" aria-label="비교 기준"><button type="button" data-act="cmpBasis" data-v="keep" aria-pressed="${!down}">요금제 그대로</button><button type="button" data-act="cmpBasis" data-v="down" aria-pressed="${down}">185일 뒤 47,000원으로</button></div>` : "";
+    var basis = canDown ? `<div class="cmp-basis" role="group" aria-label="비교 기준"><button type="button" data-act="cmpBasis" data-v="keep" aria-pressed="${!down}">요금제 그대로</button><button type="button" data-act="cmpBasis" data-v="down" aria-pressed="${down}">요금을 낮출 생각이면</button></div>` : "";
     var line = "";
     if (best && best.key !== s.discount) line = `<p class="save-line">${H.icon("spark")}<span>이 조건에선 <b>${best.label}</b>이 ${when} <b class="num">${H.won(best.diff)}</b> 덜 내요.</span><button type="button" data-act="setOpt" data-k="discount" data-v="${best.key}">바꾸기</button></p>`;
     else if (best) line = `<p class="save-line">${H.icon("check")}<span>지금 고른 <b>${best.label}</b>이 ${when} <b class="num">${H.won(best.diff)}</b> 덜 내요.</span></p>`;
@@ -348,7 +369,7 @@ ${H.bannerHtml()}
   }
   H.productPanel = function (p) {
     var s = H.selFor(p), r = H.price(p, s);
-    return optCarrier(p) + optVol(p, s) + optColor(p, s) + optPlan(p, s, r) + optDiscount(p, s) + optPay(s) + priceBox(p, s, r) +
+    return optColor(p, s) + optCarrier(p) + optVol(p, s) + optPlan(p, s, r) + optDiscount(p, s) + optPay(s) + priceBox(p, s, r) +
       `<div class="pd-cta pc-only"><button type="button" class="btn btn--mg btn--block" data-act="order">주문하기</button>
         <div class="pd-cta__sub"><button type="button" data-act="callback">${H.icon("call")}번호만 남기고 상담받기</button><button type="button" data-act="chat">${H.icon("spark")}AI에게 물어보기</button></div></div>
       <div class="pd-cta__sub pd-sub-mo mo-only"><button type="button" data-act="callback">${H.icon("call")}번호만 남기고 상담받기</button><button type="button" data-act="chat">${H.icon("spark")}AI에게 물어보기</button></div>`;
@@ -407,8 +428,8 @@ ${H.bannerHtml()}
         <article class="info-card"><small>추가 청구 없음</small><h3>지금 보시는 월 납부 금액이 마지막 금액이에요</h3><p>개통 후에 다른 명목으로 더 청구하지 않아요. 할부를 고른 경우에만 연 5.9% 이자가 따로 붙어요.</p></article>
         <article class="info-card"><small>요금제</small><h3>요금제는 185일 뒤에 낮출 수 있어요</h3><p>개통일 기준 185일이 지나면 월 47,000원 이상 요금제로 바꿀 수 있어요. 그보다 낮추면 위약금이 생길 수 있어요.</p><a class="link-arrow" href="#/guide/plan-down">자세히 보기${H.icon("arrow")}</a></article>
       </div>
-      <a class="bf-together" href="#/together"><span><small>선택 혜택</small><b>인터넷도 같이 하면 결합 할인</b><span>휴대폰 가격은 그대로, LG U+ 참 쉬운 가족 결합으로 인터넷 요금이 월 5,500~13,200원 내려가요(3년 약정).</span></span>${H.icon("arrow")}</a>
-      <figure class="slot slot--detail"><span class="slot--detail__img"><img src="${H.img(p, s.color)}" alt=""></span><figcaption><b>상세 그림 자리 · 캔바</b><small>기기 소개 · 색상 · 카메라 사진을 가로 1080px 그림으로 이어 붙여요. 가격 · 조건 글자는 그림에 넣지 않고 위의 화면 글자로 보여줘요.</small></figcaption></figure>
+      ${H.netAskCard("선택 혜택", "인터넷도 같이 하면 결합 할인", "휴대폰 가격은 그대로, LG U+ 참 쉬운 가족 결합으로 인터넷 요금이 월 5,500~13,200원 내려가요(3년 약정).")}</a>
+      ${detailBlock(p, s)}
     </section>
     <section class="pd-sec" id="pdGuide">
       <h2>주문부터 개통까지, 네 단계</h2>

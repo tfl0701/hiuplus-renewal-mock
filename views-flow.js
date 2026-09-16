@@ -112,6 +112,9 @@
         ${field("oAddr2", "addr2", "상세 주소", { err: "동 · 호수를 적어 주세요", attrs: 'placeholder="동 · 호수"' })}
         <p class="help-t">택배비는 무료예요. 번호이동은 유심비 7,700원이 따로 들어요.</p>
       </section>
+      <section class="form-sec"><h2>인터넷도 같이</h2>
+        ${H.netAskCard("선택 혜택", "인터넷도 같이 상담받을게요", "휴대폰 가격은 그대로예요. 결합 할인과 지원금은 담당자가 따로 알려드려요.")}
+      </section>
       <section class="form-sec"><h2>마일리지</h2>
         <div class="point-row"><span>보유 마일리지 <b class="num">${H.num(H.state.mileage)}P</b> 쓰기</span><button type="button" class="switch" role="switch" aria-checked="${f.usePoint}" aria-label="마일리지 쓰기" data-act="togglePoint"></button></div>
       </section>
@@ -144,6 +147,7 @@
       if (err && ok) err.remove();
     }
   };
+  /* 인터넷 같이 상담 — 체크하면 접수에 실려 간다 (대표 지시 2026-09-16) */
   H.inputs.agreeAll = function (el) {
     var f = form();
     f.agree = f.agree.map(function () { return el.checked; });

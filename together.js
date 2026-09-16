@@ -42,6 +42,14 @@
     </div>`;
   }
 
+  /* 보던 휴대폰으로 — 최근 본 상품이 있으면 그리로, 없으면 목록으로 (대표 지시 2026-09-16) */
+  function backBtn() {
+    var lp = (H.state.recent || []).map(H.prod).find(function (x) { return x && !x.launch; });
+    return lp
+      ? `<button type="button" class="btn btn--line btn--block" data-act="lastProduct" data-pid="${lp.id}">보던 휴대폰으로 돌아가기 · ${H.esc(lp.name)}</button>`
+      : `<a class="btn btn--line btn--block" href="#/phones">휴대폰 먼저 보기</a>`;
+  }
+
   H.views.together = function () {
     return {
       title: "휴대폰 + 인터넷 같이",
@@ -73,8 +81,19 @@
     <p class="asof">LG U+ 공식 안내 기준 · 2026년 9월 16일 확인 · 통신사 기준이 바뀌면 달라져요</p>
   </section>
 
+  <section class="tg-sec"><h2>결합은 두 가지예요</h2><p class="tg-sub">묶는 사람과 조건이 달라요. 어느 쪽이 나은지는 상담에서 같이 봐 드려요.</p>
+    <div class="tg-two">
+      <div class="tg-two__c"><b>참 쉬운 가족 결합</b>
+        <ul class="a-list"><li>가족끼리 묶어요</li><li>인터넷 월 5,500~13,200원 할인</li><li>휴대폰은 1대마다 월 2,200~8,800원</li><li>요금제 조건이 느슨해요</li></ul></div>
+      <div class="tg-two__c"><b>U+투게더 결합</b>
+        <ul class="a-list"><li>가족이 아니어도 묶을 수 있어요</li><li>인터넷 500M 이상 월 11,000원 할인</li><li>휴대폰은 2대 10,000 · 3대 14,000 · 4~5대 20,000원</li><li>무제한 요금제 · 인터넷 500M 이상이어야 해요</li></ul></div>
+    </div>
+    <ul class="a-list tg-notes"><li>만 18세 이하는 월 10,000원을 더 할인해요(투게더).</li><li>할인액은 3년 약정 기준이에요. 2년은 절반, 1년은 4분의 1이에요.</li><li>두 결합을 같이 받을 수는 없어요. 유리한 쪽 하나를 골라요.</li></ul>
+    <p class="asof">LG U+ 공식 안내 기준 · 2026년 9월 16일 확인 · 가입 조건은 상담에서 다시 확인해 드려요</p>
+  </section>
+
   <section class="tg-sec"><h2>인터넷 가입 지원금</h2>
-    <div class="tg-gift">${H.icon("won")}<div><b>인터넷 · TV · 공유기 조합을 고르면 금액이 정해져요</b><p>같은 속도라도 TV를 더하는지에 따라 달라서, 조합을 정한 뒤 상담에서 정확한 금액을 알려드려요. LG U+ 인터넷은 공유기가 포함돼요.</p></div></div>
+    <div class="tg-gift">${H.icon("won")}<div><b>인터넷을 같이 바꾸시면 80만원을 지원해 드려요</b><p>인터넷과 TV 상품은 상담에서 맞는 것으로 안내해 드려요. LG U+ 인터넷은 공유기가 포함돼요.</p></div></div>
   </section>
 
   <section class="tg-sec"><h2>이렇게 진행돼요</h2>
@@ -90,7 +109,9 @@
     <div class="faq">${FAQ.map(function (f) { return `<details><summary><span class="q">Q</span><span>${f[0]}</span>${H.icon("chev-d")}</summary><p class="a">${f[1]}</p></details>`; }).join("")}</div>
   </section>
 
-  <div class="tg-cta"><button type="button" class="btn btn--mg btn--block" data-act="tgLead">인터넷 같이 상담받기</button><a class="btn btn--line btn--block" href="#/phones">휴대폰 먼저 보기</a></div>
+  ${H.netAskCard("선택 혜택", "인터넷도 같이 상담받을게요", "여기서 체크해 두시면 휴대폰 접수할 때 같이 들어가요. 휴대폰 가격은 그대로예요.", true)}
+
+  <div class="tg-cta"><button type="button" class="btn btn--mg btn--block" data-act="tgLead">인터넷 같이 상담받기</button>${backBtn()}</div>
   <p class="demo-note"><span class="demo-tag">시안</span>하이유플은 지금 인터넷을 웹에서 팔지 않아요(인터넷 화면 꺼짐). 상담 접수는 자비스웹 «상담 접수 › 인터넷»으로 들어가요</p>
 </div>`
     };
