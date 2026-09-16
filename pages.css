@@ -1328,3 +1328,5 @@ body.has-tour #main { padding-top: 60px; }
   .cb__big b { font-size: 52px; }
   .cb__l li { font-size: 14.5px; }
 }
+.cb__img { display: block; width: calc(100% + 40px); height: auto; margin: 16px -20px -22px; border-radius: 0 0 20px 20px; }
+@media (min-width: 1024px) { .cb__img { width: calc(100% + 52px); margin: 18px -26px -26px; border-radius: 0 0 24px 24px; } }

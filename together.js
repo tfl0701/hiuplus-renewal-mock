@@ -60,21 +60,10 @@
     <p class="tg-lead">휴대폰 가격은 인터넷과 상관없어요. LG U+ 인터넷을 같이 쓰면 «참 쉬운 가족 결합»으로 매달 요금이 내려가요.</p>
     <ul class="tg-points">
       <li>${H.icon("check")}<span><b>휴대폰 가격은 그대로</b>인터넷 결합 조건 없음</span></li>
-      <li>${H.icon("wifi")}<span><b>인터넷 요금 할인</b>속도에 따라 월 5,500~13,200원</span></li>
-      <li>${H.icon("user")}<span><b>가족 휴대폰도 할인</b>2대부터 1대마다 월 2,200~8,800원</span></li>
+      <li>${H.icon("wifi")}<span><b>인터넷 요금 할인</b>속도에 따라 매달 내려가요</span></li>
+      <li>${H.icon("user")}<span><b>가족 휴대폰도 할인</b>2대부터 1대마다 더 내려가요</span></li>
     </ul>
   </header>
-
-  <section class="tg-sec"><h2>할인표 · 참 쉬운 가족 결합</h2><p class="tg-sub">U+휴대폰에 본인이나 가족의 U+휴대폰 · U+인터넷 · 알뜰폰을 한 개 이상 묶으면 받아요.</p>
-    <div class="tg-tables">
-      <div class="tbl-wrap"><table class="tg-tbl"><caption>인터넷 할인 (3년 약정)</caption><thead><tr><th>속도</th><th>월 할인</th></tr></thead>
-        <tbody><tr><td>최대 100 · 200Mbps</td><td class="num">5,500원</td></tr><tr><td>최대 500Mbps</td><td class="num">9,900원</td></tr><tr><td>최대 1Gbps</td><td class="num">13,200원</td></tr></tbody></table></div>
-      <div class="tbl-wrap"><table class="tg-tbl"><caption>휴대폰 할인 (1대마다, 월)</caption><thead><tr><th>묶은 휴대폰</th><th>69,000원 미만</th><th>69,000원 이상</th><th>88,000원 이상</th></tr></thead>
-        <tbody><tr><td>1대</td><td>-</td><td>-</td><td>-</td></tr><tr><td>2대</td><td class="num">2,200원</td><td class="num">3,300원</td><td class="num">4,400원</td></tr><tr><td>3대</td><td class="num">3,300원</td><td class="num">5,500원</td><td class="num">6,600원</td></tr><tr><td>4~10대</td><td class="num">4,400원</td><td class="num">6,600원</td><td class="num">8,800원</td></tr></tbody></table></div>
-    </div>
-    <ul class="a-list tg-notes"><li>결합한 날부터 바로 할인돼요.</li><li>알뜰폰을 묶으면 U+휴대폰 1대마다 440원을 더 할인해요.</li><li>매월 1일 가족사랑데이터(묶은 휴대폰 수 × 1,000MB)를 줘요.</li><li>결합 할인과 제휴카드 할인은 같이 받을 수 없어요.</li></ul>
-    <p class="asof">LG U+ 공식 안내 기준 · 2026년 9월 16일 확인 · 통신사 기준이 바뀌면 달라져요</p>
-  </section>
 
   <section class="tg-sec tg-sec--hero"><h2>결합 할인 두 가지</h2><p class="tg-sub">묶는 사람과 조건이 달라요. 어느 쪽이 나은지는 상담에서 같이 봐 드려요.</p>
     <div class="cb">
@@ -83,14 +72,14 @@
         <p class="cb__d">복잡한 조건 없이, 가족이 모이면 받는 할인</p>
         <p class="cb__big"><b class="num">57,200</b><span>원</span><small>매달, 최대</small></p>
         <p class="cb__basis">인터넷 1Gbps + 가족 휴대폰 5대(월 88,000원 이상) 기준</p>
-        <ul class="cb__l"><li>인터넷 <b class="num">5,500~13,200원</b></li><li>휴대폰 1대마다 <b class="num">2,200~8,800원</b></li><li>가족끼리 묶어요 · 요금제 조건이 느슨해요</li></ul>
+        <img class="cb__img" src="img/combo-family.png" width="1080" height="1344" alt="참 쉬운 가족 결합 할인표">
       </article>
       <article class="cb__c cb__c--alt">
         <p class="cb__n">U+투게더 결합</p>
         <p class="cb__d">가족이 아니어도, 무제한 요금제면 묶을 수 있는 할인</p>
         <p class="cb__big"><b class="num">31,000</b><span>원</span><small>매달, 최대</small></p>
         <p class="cb__basis">인터넷 500Mbps 이상 + 휴대폰 4~5대 기준</p>
-        <ul class="cb__l"><li>인터넷 500M 이상 <b class="num">11,000원</b></li><li>휴대폰 2대 <b class="num">10,000</b> · 3대 <b class="num">14,000</b> · 4~5대 <b class="num">20,000원</b></li><li>만 18세 이하는 <b class="num">10,000원</b> 더</li></ul>
+        <img class="cb__img" src="img/combo-together.png" width="1080" height="1300" alt="U+투게더 결합 할인표">
       </article>
     </div>
     <ul class="a-list tg-notes"><li>할인액은 3년 약정 기준이에요. 2년은 절반, 1년은 4분의 1이에요.</li><li>두 결합을 같이 받을 수는 없어요. 유리한 쪽 하나를 골라요.</li></ul>
