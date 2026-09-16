@@ -1272,7 +1272,7 @@ body.has-tour #main { padding-top: 60px; }
 }
 
 /* 결합 두 가지 견주기 (대표 지시 2026-09-16 — 투게더 · 참 쉬운 가족 결합) */
-.tg-two { display: grid; gap: 12px; }
+.tg-two { display: grid; gap: 12px; margin-top: 14px; }
 .tg-two__c { padding: 18px 16px 16px; border-radius: 16px; background: var(--chip); }
 .tg-two__c > b { display: block; margin-bottom: 10px; font-size: 16px; font-weight: 700; letter-spacing: -0.02em; color: var(--black); }
 .tg-two__c .a-list { margin: 0; }
@@ -1287,16 +1287,44 @@ body.has-tour #main { padding-top: 60px; }
 .net-ask__t b { display: block; font-size: 15px; font-weight: 700; letter-spacing: -0.02em; color: #2f2440; }
 .net-ask__t small { display: block; margin-top: 4px; font-size: 13px; line-height: 1.5; color: #5d4477; }
 
-/* 인터넷 같이 상담 — 상품 화면 · 결합 화면 · 주문서 공용 (대표 지시 2026-09-16) */
-.bf-net { padding: 16px 14px 14px; border-radius: 16px; background: var(--lav-tint); box-shadow: inset 0 0 0 1px #e3daee; }
-.bf-net.on { box-shadow: inset 0 0 0 2px var(--lav-cta); }
-.bf-net__chk { display: flex; align-items: flex-start; gap: 10px; width: 100%; text-align: left; }
-.bf-net__chk .box { flex: none; width: 22px; height: 22px; margin-top: 2px; border-radius: 7px; background: #fff; box-shadow: inset 0 0 0 1px #cfc4de; display: grid; place-items: center; color: transparent; }
-.bf-net__chk .box .ic { width: 14px; height: 14px; stroke-width: 2.4; }
+/* 인터넷 같이 상담 — 한 줄짜리 간단한 체크 (대표 «체크를 거대하게 할 필요 없이», 2026-09-17) */
+.bf-net { display: flex; align-items: center; gap: 12px; padding: 13px 14px; border-radius: 14px; background: var(--lav-tint); }
+.bf-net.on { box-shadow: inset 0 0 0 1.5px var(--lav-cta); }
+.bf-net__chk { display: flex; align-items: center; gap: 10px; flex: 1 1 auto; min-width: 0; text-align: left; }
+.bf-net__chk .box { flex: none; width: 20px; height: 20px; border-radius: 6px; background: #fff; box-shadow: inset 0 0 0 1px #cfc4de; display: grid; place-items: center; color: transparent; }
+.bf-net__chk .box .ic { width: 13px; height: 13px; stroke-width: 2.6; }
 .bf-net.on .bf-net__chk .box { background: var(--lav-cta); box-shadow: none; color: #fff; }
-.bf-net__t small { display: block; font-size: 12px; font-weight: 700; letter-spacing: .02em; color: var(--lav-cta); }
-.bf-net__t b { display: block; margin-top: 3px; font-size: 16px; font-weight: 700; letter-spacing: -0.02em; color: #2f2440; }
-.bf-net__t > span { display: block; margin-top: 5px; font-size: 13px; line-height: 1.55; color: #5d4477; }
-.bf-net__more { display: inline-flex; align-items: center; gap: 4px; margin: 12px 0 0 32px; font-size: 13px; font-weight: 700; color: var(--lav-cta); }
-.bf-net__more .ic { width: 14px; height: 14px; }
-.bf-net__note { margin: 8px 0 0 32px; font-size: 12px; line-height: 1.5; color: #7a6a8c; }
+.bf-net__t { min-width: 0; }
+.bf-net__t b { display: block; font-size: 14.5px; font-weight: 700; letter-spacing: -0.02em; color: #2f2440; }
+.bf-net__t small { display: block; margin-top: 2px; font-size: 12px; line-height: 1.45; color: #6b5c7d; }
+.bf-net__more { flex: none; display: inline-flex; align-items: center; gap: 2px; font-size: 12.5px; font-weight: 700; color: var(--lav-cta); }
+.bf-net__more .ic { width: 13px; height: 13px; }
+
+/* 결합 할인 두 가지 — LG U+ 공식 페이지 방식(할인액을 가장 크게) · 대표 지시 2026-09-17 */
+.cb { display: grid; gap: 14px; margin-top: 16px; }
+.cb__c { position: relative; padding: 24px 20px 22px; border-radius: 20px; background: linear-gradient(160deg, #f6f1fb 0%, #efe7f7 100%); overflow: hidden; }
+.cb__c--alt { background: linear-gradient(160deg, #fdeef5 0%, #fbe2ee 100%); }
+.cb__n { font-size: 17px; font-weight: 700; letter-spacing: -0.03em; color: #2f2440; }
+.cb__c--alt .cb__n { color: var(--mg-dark); }
+.cb__d { margin-top: 6px; font-size: 13px; line-height: 1.55; color: #6b5c7d; }
+.cb__c--alt .cb__d { color: #9b3d6d; }
+.cb__big { display: flex; align-items: baseline; gap: 4px; margin-top: 16px; }
+.cb__big b { font-size: 40px; font-weight: 800; letter-spacing: -0.045em; line-height: 1.05; color: var(--lav-cta); }
+.cb__c--alt .cb__big b { color: var(--mg-dark); }
+.cb__big span { font-size: 19px; font-weight: 700; color: var(--lav-cta); }
+.cb__c--alt .cb__big span { color: var(--mg-dark); }
+.cb__big small { margin-left: 6px; font-size: 12px; font-weight: 700; color: #8b7a9d; }
+.cb__c--alt .cb__big small { color: #b06a90; }
+.cb__basis { margin-top: 6px; font-size: 12px; line-height: 1.5; color: #8b7a9d; }
+.cb__c--alt .cb__basis { color: #b06a90; }
+.cb__l { margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(47, 36, 64, .1); display: grid; gap: 7px; }
+.cb__l li { font-size: 13.5px; line-height: 1.5; color: #4a3d5c; }
+.cb__c--alt .cb__l li { color: #7a3057; }
+.cb__l b { font-weight: 700; }
+@media (min-width: 1024px) {
+  .cb { grid-template-columns: 1fr 1fr; gap: 20px; }
+  .cb__c { padding: 30px 26px 26px; border-radius: 24px; }
+  .cb__n { font-size: 20px; }
+  .cb__big b { font-size: 52px; }
+  .cb__l li { font-size: 14.5px; }
+}

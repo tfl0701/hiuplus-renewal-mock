@@ -65,11 +65,6 @@
     </ul>
   </header>
 
-  <section class="tg-sec"><h2>우리 집이면 얼마나 줄어요?</h2><p class="tg-sub">고르면 바로 계산돼요. 가족 휴대폰이 모두 같은 요금제 구간일 때예요.</p>
-    <div class="tg-calc" id="tgCalc">${calcHtml()}</div>
-    <p class="asof">LG U+ 공식 할인표로 계산 · 인터넷 요금은 3년 약정 · 부가세 포함 · 요금은 자비스웹 인터넷 요금표(2026.09.07) 기준</p>
-  </section>
-
   <section class="tg-sec"><h2>할인표 · 참 쉬운 가족 결합</h2><p class="tg-sub">U+휴대폰에 본인이나 가족의 U+휴대폰 · U+인터넷 · 알뜰폰을 한 개 이상 묶으면 받아요.</p>
     <div class="tg-tables">
       <div class="tbl-wrap"><table class="tg-tbl"><caption>인터넷 할인 (3년 약정)</caption><thead><tr><th>속도</th><th>월 할인</th></tr></thead>
@@ -81,14 +76,24 @@
     <p class="asof">LG U+ 공식 안내 기준 · 2026년 9월 16일 확인 · 통신사 기준이 바뀌면 달라져요</p>
   </section>
 
-  <section class="tg-sec"><h2>결합은 두 가지예요</h2><p class="tg-sub">묶는 사람과 조건이 달라요. 어느 쪽이 나은지는 상담에서 같이 봐 드려요.</p>
-    <div class="tg-two">
-      <div class="tg-two__c"><b>참 쉬운 가족 결합</b>
-        <ul class="a-list"><li>가족끼리 묶어요</li><li>인터넷 월 5,500~13,200원 할인</li><li>휴대폰은 1대마다 월 2,200~8,800원</li><li>요금제 조건이 느슨해요</li></ul></div>
-      <div class="tg-two__c"><b>U+투게더 결합</b>
-        <ul class="a-list"><li>가족이 아니어도 묶을 수 있어요</li><li>인터넷 500M 이상 월 11,000원 할인</li><li>휴대폰은 2대 10,000 · 3대 14,000 · 4~5대 20,000원</li><li>무제한 요금제 · 인터넷 500M 이상이어야 해요</li></ul></div>
+  <section class="tg-sec tg-sec--hero"><h2>결합 할인 두 가지</h2><p class="tg-sub">묶는 사람과 조건이 달라요. 어느 쪽이 나은지는 상담에서 같이 봐 드려요.</p>
+    <div class="cb">
+      <article class="cb__c">
+        <p class="cb__n">참 쉬운 가족 결합</p>
+        <p class="cb__d">복잡한 조건 없이, 가족이 모이면 받는 할인</p>
+        <p class="cb__big"><b class="num">57,200</b><span>원</span><small>매달, 최대</small></p>
+        <p class="cb__basis">인터넷 1Gbps + 가족 휴대폰 5대(월 88,000원 이상) 기준</p>
+        <ul class="cb__l"><li>인터넷 <b class="num">5,500~13,200원</b></li><li>휴대폰 1대마다 <b class="num">2,200~8,800원</b></li><li>가족끼리 묶어요 · 요금제 조건이 느슨해요</li></ul>
+      </article>
+      <article class="cb__c cb__c--alt">
+        <p class="cb__n">U+투게더 결합</p>
+        <p class="cb__d">가족이 아니어도, 무제한 요금제면 묶을 수 있는 할인</p>
+        <p class="cb__big"><b class="num">31,000</b><span>원</span><small>매달, 최대</small></p>
+        <p class="cb__basis">인터넷 500Mbps 이상 + 휴대폰 4~5대 기준</p>
+        <ul class="cb__l"><li>인터넷 500M 이상 <b class="num">11,000원</b></li><li>휴대폰 2대 <b class="num">10,000</b> · 3대 <b class="num">14,000</b> · 4~5대 <b class="num">20,000원</b></li><li>만 18세 이하는 <b class="num">10,000원</b> 더</li></ul>
+      </article>
     </div>
-    <ul class="a-list tg-notes"><li>만 18세 이하는 월 10,000원을 더 할인해요(투게더).</li><li>할인액은 3년 약정 기준이에요. 2년은 절반, 1년은 4분의 1이에요.</li><li>두 결합을 같이 받을 수는 없어요. 유리한 쪽 하나를 골라요.</li></ul>
+    <ul class="a-list tg-notes"><li>할인액은 3년 약정 기준이에요. 2년은 절반, 1년은 4분의 1이에요.</li><li>두 결합을 같이 받을 수는 없어요. 유리한 쪽 하나를 골라요.</li></ul>
     <p class="asof">LG U+ 공식 안내 기준 · 2026년 9월 16일 확인 · 가입 조건은 상담에서 다시 확인해 드려요</p>
   </section>
 
@@ -109,7 +114,7 @@
     <div class="faq">${FAQ.map(function (f) { return `<details><summary><span class="q">Q</span><span>${f[0]}</span>${H.icon("chev-d")}</summary><p class="a">${f[1]}</p></details>`; }).join("")}</div>
   </section>
 
-  ${H.netAskCard("선택 혜택", "인터넷도 같이 상담받을게요", "여기서 체크해 두시면 휴대폰 접수할 때 같이 들어가요. 휴대폰 가격은 그대로예요.", true)}
+  ${H.netAskCard("", "인터넷도 같이 상담받을게요", "체크해 두시면 휴대폰 접수할 때 같이 들어가요.", true)}
 
   <div class="tg-cta"><button type="button" class="btn btn--mg btn--block" data-act="tgLead">인터넷 같이 상담받기</button>${backBtn()}</div>
   <p class="demo-note"><span class="demo-tag">시안</span>하이유플은 지금 인터넷을 웹에서 팔지 않아요(인터넷 화면 꺼짐). 상담 접수는 자비스웹 «상담 접수 › 인터넷»으로 들어가요</p>

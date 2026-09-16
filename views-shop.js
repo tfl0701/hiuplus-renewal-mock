@@ -428,7 +428,7 @@ ${H.bannerHtml()}
         <article class="info-card"><small>추가 청구 없음</small><h3>지금 보시는 월 납부 금액이 마지막 금액이에요</h3><p>개통 후에 다른 명목으로 더 청구하지 않아요. 할부를 고른 경우에만 연 5.9% 이자가 따로 붙어요.</p></article>
         <article class="info-card"><small>요금제</small><h3>요금제는 185일 뒤에 낮출 수 있어요</h3><p>개통일 기준 185일이 지나면 월 47,000원 이상 요금제로 바꿀 수 있어요. 그보다 낮추면 위약금이 생길 수 있어요.</p><a class="link-arrow" href="#/guide/plan-down">자세히 보기${H.icon("arrow")}</a></article>
       </div>
-      ${H.netAskCard("선택 혜택", "인터넷도 같이 하면 결합 할인", "휴대폰 가격은 그대로, LG U+ 참 쉬운 가족 결합으로 인터넷 요금이 월 5,500~13,200원 내려가요(3년 약정).")}</a>
+      ${H.netAskCard("", "인터넷도 같이 상담받을게요", "휴대폰 가격은 그대로예요. 체크하면 접수할 때 같이 들어가요.")}</a>
       ${detailBlock(p, s)}
     </section>
     <section class="pd-sec" id="pdGuide">

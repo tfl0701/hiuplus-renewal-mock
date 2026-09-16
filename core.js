@@ -109,14 +109,13 @@
    * «설명화면으로 넘어가고 설명화면 에도 설명화면 누르기전에도 체크 하는게 있어야되») */
   H.netAsk = function () { return H.state.netAsk === true; };
   H.acts.netAskToggle = function () { H.state.netAsk = !H.state.netAsk; H.save(); H.render(); };
-  H.netAskCard = function (eyebrow, title, desc, noMore) {
+  H.netAskCard = function (_eyebrow, title, desc, noMore) {
     var on = H.netAsk();
     return `<div class="bf-net${on ? " on" : ""}">
       <button type="button" class="bf-net__chk" data-act="netAskToggle" aria-pressed="${on}">
         <span class="box">${H.icon("check")}</span>
-        <span class="bf-net__t"><small>${H.esc(eyebrow)}</small><b>${H.esc(title)}</b><span>${H.esc(desc)}</span></span></button>
-      ${noMore ? "" : `<a class="bf-net__more" href="#/together">결합 할인 자세히 보기${H.icon("arrow")}</a>`}
-      <p class="bf-net__note">${on ? "접수할 때 «인터넷 상담 원함»으로 같이 들어가요." : "체크하면 접수할 때 같이 들어가요. 휴대폰 가격은 그대로예요."}</p>
+        <span class="bf-net__t"><b>${H.esc(title)}</b><small>${H.esc(desc)}</small></span></button>
+      ${noMore ? "" : `<a class="bf-net__more" href="#/together">결합 할인 보기${H.icon("arrow")}</a>`}
     </div>`;
   };
 
