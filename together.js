@@ -67,19 +67,19 @@
 
   <section class="tg-sec tg-sec--hero"><h2>결합 할인 두 가지</h2><p class="tg-sub">묶는 사람과 조건이 달라요. 어느 쪽이 나은지는 상담에서 같이 봐 드려요.</p>
     <div class="cb">
-      <article class="cb__c">
-        <p class="cb__n">참 쉬운 가족 결합</p>
-        <p class="cb__d">복잡한 조건 없이, 가족이 모이면 받는 할인</p>
-        <p class="cb__big"><b class="num">57,200</b><span>원</span><small>매달, 최대</small></p>
-        <p class="cb__basis">인터넷 1Gbps + 가족 휴대폰 5대(월 88,000원 이상) 기준</p>
-        <img class="cb__img" src="img/combo-family.png" width="1080" height="1344" alt="참 쉬운 가족 결합 할인표">
-      </article>
       <article class="cb__c cb__c--alt">
         <p class="cb__n">U+투게더 결합</p>
         <p class="cb__d">가족이 아니어도, 무제한 요금제면 묶을 수 있는 할인</p>
         <p class="cb__big"><b class="num">31,000</b><span>원</span><small>매달, 최대</small></p>
         <p class="cb__basis">인터넷 500Mbps 이상 + 휴대폰 4~5대 기준</p>
         <img class="cb__img" src="img/combo-together.png" width="1080" height="1300" alt="U+투게더 결합 할인표">
+      </article>
+      <article class="cb__c">
+        <p class="cb__n">참 쉬운 가족 결합</p>
+        <p class="cb__d">복잡한 조건 없이, 가족이 모이면 받는 할인</p>
+        <p class="cb__big"><b class="num">57,200</b><span>원</span><small>매달, 최대</small></p>
+        <p class="cb__basis">인터넷 1Gbps + 가족 휴대폰 5대(월 88,000원 이상) 기준</p>
+        <img class="cb__img" src="img/combo-family.png" width="1080" height="1344" alt="참 쉬운 가족 결합 할인표">
       </article>
     </div>
     <ul class="a-list tg-notes"><li>할인액은 3년 약정 기준이에요. 2년은 절반, 1년은 4분의 1이에요.</li><li>두 결합을 같이 받을 수는 없어요. 유리한 쪽 하나를 골라요.</li></ul>
