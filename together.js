@@ -23,6 +23,13 @@
 
   /* ★투게더 «몇 명이면 얼마» — LG U+ 공식 화면처럼 인원을 골라 보는 칸 (대표 2026-09-17)
    * 투게더는 월 85,000원 이상 무제한 요금제만 되고, 할인은 «회선당»이라 인원만큼 각자 받는다 */
+  /* 인원 그림 — 사람 아이콘 대신 서로 다른 넷 (대표 2026-09-17 «일러스트 이미지 같은 걸로») */
+  var TG_FIG = [
+    '<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="32" fill="#efe9f6"/><path d="M32 13c8 0 12 5 12 13 0 3-1 6-2 8h2v4h-24v-4h2c-1-2-2-5-2-8 0-8 4-13 12-13z" fill="#6b4f8f"/><circle cx="32" cy="29" r="9" fill="#f2c8a8"/><path d="M13 58c2-9 9-14 19-14s17 5 19 14z" fill="#f0a93a"/></svg>',
+    '<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="32" fill="#efe9f6"/><path d="M20 26c0-8 5-13 12-13s12 5 12 13v3h-24z" fill="#7a5a3a"/><circle cx="32" cy="30" r="9" fill="#f5d2b3"/><rect x="22" y="27" width="9" height="7" rx="3" fill="none" stroke="#3f3352" stroke-width="2"/><rect x="33" y="27" width="9" height="7" rx="3" fill="none" stroke="#3f3352" stroke-width="2"/><path d="M13 58c2-9 9-14 19-14s17 5 19 14z" fill="#8f7fb5"/></svg>',
+    '<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="32" fill="#efe9f6"/><circle cx="22" cy="24" r="7" fill="#e8d089"/><circle cx="42" cy="24" r="7" fill="#e8d089"/><circle cx="32" cy="19" r="8" fill="#e8d089"/><circle cx="32" cy="31" r="9" fill="#f7dcc0"/><path d="M13 58c2-9 9-14 19-14s17 5 19 14z" fill="#d9b7a0"/></svg>',
+    '<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="32" fill="#efe9f6"/><circle cx="21" cy="29" r="8" fill="#f2c8a8"/><path d="M13 27c0-6 3-9 8-9s8 3 8 9z" fill="#e8c96a"/><path d="M6 58c1-8 7-12 15-12s14 4 15 12z" fill="#6aa9d8"/><circle cx="43" cy="27" r="9" fill="#f5d2b3"/><path d="M34 25c0-7 4-10 9-10s9 3 9 10z" fill="#5c4a3a"/><path d="M28 58c1-9 7-13 15-13s14 4 15 13z" fill="#8f7fb5"/></svg>'
+  ];
   var TG_PEOPLE = [[1, "1명"], [2, "2명"], [3, "3명"], [4, "4~5명"]];
   var TG_DC = { 1: 0, 2: 10000, 3: 14000, 4: 20000 };
   var TG_PLANS = [50, 49, 48, 17];
@@ -36,11 +43,11 @@
   };
   function tgPickHtml() {
     var n = tgPeople(), dc = TG_DC[n], word = ["", "혼자", "두 명", "세 명", "네 명"][n];
-    var people = TG_PEOPLE.map(function (x) {
+    var people = TG_PEOPLE.map(function (x, i) {
       var on = x[0] <= n;
       var last = x[0] === n;
       return `<button type="button" class="tgp-p${on ? " on" : ""}${last ? " last" : ""}" data-act="tgPeople" data-v="${x[0]}" aria-pressed="${last}">
-        <span class="tgp-p__ic">${H.icon("user")}</span><small>${x[1]}</small></button>`;
+        <span class="tgp-p__ic">${TG_FIG[i]}</span><small>${x[1]}</small></button>`;
     }).join('<span class="tgp-plus" aria-hidden="true">+</span>');
     var cards = TG_PLANS.map(function (id) {
       var pl = H.plan(id);

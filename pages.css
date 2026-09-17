@@ -146,7 +146,7 @@ body.has-bar #app { padding-bottom: calc(var(--bar) + env(safe-area-inset-bottom
 @media (min-width: 1024px) {
   /* 화면 전체를 가로지르지 않는 떠 있는 막대 — 오른쪽 아래 상담 단추를 가리지 않게
    * 오른쪽을 비워 둔다 (대표 2026-09-17) */
-  .bar { left: 50%; right: auto; bottom: 22px; width: min(var(--wrap), calc(100% - 320px)); margin-left: calc(var(--wrap) / -2 - 80px); padding: 12px 14px 12px 20px; border: 0; border-radius: 18px; box-shadow: 0 10px 34px rgba(0, 0, 0, .13), inset 0 0 0 1px var(--line); transform: translateY(150%); transition: transform .24s var(--ease); pointer-events: none; }
+  .bar { left: max(var(--gut), calc((100% - var(--wrap)) / 2)); right: auto; bottom: 22px; width: min(var(--wrap), calc(100% - var(--gut) * 2 - 250px)); padding: 12px 14px 12px 20px; border: 0; border-radius: 18px; box-shadow: 0 10px 34px rgba(0, 0, 0, .13), inset 0 0 0 1px var(--line); transform: translateY(150%); transition: transform .24s var(--ease); pointer-events: none; }
   body.bar-up .bar { transform: none; pointer-events: auto; }
   body.has-bar #app { padding-bottom: 0; }
   body.has-bar.bar-up #app { padding-bottom: calc(var(--bar) + 22px); }
@@ -156,8 +156,10 @@ body.has-bar #app { padding-bottom: calc(var(--bar) + env(safe-area-inset-bottom
   .bar__chev { display: none; }
 
   /* 오른쪽 빈 자리에 따라오는 금액 카드 */
+  /* ★본문이 1200폭이라 옆에 카드가 들어갈 자리가 없다(1,900은 돼야 함). 그래서 늘 띄우지 않고
+   * 띠의 [금액 상세]를 눌렀을 때만 띠 위로 펼친다 (대표 2026-09-17 «왼쪽 라인이랑 겹치지 않게») */
   .pd-float { display: none; }
-  body.bar-up .pd-float { display: block; position: fixed; z-index: 44; top: calc(var(--hdr) + 26px); right: var(--gut); width: 340px; max-height: calc(100vh - var(--hdr) - var(--bar) - 76px); overflow: auto; padding: 18px 20px 20px; border-radius: 18px; background: #fff; box-shadow: 0 10px 34px rgba(0, 0, 0, .13), inset 0 0 0 1px var(--line); }
+  body.bar-up.bar-open .pd-float { display: block; position: fixed; z-index: 44; bottom: calc(var(--bar) + 34px); right: calc(50% - var(--wrap) / 2 - 80px); width: 340px; max-height: calc(100vh - var(--hdr) - var(--bar) - 90px); overflow: auto; padding: 18px 20px 20px; border-radius: 18px; background: #fff; box-shadow: 0 10px 34px rgba(0, 0, 0, .13), inset 0 0 0 1px var(--line); }
   .pdf__prod { display: flex; align-items: center; gap: 11px; padding-bottom: 14px; border-bottom: 1px solid var(--line-2); }
   .pdf__th { flex: none; width: 46px; height: 46px; border-radius: 11px; background: var(--surface); display: grid; place-items: center; overflow: hidden; }
   .pdf__th img { width: 82%; height: 82%; object-fit: contain; }
@@ -1480,3 +1482,18 @@ body.has-tour #main { padding-top: 60px; }
 .tg-cta { display: flex; justify-content: center; }
 .tg-cta .btn { width: 100%; max-width: 420px; }
 .tg + .demo-note, .tg .demo-note { text-align: center; }
+
+/* 띠의 [금액 상세] 단추 (PC 전용) */
+.bar__more { display: none; }
+@media (min-width: 1024px) {
+  .bar__more { display: inline-flex; align-items: center; gap: 4px; height: 54px; padding: 0 16px; border-radius: 12px; font-size: 14px; font-weight: 700; color: var(--g1); }
+  .bar__more:hover { background: var(--chip); }
+  .bar__chev2 { width: 15px; height: 15px; transform: rotate(180deg); transition: transform .2s var(--ease); }
+  .bar__more[aria-expanded="true"] .bar__chev2 { transform: none; }
+}
+
+/* 인원 그림 — 아이콘 대신 그림 (대표 2026-09-17) */
+.tgp-p__ic { overflow: hidden; padding: 0; }
+.tgp-p__ic svg { width: 100%; height: 100%; display: block; }
+.tgp-p:not(.on) .tgp-p__ic { filter: grayscale(.85) opacity(.55); }
+.tgp-p.last .tgp-p__ic { background: #fff; box-shadow: 0 0 0 3px var(--lav-cta), 0 6px 16px rgba(93, 68, 119, .28); }

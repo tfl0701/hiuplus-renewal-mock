@@ -399,7 +399,11 @@ ${H.bannerHtml()}
     var s = H.selFor(p), r = H.price(p, s);
     /* 금액 부분을 누르면 금액칸으로 올라간다 — 띠에는 요약만 있어 손님이 무엇으로 나온 값인지
      * 볼 길이 없었다 (대표 2026-09-17 «누르면 위로 스크롤되면서 상세 내역을 보여주는게 있어야되고») */
-    return `<button type="button" class="bar__price" data-act="barDetail"><small class="num">실구매가 ${H.won(r.principal)} · ${r.months ? r.months + "개월 할부" : "일시불"}</small><b class="num">월 ${H.won(r.monthlyTotal)}${H.icon("chev-u", "bar__chev")}</b></button><button type="button" class="btn btn--mg" data-act="order">주문하기</button>`;
+    return `<button type="button" class="bar__price" data-act="barDetail"><small class="num">실구매가 ${H.won(r.principal)} · ${r.months ? r.months + "개월 할부" : "일시불"}</small><b class="num">월 ${H.won(r.monthlyTotal)}${H.icon("chev-u", "bar__chev")}</b></button><button type="button" class="bar__more pc-only" data-act="barMore" aria-expanded="false">금액 상세${H.icon("chev-d", "bar__chev2")}</button><button type="button" class="btn btn--mg" data-act="order">주문하기</button>`;
+  };
+  H.acts.barMore = function (el) {
+    var on = document.body.classList.toggle("bar-open");
+    el.setAttribute("aria-expanded", String(on));
   };
   H.acts.barDetail = function () {
     var box = H.$(".pbox");
