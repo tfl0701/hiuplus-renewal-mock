@@ -1396,3 +1396,30 @@ body.has-tour #main { padding-top: 60px; }
   18%, 62% { box-shadow: inset 0 0 0 2px var(--mg); }
 }
 @media (prefers-reduced-motion: reduce) { .pbox--flash { animation: none; } }
+
+/* ---------- 투게더 «몇 명이면 얼마» (대표 2026-09-17) ---------- */
+.tgp-people { margin-top: 16px; padding: 14px 10px; border-radius: 16px; background: var(--lav-tint); display: flex; align-items: flex-start; justify-content: center; gap: 4px; flex-wrap: wrap; }
+.tgp-p { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 4px 6px; border-radius: 12px; }
+.tgp-p__ic { position: relative; width: 54px; height: 54px; border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 1px #e0d7ec; display: grid; place-items: center; color: #b4a6c9; transition: background .15s, color .15s; }
+.tgp-p__ic .ic { width: 26px; height: 26px; }
+.tgp-p.on .tgp-p__ic { background: var(--lav); color: var(--lav-cta); box-shadow: none; }
+.tgp-p__chk { position: absolute; top: -3px; right: -3px; width: 20px; height: 20px; border-radius: 50%; background: var(--mg); color: #fff; display: grid; place-items: center; box-shadow: 0 0 0 2px var(--lav-tint); }
+.tgp-p__chk .ic { width: 12px; height: 12px; stroke-width: 3; }
+.tgp-p small { font-size: 12px; font-weight: 700; color: var(--g3); }
+.tgp-p.on small { color: var(--lav-cta); }
+.tgp-p[aria-pressed="true"] small { color: var(--mg); }
+.tgp-plus { align-self: center; margin-top: -18px; font-size: 14px; font-weight: 700; color: #c3b5d6; }
+.tgp-grid { margin-top: 14px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.tgp-c { padding: 15px 14px; border-radius: 14px; background: #fff; box-shadow: inset 0 0 0 1px var(--line); }
+.tgp-c h4 { font-size: 15px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
+.tgp-c__base { margin-top: 2px; font-size: 12px; color: var(--g3); }
+.tgp-c__when { margin-top: 12px; font-size: 12px; font-weight: 700; color: var(--g1); }
+.tgp-c__big { margin-top: 2px; font-size: 21px; font-weight: 700; letter-spacing: -0.02em; color: var(--black); }
+.tgp-c__big small { margin-left: 1px; font-size: 12px; font-weight: 700; color: var(--g2); }
+.tgp-c__dc { margin-top: 6px; padding-top: 8px; border-top: 1px solid var(--line-2); font-size: 12px; font-weight: 700; color: var(--mg); }
+@media (min-width: 1024px) {
+  .tgp-grid { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .tgp-people { gap: 10px; padding: 18px; }
+  .tgp-p__ic { width: 66px; height: 66px; }
+  .tgp-p__ic .ic { width: 30px; height: 30px; }
+}

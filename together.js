@@ -21,6 +21,41 @@
     ["다른 할인과 같이 받을 수 있나요?", "결합 할인과 제휴카드 할인은 같이 받을 수 없어요."]
   ];
 
+  /* ★투게더 «몇 명이면 얼마» — LG U+ 공식 화면처럼 인원을 골라 보는 칸 (대표 2026-09-17)
+   * 투게더는 월 85,000원 이상 무제한 요금제만 되고, 할인은 «회선당»이라 인원만큼 각자 받는다 */
+  var TG_PEOPLE = [[1, "1명"], [2, "2명"], [3, "3명"], [4, "4~5명"]];
+  var TG_DC = { 1: 0, 2: 10000, 3: 14000, 4: 20000 };
+  var TG_PLANS = [50, 49, 48, 17];
+  function tgPeople() { return H.state.tgPeople || 4; }
+  H.acts.tgPeople = function (el) {
+    H.state.tgPeople = Number(el.dataset.v);
+    H.save();
+    var box = H.$("#tgPick");
+    if (box) box.innerHTML = tgPickHtml();
+    H.refocus(el);
+  };
+  function tgPickHtml() {
+    var n = tgPeople(), dc = TG_DC[n], word = ["", "혼자", "두 명", "세 명", "네 명"][n];
+    var people = TG_PEOPLE.map(function (x) {
+      var on = x[0] <= n;
+      return `<button type="button" class="tgp-p${on ? " on" : ""}" data-act="tgPeople" data-v="${x[0]}" aria-pressed="${x[0] === n}">
+        <span class="tgp-p__ic">${H.icon("user")}${on ? `<i class="tgp-p__chk">${H.icon("check")}</i>` : ""}</span><small>${x[1]}</small></button>`;
+    }).join('<span class="tgp-plus" aria-hidden="true">+</span>');
+    var cards = TG_PLANS.map(function (id) {
+      var pl = H.plan(id);
+      if (!pl) return "";
+      return `<article class="tgp-c">
+        <h4>${H.esc(pl.name)}</h4><p class="tgp-c__base num">(${H.won(pl.fee)})</p>
+        <p class="tgp-c__when">${word}${n === 1 ? " 쓰면" : "이 모이면"}</p>
+        <p class="tgp-c__big num">${H.won(pl.fee - dc)}${n === 1 ? "" : '<small>/인당</small>'}</p>
+        <p class="tgp-c__dc num">${dc ? H.won(dc) + " 투게더 결합할인" : "휴대폰 할인은 없어요"}</p>
+      </article>`;
+    }).join("");
+    return `<div class="tgp-people" role="group" aria-label="결합 인원">${people}</div>
+      <div class="tgp-grid">${cards}</div>
+      <p class="help-t">투게더는 월 85,000원 이상 무제한 요금제만 묶을 수 있어요. 최대 5대까지이고, 대표자가 한꺼번에 내는 청구계정으로 묶어야 해요. 인터넷(500MB 이상)을 같이 쓰면 월 11,000원, 만 18세 이하가 있으면 월 10,000원을 더 할인해요.</p>`;
+  }
+
   function tg() {
     if (!H.tg) H.tg = { speed: "1000", phones: 2, tier: "high" };
     return H.tg;
@@ -89,6 +124,10 @@
     </div>
     <ul class="a-list tg-notes"><li><b>두 결합 모두 휴대폰 할인은 회선마다 붙어요.</b> 묶은 대수만큼 곱해서 받아요.</li><li>투게더는 월 85,000원 이상 무제한 요금제만 되고, 대표자가 한꺼번에 내는 청구계정으로 묶어야 해요.</li><li>인터넷 할인액은 3년 약정 기준이에요. 2년은 절반, 1년은 4분의 1이에요.</li><li>두 결합을 같이 받을 수는 없어요. 유리한 쪽 하나를 골라요.</li></ul>
     <p class="asof">LG U+ 공식 안내 기준 · 2026년 9월 17일 확인 · 가입 조건은 상담에서 다시 확인해 드려요</p>
+  </section>
+
+  <section class="tg-sec"><h2>몇 명이 모이면 얼마가 되나요</h2><p class="tg-sub">투게더 결합은 한 사람마다 할인돼요. 모일 인원을 눌러 보세요.</p>
+    <div id="tgPick">${tgPickHtml()}</div>
   </section>
 
   <section class="tg-sec"><h2>인터넷 가입 지원금</h2>
