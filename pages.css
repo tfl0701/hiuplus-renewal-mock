@@ -72,7 +72,9 @@
 .choice-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
 .choice-row--3 { grid-template-columns: repeat(3, 1fr); }
 .choice { position: relative; display: flex; flex-direction: column; justify-content: center; gap: 2px; min-height: 56px; padding: 11px 14px; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1px #dedede; font-size: 15px; font-weight: 700; color: var(--ink); text-align: left; transition: box-shadow .15s; }
-.choice small { font-size: 12px; font-weight: 400; line-height: 1.4; color: var(--g3); }
+/* 고른 쪽 설명은 몰 색으로 — 옅은 회색이라 그냥 지나친다는 대표 지적 (2026-09-17) */
+.choice small { font-size: 12px; font-weight: 400; line-height: 1.4; color: var(--g2); }
+.choice[aria-pressed="true"] small { font-weight: 700; color: var(--mg); }
 .choice:hover { box-shadow: inset 0 0 0 1px #9a9a9a; }
 .choice[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--ink); }
 .choice--center { align-items: center; text-align: center; }
@@ -101,6 +103,8 @@
 .pbox__month { margin-top: 16px; padding-top: 16px; border-top: 1px dashed #d6d6d6; display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
 .pbox__month .k { font-size: 14px; font-weight: 700; color: var(--ink); }
 .pbox__month .v { font-size: 22px; font-weight: 700; color: var(--black); }
+.pbox__parts { margin-top: 6px; display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 4px; font-size: 12px; color: var(--g1); }
+.pbox__parts i { font-style: normal; font-weight: 700; color: var(--mg); }
 .pbox__note { margin-top: 8px; font-size: 12px; line-height: 1.6; color: var(--g3); }
 .pbox__rows { margin-top: 14px; padding-top: 14px; border-top: 1px solid #e8e8e8; display: grid; gap: 9px; }
 .row { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; }
@@ -338,7 +342,10 @@ body.has-bar #app { padding-bottom: calc(var(--bar) + env(safe-area-inset-bottom
 .compare .col.win { box-shadow: inset 0 0 0 2px var(--ink); }
 .compare h4 { display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 14px; font-weight: 700; }
 .compare .big { margin-top: 8px; font-size: 19px; font-weight: 700; letter-spacing: -0.01em; }
-.compare .small { margin-top: 2px; font-size: 12px; line-height: 1.5; color: var(--g3); }
+/* 월 금액이 무엇으로 이루어졌는지 — 휴대폰 + 요금 (대표 2026-09-17) */
+.compare .parts { margin-top: 5px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px; font-size: 12px; line-height: 1.5; color: var(--g1); }
+.compare .parts i { font-style: normal; font-weight: 700; color: var(--mg); }
+.compare .small { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--line-2); font-size: 12px; line-height: 1.5; color: var(--g3); }
 .compare-res { margin-top: 10px; padding: 11px 13px; border-radius: 10px; background: var(--mg-tint); color: #9b1553; font-size: 14px; font-weight: 700; line-height: 1.5; }
 .a-list li { position: relative; padding-left: 16px; font-size: 16px; line-height: 1.75; color: #2a2a2a; }
 .a-list li::before { content: ""; position: absolute; left: 2px; top: .78em; width: 5px; height: 5px; border-radius: 50%; background: var(--mg); }
@@ -1027,9 +1034,13 @@ body.has-tour #main { padding-top: 60px; }
 }
 
 /* ---------- 할인 방법 비교 기준 · 24개월 합계 창 ---------- */
-.cmp-basis { margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; padding: 3px; border-radius: 12px; background: var(--chip); }
-.cmp-basis button { height: 36px; border-radius: 9px; font-size: 13px; font-weight: 700; color: var(--g2); text-align: center; }
-.cmp-basis button[aria-pressed="true"] { background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(0, 0, 0, .08); }
+/* 무엇을 고르는 칸인지 알아보게 이름을 붙이고 몰 색을 준다 (대표 2026-09-17
+ * «요금제 그대로 / 요금을 낮출 생각이면 이부분도 몬가 포인트를 주는게 좋아보여») */
+.cmp-basis-lab { margin-top: 14px; display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; color: var(--mg); }
+.cmp-basis-lab .ic { width: 14px; height: 14px; }
+.cmp-basis { margin-top: 6px; display: grid; grid-template-columns: 1fr 1fr; padding: 3px; border-radius: 12px; background: var(--mg-tint); }
+.cmp-basis button { height: 36px; border-radius: 9px; font-size: 13px; font-weight: 700; color: #9b1553; text-align: center; }
+.cmp-basis button[aria-pressed="true"] { background: #fff; color: var(--mg); box-shadow: 0 1px 3px rgba(0, 0, 0, .10); }
 .cmp-sec + .cmp-sec { margin-top: 22px; }
 .cmp-sec h3 { margin-bottom: 6px; font-size: 15px; font-weight: 700; }
 .cmp-tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -1038,6 +1049,10 @@ body.has-tour #main { padding-top: 60px; }
 .cmp-tbl thead th { font-size: 12px; font-weight: 700; color: var(--g2); }
 .cmp-tbl .tot td { border-bottom: 0; font-weight: 700; color: var(--ink); }
 .cmp-tbl .tot td.win { color: var(--mg); }
+/* 이통사지원금 줄 — 여기가 제일 궁금한 자리라 눈에 들어오게 (대표 2026-09-17) */
+.cmp-tbl .hl td { background: var(--mg-tint); font-weight: 700; color: #9b1553; }
+.cmp-tbl .hl td:first-child { color: #9b1553; border-radius: 8px 0 0 8px; }
+.cmp-tbl .hl td:last-child { border-radius: 0 8px 8px 0; }
 .cmp-res { margin-top: 8px; padding: 10px 12px; border-radius: 10px; background: var(--mg-tint); color: #9b1553; font-size: 13px; font-weight: 700; }
 .cmp-sec .help-t { margin-top: 8px; }
 
@@ -1299,6 +1314,12 @@ body.has-tour #main { padding-top: 60px; }
 .bf-net__t small { display: block; margin-top: 2px; font-size: 12px; line-height: 1.45; color: #6b5c7d; }
 .bf-net__more { flex: none; display: inline-flex; align-items: center; gap: 2px; font-size: 12.5px; font-weight: 700; color: var(--lav-cta); }
 .bf-net__more .ic { width: 13px; height: 13px; }
+/* 보러 가는 줄 — 체크만 있으면 그냥 지나친다는 대표 지적 (2026-09-17) */
+.bf-net--go { flex-direction: column; align-items: stretch; gap: 10px; padding: 14px; }
+.bf-net__go { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 14px; border-radius: 11px; background: var(--lav-cta); color: #fff; }
+.bf-net__go .ic { flex: none; width: 17px; height: 17px; }
+.bf-net__got b { display: block; font-size: 15px; font-weight: 700; letter-spacing: -0.02em; }
+.bf-net__got small { display: block; margin-top: 3px; font-size: 12px; line-height: 1.45; color: #e6dff0; }
 
 /* 결합 할인 두 가지 — LG U+ 공식 페이지 방식(할인액을 가장 크게) · 대표 지시 2026-09-17 */
 .cb { display: grid; gap: 14px; margin-top: 16px; }
@@ -1330,3 +1351,25 @@ body.has-tour #main { padding-top: 60px; }
 }
 .cb__img { display: block; width: calc(100% + 40px); max-width: none; height: auto; margin: 16px -20px -22px; border-radius: 0 0 20px 20px; }
 @media (min-width: 1024px) { .cb__img { width: calc(100% + 52px); margin: 18px -26px -26px; border-radius: 0 0 24px 24px; } }
+
+/* ---------- 마이페이지 · 185일 뒤 요금제 낮추기 (대표 2026-09-17) ---------- */
+.pdown { margin-top: 14px; padding: 16px; border-radius: 16px; background: var(--mg-tint); }
+.pdown__hd { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.pdown__hd > div > b { display: block; font-size: 15px; font-weight: 700; letter-spacing: -0.02em; color: #7a0f42; }
+.pdown__hd small { display: block; margin-top: 3px; font-size: 12.5px; line-height: 1.5; color: #9b1553; }
+.pdown__hd small b { font-weight: 700; }
+.pdown__d { flex: none; display: inline-flex; align-items: center; height: 24px; padding: 0 9px; border-radius: 7px; background: #fff; font-size: 12px; font-weight: 700; color: var(--mg); }
+.pdown__d.on { background: var(--mg); color: #fff; }
+.pdown__when { margin-top: 8px; font-size: 12.5px; color: #9b1553; }
+.pdown__when b { font-weight: 700; }
+.pdown__list { margin-top: 12px; display: grid; gap: 6px; }
+.pdown__list li { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 13px; border-radius: 11px; background: #fff; }
+.pdown__list li.best { box-shadow: inset 0 0 0 1.5px var(--mg); }
+.pdown__list li > div:first-child b { display: flex; align-items: center; gap: 5px; font-size: 14px; font-weight: 700; color: var(--ink); }
+.pdown__list li > div:first-child small { display: block; margin-top: 2px; font-size: 12px; color: var(--g2); }
+.pdown__list .tag { display: inline-flex; align-items: center; height: 18px; padding: 0 6px; border-radius: 5px; background: var(--mg); color: #fff; font-size: 10.5px; font-weight: 700; }
+.pdown__n { flex: none; text-align: right; }
+.pdown__n b { display: block; font-size: 14px; font-weight: 700; color: var(--ink); }
+.pdown__n small { display: block; margin-top: 2px; font-size: 12px; font-weight: 700; color: var(--mg); }
+.pdown .help-t { margin-top: 10px; color: #9b1553; }
+.pdown__acts { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; }

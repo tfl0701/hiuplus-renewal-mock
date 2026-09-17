@@ -18,6 +18,7 @@ window.HIU = {
     4: { name: "데이터플랜80GB", fee: 66000, net: "5G", data: "80GB", after: "1Mbps", voice: "유무선 무제한", extra: "300분", sms: "무제한" },
     5: { name: "데이터플랜50GB", fee: 63000, net: "5G", data: "50GB", after: "1Mbps", voice: "유무선 무제한", extra: "300분", sms: "무제한" },
     47: { name: "데이터플랜31GB", fee: 61000, net: "5G", data: "31GB", after: "1Mbps", voice: "유무선 무제한", extra: "300분", sms: "무제한" },
+    32: { name: "데이터플랜9GB", fee: 47000, net: "5G", data: "9GB", after: "400Kbps", voice: "유무선 무제한", extra: "300분", sms: "무제한" },
     19: { name: "LTE 데이터 33", fee: 33000, net: "LTE", data: "1.5GB", after: "", voice: "유무선 무제한", extra: "110분", sms: "무제한" }
   },
 

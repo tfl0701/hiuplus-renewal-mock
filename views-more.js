@@ -49,9 +49,14 @@
     var ra = H.price(p, sa), rb = H.price(p, sb), ca = cost(p, sa), cb = cost(p, sb);
     var win = b.neutral || ca === cb ? "" : ca < cb ? "a" : "b";
     var after = function (r, s) { return r.monthlyTotal - r.planFee + Math.round(Math.min(r.planFeeBase, H.DOWN.fee) * (s.discount === "select" ? 0.75 : 1)); };
+    /* 월 납부 금액이 무엇으로 이루어졌는지 한 줄로 보여 준다 (대표 2026-09-17
+     * «할부금 얼마 요금 얼마 더해서 얼마 이런식으로 표기하면 고객이 더 편하게 볼거같아»)
+     * 기기분은 monthlyTotal − planFee 로 뽑는다. 그래야 «더하면 합계»가 늘 맞는다 */
     var col = function (key, lab, r, c, s) {
       return `<div class="col${win === key ? " win" : ""}"><h4>${lab}${win === key ? '<span class="badge badge--pre">덜 내요</span>' : ""}</h4>
-        <p class="big num">월 ${H.won(r.monthlyTotal)}</p><p class="small num">${b.down ? `${H.DOWN.keep + 1}개월째부터 월 ${H.won(after(r, s))}<br>` : ""}실구매가 ${H.won(r.principal)}<br>24개월 합계 ${H.won(c)}</p></div>`;
+        <p class="big num">월 ${H.won(r.monthlyTotal)}</p>
+        <p class="parts num"><span>휴대폰 ${H.won(r.monthlyTotal - r.planFee)}</span><i>+</i><span>요금 ${H.won(r.planFee)}</span></p>
+        <p class="small num">${b.down ? `${H.DOWN.keep + 1}개월째부터 월 ${H.won(after(r, s))}<br>` : ""}실구매가 ${H.won(r.principal)}<br>24개월 합계 ${H.won(c)}</p></div>`;
     };
     var gap = H.won(Math.abs(ca - cb));
     var res = ca === cb ? "" : b.neutral ? `<p class="compare-res">같은 폰, 같은 요금제라도 24개월 합계가 <span class="num">${gap}</span> 달라요.</p>`

@@ -131,6 +131,47 @@
   };
 
   /* ---------- 마이페이지 ---------- */
+  /* 185일 뒤 요금제 낮추기 — 개통하고 나면 잊어버리는 자리라 마이페이지에서 챙겨 준다
+   * (대표 2026-09-17 «고객이 185일 이후에 어떤거로 변경하는게 좋다는걸 볼수있는 칸을 만들어줘») */
+  function planDownCard(o) {
+    if (!o) return "";
+    var p = H.prod(o.pid);
+    if (!p) return "";
+    var sel = o.sel, r = H.price(p, sel), now = r.plan;
+    if (!now || r.planFeeBase <= H.DOWN.fee) return "";
+    var sale = sel.discount === "select";
+    var feeOf = function (f) { return sale ? Math.round(f * 0.75) : f; };
+
+    var d = new Date(String(o.date).replace(/\./g, "-"));
+    d.setDate(d.getDate() + 185);
+    var when = d.getFullYear() + "." + String(d.getMonth() + 1).padStart(2, "0") + "." + String(d.getDate()).padStart(2, "0");
+    var left = Math.ceil((d - new Date()) / 86400000);
+    var ready = left <= 0;
+
+    var list = Object.keys(H.D.plans).map(function (k) { return H.D.plans[k]; })
+      .filter(function (x) { return x.fee >= H.DOWN.fee && x.fee < r.planFeeBase; })
+      .sort(function (a, b) { return a.fee - b.fee; }).slice(0, 3);
+    if (!list.length) return "";
+
+    return `<section class="pdown">
+      <div class="pdown__hd">
+        <div><b>185일 뒤엔 요금제를 낮출 수 있어요</b>
+          <small>지금 <b>${H.esc(now.name)}</b> 월 ${H.won(r.planFee)}${sale ? " (선택약정 25% 뺀 금액)" : ""}</small></div>
+        <span class="pdown__d ${ready ? "on" : ""}">${ready ? "지금 바꿀 수 있어요" : "D-" + left}</span>
+      </div>
+      <p class="pdown__when">개통일 ${H.esc(o.date)} 기준 · <b>${when}</b>부터</p>
+      <ul class="pdown__list">${list.map(function (x, i) {
+      var save = r.planFee - feeOf(x.fee);
+      return `<li${i === 0 ? ' class="best"' : ""}>
+          <div><b>${H.esc(x.name)}${i === 0 ? '<span class="tag">가장 많이 아껴요</span>' : ""}</b>
+            <small>${H.esc(x.data)}${x.after ? " · 다 쓰면 " + H.esc(x.after) : ""}</small></div>
+          <div class="pdown__n"><b class="num">월 ${H.won(feeOf(x.fee))}</b><small class="num">매달 ${H.won(save)} ↓</small></div></li>`;
+    }).join("")}</ul>
+      <p class="help-t">월 47,000원(${H.DOWN.name})보다 더 낮추면 받은 지원금을 토해내야 할 수 있어요. 선택약정 25% 할인은 바꾼 요금제에도 그대로 이어져요.</p>
+      <div class="pdown__acts"><button type="button" class="btn btn--line btn--sm" data-act="consult">바꾸는 것 상담받기</button><a class="btn btn--soft btn--sm" href="#/guide/plan-down">왜 185일인가요?</a></div>
+    </section>`;
+  }
+
   H.views.my = function () {
     var s = H.state;
     if (!s.loggedIn) {
@@ -162,6 +203,7 @@
   <div>
     <header class="me-hd"><h1>${H.esc(s.user.name)}님</h1><p>아이디 ${H.esc(s.user.id)} · <a class="me-edit" href="#/my/account">회원정보 수정 ›</a></p></header>
     <div class="tiles">${tiles}</div>
+    ${planDownCard(cur)}
     ${s.partner ? `<div class="ref-card"><div><b>내 추천 링크</b><small class="num">hiuplus.com/${s.partner.code}</small></div><div class="ref-card__acts"><button type="button" class="btn btn--line btn--sm" data-act="copyRef">복사</button><a class="btn btn--ink btn--sm" href="#/partner/stats">내 실적</a></div></div>`
       : `<a class="ref-card ref-card--join" href="#/partner"><div><b>하이유플 파트너스</b><small>지인에게 링크를 보내고 개통 1건당 20,000원 받기</small></div>${H.icon("chev-r")}</a>`}
     <div class="quick">

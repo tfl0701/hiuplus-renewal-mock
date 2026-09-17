@@ -82,7 +82,9 @@
       release: release, carrierSupport: carrierSupport, self: self, principal: principal, months: months,
       monthlyDevice: monthlyDevice, interest: interest, totalInterest: totalInterest,
       planFee: planFee, planFeeBase: row[1], selectMonthly: row[1] - planFee,
-      monthlyTotal: (raw > 0 ? Math.floor(raw) : 0) + planFee, plan: H.plan(row[0]), planId: row[0]
+      /* 월 납부 금액의 기기 분도 올림 — 옛 사이트는 내림이라 «할부금+요금»과 1원 어긋났다.
+       * 대표 2026-09-17 «올림으로 맞추고» → 이제 표의 월 할부금 + 월 통신 요금 = 월 납부 금액 */
+      monthlyTotal: monthlyDevice + planFee, plan: H.plan(row[0]), planId: row[0]
     };
   };
   /* 24개월 동안 내는 돈 = 기기값 + 할부 이자 + 요금 24개월 */
@@ -109,14 +111,18 @@
    * «설명화면으로 넘어가고 설명화면 에도 설명화면 누르기전에도 체크 하는게 있어야되») */
   H.netAsk = function () { return H.state.netAsk === true; };
   H.acts.netAskToggle = function () { H.state.netAsk = !H.state.netAsk; H.save(); H.render(); };
+  /* noMore=true 면 체크 칸만 (결합 화면 위·아래에 쓴다).
+   * 아니면 «얼마나 내려가는지 보러 가는 줄»을 위에 크게 얹는다 — 체크만 있으면 그냥 지나친다는
+   * 대표 지적 (2026-09-17 «투게더 할인 추가 확인 하기 같은 식으로 해서 고객 클릭 유도») */
   H.netAskCard = function (_eyebrow, title, desc, noMore) {
     var on = H.netAsk();
-    return `<div class="bf-net${on ? " on" : ""}">
-      <button type="button" class="bf-net__chk" data-act="netAskToggle" aria-pressed="${on}">
+    var chk = `<button type="button" class="bf-net__chk" data-act="netAskToggle" aria-pressed="${on}">
         <span class="box">${H.icon("check")}</span>
-        <span class="bf-net__t"><b>${H.esc(title)}</b><small>${H.esc(desc)}</small></span></button>
-      ${noMore ? "" : `<a class="bf-net__more" href="#/together">결합 할인 보기${H.icon("arrow")}</a>`}
-    </div>`;
+        <span class="bf-net__t"><b>${H.esc(title)}</b><small>${H.esc(desc)}</small></span></button>`;
+    if (noMore) return `<div class="bf-net${on ? " on" : ""}">${chk}</div>`;
+    return `<div class="bf-net bf-net--go${on ? " on" : ""}">
+      <a class="bf-net__go" href="#/together"><span class="bf-net__got"><b>투게더 결합 할인 추가로 확인하기</b><small>가족 4명이 모이면 인터넷까지 매달 91,000원 내려가요</small></span>${H.icon("arrow")}</a>
+      ${chk}</div>`;
   };
 
   H.listPrice = function (p) { var s = H.defaults(p); return Object.assign(H.price(p, s), { sel: s }); };

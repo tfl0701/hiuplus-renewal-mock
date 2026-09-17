@@ -312,7 +312,8 @@ ${H.bannerHtml()}
     var btn = function (key, label, sub, ok) {
       return `<button type="button" class="choice" data-act="setOpt" data-k="discount" data-v="${key}" aria-pressed="${s.discount === key}"${ok ? "" : " disabled"}>${best && best.key === key ? '<span class="save">덜 내요</span>' : ""}${label}<small>${ok ? sub : "이 상품은 안 돼요"}</small></button>`;
     };
-    var basis = canDown ? `<div class="cmp-basis" role="group" aria-label="비교 기준"><button type="button" data-act="cmpBasis" data-v="keep" aria-pressed="${!down}">요금제 그대로</button><button type="button" data-act="cmpBasis" data-v="down" aria-pressed="${down}">요금을 낮출 생각이면</button></div>` : "";
+    var basis = canDown ? `<p class="cmp-basis-lab">${H.icon("spark")}어떤 기준으로 견줄까요?</p>
+      <div class="cmp-basis" role="group" aria-label="비교 기준"><button type="button" data-act="cmpBasis" data-v="keep" aria-pressed="${!down}">요금제 그대로</button><button type="button" data-act="cmpBasis" data-v="down" aria-pressed="${down}">요금을 낮출 생각이면</button></div>` : "";
     var line = "";
     if (best && best.key !== s.discount) line = `<p class="save-line">${H.icon("spark")}<span>이 조건에선 <b>${best.label}</b>이 ${when} <b class="num">${H.won(best.diff)}</b> 덜 내요.</span><button type="button" data-act="setOpt" data-k="discount" data-v="${best.key}">바꾸기</button></p>`;
     else if (best) line = `<p class="save-line">${H.icon("check")}<span>지금 고른 <b>${best.label}</b>이 ${when} <b class="num">${H.won(best.diff)}</b> 덜 내요.</span></p>`;
@@ -337,8 +338,14 @@ ${H.bannerHtml()}
       ? row(`요금 1~${k}개월<br><small>월 ${H.won(ro.planFeeBase)}</small>`, H.won(ro.planFee * k), H.won(rs.planFee * k)) + row(`요금 ${k + 1}~24개월<br><small>월 47,000원</small>`, H.won(low * rest), H.won(Math.round(low * 0.75) * rest))
       : row("요금 24개월", H.won(ro.planFee * 24), H.won(rs.planFee * 24));
     var win = co === cs ? "" : co < cs ? "a" : "b";
+    /* 할부원금이 어떻게 나왔는지 위 세 줄로 보여 준다 — 이통사지원금이 얼마인지가 제일 궁금하다는
+     * 대표 지적 (2026-09-17 «여기에 이통사 지원금 금액을 넣는게 중요해») */
+    var minus = function (v) { return v > 0 ? "− " + H.won(v) : "없음"; };
+    var head = row("출고가", H.won(ro.release), H.won(rs.release))
+      + `<tr class="hl"><td>이통사지원금</td><td class="num">${minus(ro.carrierSupport)}</td><td class="num">${minus(rs.carrierSupport)}</td></tr>`
+      + row("하이유플 자체할인", minus(ro.self), minus(rs.self));
     return `<table class="cmp-tbl"><thead><tr><th></th><th>이통사지원금</th><th>선택약정</th></tr></thead><tbody>
-      ${row("할부원금", H.won(ro.principal), H.won(rs.principal))}${row("할부 이자", H.won(ro.totalInterest), H.won(rs.totalInterest))}${fees}
+      ${head}${row("할부원금", H.won(ro.principal), H.won(rs.principal))}${row("할부 이자", H.won(ro.totalInterest), H.won(rs.totalInterest))}${fees}
       <tr class="tot"><td>24개월 합계</td><td class="num${win === "a" ? " win" : ""}">${H.won(co)}</td><td class="num${win === "b" ? " win" : ""}">${H.won(cs)}</td></tr></tbody></table>
       ${win ? `<p class="cmp-res">${win === "a" ? "이통사지원금" : "선택약정"}이 <span class="num">${H.won(Math.abs(co - cs))}</span> 덜 내요.</p>` : ""}`;
   }
@@ -364,12 +371,16 @@ ${H.bannerHtml()}
       <div class="pbox__main"><span class="k">나의 실구매가</span><span class="v num">${H.won(r.principal)}</span></div>
       <div class="pbox__conds">${conds.map(function (c) { return `<span class="cond-pill">${c}<b>${H.icon("check")}없음</b></span>`; }).join("")}</div>
       <div class="pbox__month"><span class="k">월 납부 금액 (VAT 포함)</span><span class="v num">${H.won(r.monthlyTotal)}</span></div>
+      <p class="pbox__parts num"><span>휴대폰 ${H.won(r.monthlyTotal - r.planFee)}</span><i>+</i><span>요금 ${H.won(r.planFee)}</span></p>
       <p class="pbox__note">지금 보시는 금액이 최종 결제 금액이에요. 추가 청구는 없어요. 할부를 고른 경우에만 연 5.9% 이자가 붙어요.</p>
       <div class="pbox__rows">${H.priceRows(p, s, r)}</div></div>`;
   }
   H.productPanel = function (p) {
     var s = H.selFor(p), r = H.price(p, s);
+    /* 인터넷 결합은 고르는 칸 안(PC 오른쪽 칸)에 둔다 — 아래에 있으면 PC에서 그냥 지나친다는
+     * 대표 지적 (2026-09-17 «피시버전에서는 하단에 있다보니 그냥 지나칠수있을거같아») */
     return optColor(p, s) + optCarrier(p) + optVol(p, s) + optPlan(p, s, r) + optDiscount(p, s) + optPay(s) + priceBox(p, s, r) +
+      `<div class="pd-net">${H.netAskCard("", "인터넷도 같이 상담받을게요", "휴대폰 가격은 그대로예요. 체크하면 접수할 때 같이 들어가요.")}</div>` +
       `<div class="pd-cta pc-only"><button type="button" class="btn btn--mg btn--block" data-act="order">주문하기</button>
         <div class="pd-cta__sub"><button type="button" data-act="callback">${H.icon("call")}번호만 남기고 상담받기</button><button type="button" data-act="chat">${H.icon("spark")}AI에게 물어보기</button></div></div>
       <div class="pd-cta__sub pd-sub-mo mo-only"><button type="button" data-act="callback">${H.icon("call")}번호만 남기고 상담받기</button><button type="button" data-act="chat">${H.icon("spark")}AI에게 물어보기</button></div>`;
@@ -428,7 +439,6 @@ ${H.bannerHtml()}
         <article class="info-card"><small>추가 청구 없음</small><h3>지금 보시는 월 납부 금액이 마지막 금액이에요</h3><p>개통 후에 다른 명목으로 더 청구하지 않아요. 할부를 고른 경우에만 연 5.9% 이자가 따로 붙어요.</p></article>
         <article class="info-card"><small>요금제</small><h3>요금제는 185일 뒤에 낮출 수 있어요</h3><p>개통일 기준 185일이 지나면 월 47,000원 이상 요금제로 바꿀 수 있어요. 그보다 낮추면 위약금이 생길 수 있어요.</p><a class="link-arrow" href="#/guide/plan-down">자세히 보기${H.icon("arrow")}</a></article>
       </div>
-      ${H.netAskCard("", "인터넷도 같이 상담받을게요", "휴대폰 가격은 그대로예요. 체크하면 접수할 때 같이 들어가요.")}</a>
       ${detailBlock(p, s)}
     </section>
     <section class="pd-sec" id="pdGuide">

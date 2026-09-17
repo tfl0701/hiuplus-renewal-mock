@@ -1,5 +1,9 @@
 /* 하이유플 리뉴얼 목업 — 휴대폰 + 인터넷 같이 (메뉴가 아닌 따로 된 설명 공간 · 주소 #/together)
- * 할인표: LG U+ 공식 «참 쉬운 가족 결합» 페이지(lguplus.com/benefit-uplus/combined-discount/B200000016), 2026-09-16 확인
+ * 할인표: LG U+ 공식 두 페이지, 2026-09-17 확인
+ *   참 쉬운 가족 결합  lguplus.com/benefit-uplus/combined-discount/B200000016
+ *   U+투게더 결합      lguplus.com/mobile/combined/together
+ * ★두 결합 모두 휴대폰 할인은 «회선당»이다(묶음 전체가 아니다). 대표 참고자료 2026-09-17 로 바로잡음.
+ * ★투게더에 «가족이 아니어도» 문구를 쓰지 않는다 — 청구계정을 하나로 묶어야 하므로 (대표 2026-09-17)
  * 인터넷 요금 · 설치비: 자비스웹 인터넷+TV 가격설정(hs_internet_settings, LG, 정책 기준일 2026-09-07) 값
  * 가입 지원금은 조합마다 달라 숫자를 쓰지 않는다(2026-09-15 대표 지시로 인터넷 화면에서도 «정해진 값»처럼 보이는 표기를 뺐다)
  */
@@ -57,33 +61,34 @@
   <header class="tg-hd">
     <p class="tg-eyebrow">휴대폰 + 인터넷</p>
     <h1>인터넷도 같이 하면<br>결합 할인이 따로 있어요</h1>
-    <p class="tg-lead">휴대폰 가격은 인터넷과 상관없어요. LG U+ 인터넷을 같이 쓰면 «참 쉬운 가족 결합»으로 매달 요금이 내려가요.</p>
+    <p class="tg-lead">휴대폰 가격은 인터넷과 상관없어요. LG U+ 인터넷을 같이 쓰면 «U+투게더 결합»이나 «참 쉬운 가족 결합»으로 매달 요금이 내려가요.</p>
     <ul class="tg-points">
       <li>${H.icon("check")}<span><b>휴대폰 가격은 그대로</b>인터넷 결합 조건 없음</span></li>
       <li>${H.icon("wifi")}<span><b>인터넷 요금 할인</b>속도에 따라 매달 내려가요</span></li>
       <li>${H.icon("user")}<span><b>가족 휴대폰도 할인</b>2대부터 1대마다 더 내려가요</span></li>
     </ul>
+    ${H.netAskCard("", "인터넷도 같이 상담받을게요", "체크해 두시면 휴대폰 접수할 때 같이 들어가요.", true)}
   </header>
 
   <section class="tg-sec tg-sec--hero"><h2>결합 할인 두 가지</h2><p class="tg-sub">묶는 사람과 조건이 달라요. 어느 쪽이 나은지는 상담에서 같이 봐 드려요.</p>
     <div class="cb">
       <article class="cb__c cb__c--alt">
         <p class="cb__n">U+투게더 결합</p>
-        <p class="cb__d">가족이 아니어도, 무제한 요금제면 묶을 수 있는 할인</p>
-        <p class="cb__big"><b class="num">31,000</b><span>원</span><small>매달, 최대</small></p>
-        <p class="cb__basis">인터넷 500Mbps 이상 + 휴대폰 4~5대 기준</p>
-        <img class="cb__img" src="img/combo-together.png" width="1080" height="1300" alt="U+투게더 결합 할인표">
+        <p class="cb__d">무제한 요금제끼리 모이면, 회선마다 크게 받는 할인</p>
+        <p class="cb__big"><b class="num">91,000</b><span>원</span><small>매달</small></p>
+        <p class="cb__basis">휴대폰 4대(회선당 20,000원) + 1Gbps 인터넷 기준 · 월 85,000원 이상 요금제만</p>
+        <img class="cb__img" src="img/combo-together.png" width="1080" height="1448" alt="U+투게더 결합 할인표">
       </article>
       <article class="cb__c">
         <p class="cb__n">참 쉬운 가족 결합</p>
-        <p class="cb__d">복잡한 조건 없이, 가족이 모이면 받는 할인</p>
-        <p class="cb__big"><b class="num">57,200</b><span>원</span><small>매달, 최대</small></p>
-        <p class="cb__basis">인터넷 1Gbps + 가족 휴대폰 5대(월 88,000원 이상) 기준</p>
-        <img class="cb__img" src="img/combo-family.png" width="1080" height="1344" alt="참 쉬운 가족 결합 할인표">
+        <p class="cb__d">가족이라면 복잡한 조건 없이, 회선마다 받는 할인</p>
+        <p class="cb__big"><b class="num">48,400</b><span>원</span><small>매달</small></p>
+        <p class="cb__basis">같은 조건 — 휴대폰 4회선(회선당 8,800원) + 1GB 인터넷 기준</p>
+        <img class="cb__img" src="img/combo-family.png" width="1080" height="1374" alt="참 쉬운 가족 결합 할인표">
       </article>
     </div>
-    <ul class="a-list tg-notes"><li>할인액은 3년 약정 기준이에요. 2년은 절반, 1년은 4분의 1이에요.</li><li>두 결합을 같이 받을 수는 없어요. 유리한 쪽 하나를 골라요.</li></ul>
-    <p class="asof">LG U+ 공식 안내 기준 · 2026년 9월 16일 확인 · 가입 조건은 상담에서 다시 확인해 드려요</p>
+    <ul class="a-list tg-notes"><li><b>두 결합 모두 휴대폰 할인은 회선마다 붙어요.</b> 묶은 대수만큼 곱해서 받아요.</li><li>투게더는 월 85,000원 이상 무제한 요금제만 되고, 대표자가 한꺼번에 내는 청구계정으로 묶어야 해요.</li><li>인터넷 할인액은 3년 약정 기준이에요. 2년은 절반, 1년은 4분의 1이에요.</li><li>두 결합을 같이 받을 수는 없어요. 유리한 쪽 하나를 골라요.</li></ul>
+    <p class="asof">LG U+ 공식 안내 기준 · 2026년 9월 17일 확인 · 가입 조건은 상담에서 다시 확인해 드려요</p>
   </section>
 
   <section class="tg-sec"><h2>인터넷 가입 지원금</h2>
@@ -105,7 +110,7 @@
 
   ${H.netAskCard("", "인터넷도 같이 상담받을게요", "체크해 두시면 휴대폰 접수할 때 같이 들어가요.", true)}
 
-  <div class="tg-cta"><button type="button" class="btn btn--mg btn--block" data-act="tgLead">인터넷 같이 상담받기</button>${backBtn()}</div>
+  <div class="tg-cta">${backBtn()}</div>
   <p class="demo-note"><span class="demo-tag">시안</span>하이유플은 지금 인터넷을 웹에서 팔지 않아요(인터넷 화면 꺼짐). 상담 접수는 자비스웹 «상담 접수 › 인터넷»으로 들어가요</p>
 </div>`
     };
