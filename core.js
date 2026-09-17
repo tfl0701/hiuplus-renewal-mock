@@ -137,7 +137,7 @@
     out += '<div class="row"><span>할부원금</span><b class="num">' + H.won(r.principal) + "</b></div>";
     if (r.months) {
       out += '<div class="row"><span>월 휴대폰 할부금 (' + r.months + '개월)</span><b class="num">' + H.won(r.monthlyDevice) + "</b></div>";
-      out += '<div class="row row--sub"><span>할부 이자 (연 5.9%)</span><b class="num">' + H.won(r.interest) + "</b></div>";
+      out += '<div class="row row--sub"><span>통신사 할부 이자 (연 5.9%)</span><b class="num">' + H.won(r.interest) + "</b></div>";
       out += '<div class="row row--sub"><span>' + r.months + '개월 총 할부이자</span><b class="num">' + H.won(r.totalInterest) + "</b></div>";
     }
     out += '<div class="row"><span>월 통신 요금 (VAT 포함)</span><b class="num">' + H.won(r.planFee) + "</b></div>";

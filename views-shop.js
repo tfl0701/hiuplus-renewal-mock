@@ -361,7 +361,7 @@ ${H.bannerHtml()}
   };
   function optPay(s) {
     var cur = s.payment === "installment" ? String(s.months) : "0";
-    return `<div class="opt"><div class="opt__t"><h2>구매 방식</h2><span class="hint">할부 이자 연 5.9%</span></div><div class="opt__body choice-row choice-row--3">${[["0", "일시불"], ["24", "24개월 할부"], ["30", "30개월 할부"]].map(function (o) {
+    return `<div class="opt"><div class="opt__t"><h2>구매 방식</h2><span class="hint">통신사 할부 이자 연 5.9%</span></div><div class="opt__body choice-row choice-row--3">${[["0", "일시불"], ["24", "24개월 할부"], ["30", "30개월 할부"]].map(function (o) {
       return `<button type="button" class="choice choice--center" data-act="setOpt" data-k="pay" data-v="${o[0]}" aria-pressed="${cur === o[0]}">${o[1]}</button>`;
     }).join("")}</div></div>`;
   }
@@ -372,7 +372,7 @@ ${H.bannerHtml()}
       <div class="pbox__conds">${conds.map(function (c) { return `<span class="cond-pill">${c}<b>${H.icon("check")}없음</b></span>`; }).join("")}</div>
       <div class="pbox__month"><span class="k">월 납부 금액 (VAT 포함)</span><span class="v num">${H.won(r.monthlyTotal)}</span></div>
       <p class="pbox__parts num"><span>휴대폰 ${H.won(r.monthlyTotal - r.planFee)}</span><i>+</i><span>요금 ${H.won(r.planFee)}</span></p>
-      <p class="pbox__note">지금 보시는 금액이 최종 결제 금액이에요. 추가 청구는 없어요. 할부를 고른 경우에만 연 5.9% 이자가 붙어요.</p>
+      <p class="pbox__note">지금 보시는 금액이 최종 결제 금액이에요. 추가 청구는 없어요. 할부를 고른 경우에만 통신사 할부 이자(연 5.9%)가 붙어요.</p>
       <div class="pbox__rows">${H.priceRows(p, s, r)}</div></div>`;
   }
   H.productPanel = function (p) {
@@ -387,7 +387,19 @@ ${H.bannerHtml()}
   };
   H.productBar = function (p) {
     var s = H.selFor(p), r = H.price(p, s);
-    return `<div class="bar__price"><small class="num">실구매가 ${H.won(r.principal)} · ${r.months ? r.months + "개월 할부" : "일시불"}</small><b class="num">월 ${H.won(r.monthlyTotal)}</b></div><button type="button" class="btn btn--mg" data-act="order">주문하기</button>`;
+    /* 금액 부분을 누르면 금액칸으로 올라간다 — 띠에는 요약만 있어 손님이 무엇으로 나온 값인지
+     * 볼 길이 없었다 (대표 2026-09-17 «누르면 위로 스크롤되면서 상세 내역을 보여주는게 있어야되고») */
+    return `<button type="button" class="bar__price" data-act="barDetail"><small class="num">실구매가 ${H.won(r.principal)} · ${r.months ? r.months + "개월 할부" : "일시불"}</small><b class="num">월 ${H.won(r.monthlyTotal)}${H.icon("chev-u", "bar__chev")}</b></button><button type="button" class="btn btn--mg" data-act="order">주문하기</button>`;
+  };
+  H.acts.barDetail = function () {
+    var box = H.$(".pbox");
+    if (!box) return;
+    var hdr = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--hdr"), 10) || 60;
+    var y = box.getBoundingClientRect().top + window.scrollY - hdr - 12;
+    window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+    box.classList.remove("pbox--flash");
+    void box.offsetWidth;
+    box.classList.add("pbox--flash");
   };
   H.refreshProduct = function () {
     var p = H.prod(H.route.parts[1]);
@@ -436,7 +448,7 @@ ${H.bannerHtml()}
         <p class="nocond-card__foot">위 금액표에서 네 항목이 모두 «없음»으로 보여요. 직접 확인하고 주문하세요.</p>
       </div>
       <div class="info-cards">
-        <article class="info-card"><small>추가 청구 없음</small><h3>지금 보시는 월 납부 금액이 마지막 금액이에요</h3><p>개통 후에 다른 명목으로 더 청구하지 않아요. 할부를 고른 경우에만 연 5.9% 이자가 따로 붙어요.</p></article>
+        <article class="info-card"><small>추가 청구 없음</small><h3>지금 보시는 월 납부 금액이 마지막 금액이에요</h3><p>개통 후에 다른 명목으로 더 청구하지 않아요. 할부를 고른 경우에만 통신사 할부 이자(연 5.9%)가 따로 붙어요.</p></article>
         <article class="info-card"><small>요금제</small><h3>요금제는 185일 뒤에 낮출 수 있어요</h3><p>개통일 기준 185일이 지나면 월 47,000원 이상 요금제로 바꿀 수 있어요. 그보다 낮추면 위약금이 생길 수 있어요.</p><a class="link-arrow" href="#/guide/plan-down">자세히 보기${H.icon("arrow")}</a></article>
       </div>
       ${detailBlock(p, s)}
