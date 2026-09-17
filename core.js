@@ -222,8 +222,29 @@
     if (tb) tb.innerHTML = H.tourBar ? H.tourBar() : "";
     document.title = (v.title ? v.title + " — " : "") + "하이유플 리뉴얼 목업";
     if (H.after[key]) H.after[key](r);
+    watchBar();
     if (H._tourAfter) { var fn = H._tourAfter; H._tourAfter = null; setTimeout(fn, 80); }
   };
+
+  /* PC 아래 띠 — 오른쪽 칸의 주문 단추가 화면 밖으로 나가면 띠를 올린다.
+   * 휴대폰은 띠가 늘 떠 있어 이 값과 상관없다 (대표 2026-09-17
+   * «스크롤되다가 사라지면 다시 마우스로 드래그를 해야 되니 편하게 바꿔 달라») */
+  function watchBar() {
+    if (H._barOff) { H._barOff(); H._barOff = null; }
+    document.body.classList.remove("bar-up");
+    if (!H.$("#bar")) return;
+    var sel = ".pd-cta.pc-only .btn, .order-submit.pc-only .btn";
+    var tick = function () {
+      var cta = H.$(sel); // 옵션을 고치면 칸이 다시 그려지니 그때그때 찾는다
+      if (!cta) { document.body.classList.add("bar-up"); return; }
+      var r = cta.getBoundingClientRect();
+      document.body.classList.toggle("bar-up", r.bottom <= 24 || r.top >= window.innerHeight);
+    };
+    addEventListener("scroll", tick, { passive: true });
+    addEventListener("resize", tick);
+    H._barOff = function () { removeEventListener("scroll", tick); removeEventListener("resize", tick); };
+    tick();
+  }
 
   /* ---------- 창 · 서랍 · 알림 ---------- */
   var sheetToken = 0, drawerToken = 0, toastTimer = 0;

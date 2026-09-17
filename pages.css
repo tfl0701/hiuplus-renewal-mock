@@ -141,9 +141,19 @@
 .bar .btn { height: 52px; padding: 0 28px; border-radius: 14px; }
 .bar__icon { width: 52px; height: 52px; flex: none; border-radius: 14px; box-shadow: inset 0 0 0 1px #dedede; display: grid; place-items: center; color: var(--ink); }
 body.has-bar #app { padding-bottom: calc(var(--bar) + env(safe-area-inset-bottom)); }
+/* PC에서도 아래 띠를 쓴다 — 오른쪽 칸이 스크롤로 사라지면 손님이 주문하려고 다시 위로
+ * 올라가야 했다 (대표 2026-09-17). 주문 단추가 화면에서 사라질 때만 띠가 올라온다 */
 @media (min-width: 1024px) {
-  .bar { display: none; }
+  .bar { padding-inline: max(var(--gut), calc((100% - var(--wrap)) / 2)); transform: translateY(110%); transition: transform .24s var(--ease); pointer-events: none; }
+  body.bar-up .bar { transform: none; pointer-events: auto; }
   body.has-bar #app { padding-bottom: 0; }
+  body.has-bar.bar-up #app { padding-bottom: var(--bar); }
+  .bar__price small { font-size: 13px; }
+  .bar__price b { font-size: 20px; }
+  .bar .btn { height: 54px; padding: 0 40px; font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bar { transition: none; }
 }
 
 .pd-tabs { position: sticky; top: var(--hdr); z-index: 20; margin-top: 44px; display: flex; gap: 22px; overflow-x: auto; background: #fff; border-bottom: 1px solid var(--line); scrollbar-width: none; }
