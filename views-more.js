@@ -427,14 +427,12 @@
     });
   };
   H.acts.kakao = function () { H.toast("시안: 하이유플 카카오톡 채널 상담으로 연결돼요"); };
+  /* 빠른 질문 — ★지금은 여기 박혀 있다. 자비스웹에서 직원이 고치게 빼는 일은 따로 지시서로 나간다.
+   * «선택약정이 더 싸요?»는 대표 지시 2026-09-17 로 뺐다 */
   var CHAT_Q = [
     ["아이폰 18 프로 월 얼마예요?", function () {
       var p = H.prod(54), s = H.defaults(p), r = H.price(p, s);
       return "아이폰 18 프로 256G를 " + r.plan.name + " · " + H.methodLabel(s.method) + " · 이통사지원금 · 24개월 할부로 사면\n실구매가 " + H.won(r.principal) + ", 월 납부 금액은 " + H.won(r.monthlyTotal) + "이에요.\n지금 쓰는 통신사를 알려 주시면 그 금액으로 다시 계산해 드릴게요.";
-    }],
-    ["선택약정이 더 싸요?", function () {
-      var p = H.prod(54), s = H.defaults(p), b = H.cheaper(p, s);
-      return b ? "아이폰 18 프로 · " + H.plan(s.planId).name + " · " + H.methodLabel(s.method) + " 기준으로는\n" + b.label + "이 24개월 동안 " + H.won(b.diff) + " 덜 내요.\n폰과 요금제마다 달라서, 상품 화면에서 두 방법을 눌러 보시면 바로 비교돼요." : "이 조건에서는 두 방법의 금액이 같아요.";
     }],
     ["요금제는 언제 낮출 수 있어요?", function () {
       return "개통일 기준 185일이 지나면 낮출 수 있어요.\nLG U+는 월 47,000원 이상 요금제까지 괜찮고, 그보다 낮추면 위약금이 생길 수 있어요.";
