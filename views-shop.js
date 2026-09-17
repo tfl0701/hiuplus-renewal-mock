@@ -312,7 +312,7 @@ ${H.bannerHtml()}
     var btn = function (key, label, sub, ok) {
       return `<button type="button" class="choice" data-act="setOpt" data-k="discount" data-v="${key}" aria-pressed="${s.discount === key}"${ok ? "" : " disabled"}>${best && best.key === key ? '<span class="save">덜 내요</span>' : ""}${label}<small>${ok ? sub : "이 상품은 안 돼요"}</small></button>`;
     };
-    var basis = canDown ? `<p class="cmp-basis-lab">${H.icon("spark")}어떤 기준으로 견줄까요?</p>
+    var basis = canDown ? `<p class="cmp-basis-lab">${H.icon("spark")}나중에 요금제를 낮추실 건가요?</p>
       <div class="cmp-basis" role="group" aria-label="비교 기준"><button type="button" data-act="cmpBasis" data-v="keep" aria-pressed="${!down}">요금제 그대로</button><button type="button" data-act="cmpBasis" data-v="down" aria-pressed="${down}">요금을 낮출 생각이면</button></div>` : "";
     var line = "";
     if (best && best.key !== s.discount) line = `<p class="save-line">${H.icon("spark")}<span>이 조건에선 <b>${best.label}</b>이 ${when} <b class="num">${H.won(best.diff)}</b> 덜 내요.</span><button type="button" data-act="setOpt" data-k="discount" data-v="${best.key}">바꾸기</button></p>`;
