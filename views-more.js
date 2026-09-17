@@ -440,8 +440,64 @@
       return "개통일 기준 185일이 지나면 낮출 수 있어요.\nLG U+는 월 47,000원 이상 요금제까지 괜찮고, 그보다 낮추면 위약금이 생길 수 있어요.";
     }]
   ];
+  /* ---------- AI 상담 화면 (#/chat) ----------
+   * 지금 사이트에도 /hiuplus/chat 으로 살아 있는데 리뉴얼에서 빠져 파랑·Noto Sans 로 남아 있었다.
+   * 대표 2026-09-17 «리뉴얼한 거로 해야지» → 짜임까지 다른 화면과 같게 다시 짰다.
+   * 글과 빠른 질문은 살아 있는 화면 그대로, 답은 이 화면의 실제 금액으로 만든다. */
+  H.chatState = { on: false, log: [] };
+  H.views.chat = function () {
+    var st = H.chatState;
+    if (!st.on) {
+      return {
+        title: "AI 상담", tab: true,
+        html: `<div class="wrap ai-narrow">
+  <header class="ai-hd">
+    <p class="ai-hd__eyebrow">${H.icon("spark")}하이유플 AI 상담<span class="ai-hd__tag">24시간 바로 답변</span></p>
+    <h1>무엇이든<br>물어보세요</h1>
+    <p class="ai-hd__lead">휴대폰 가격 · 재고 · 개통까지 AI가 바로 답해드려요.<br>어려운 건 담당 직원이 이어서 도와드려요.</p>
+    <button type="button" class="btn btn--mg btn--block ai-start" data-act="chatStart">상담 시작하기${H.icon("arrow")}</button>
+    <p class="ai-hd__hours">평일 10:00–20:00 · 토요일 11:00–20:00<br>그 밖의 시간에는 AI가 답해요</p>
+  </header>
+  <ul class="ai-pts">
+    <li>${H.icon("won")}<span><b>실시간 가격으로 답해요</b>지금 화면의 금액을 그대로 읽어요</span></li>
+    <li>${H.icon("user")}<span><b>직원이 이어받아요</b>어려운 건 담당자가 바로 이어서 봐요</span></li>
+    <li>${H.icon("shield")}<span><b>이 기기에만 남아요</b>상담 내역은 30일 동안 이 브라우저에 보관돼요</span></li>
+  </ul>
+  <p class="demo-note"><span class="demo-tag">시안</span>실제 상담은 지금 사이트 AI를 그대로 이어 써요</p>
+</div>`
+      };
+    }
+    var msgs = st.log.map(function (m) { return `<p class="msg msg--${m[0]}">${H.esc(m[1])}</p>`; }).join("");
+    var left = CHAT_Q.filter(function (q, i) { return st.log.every(function (m) { return m[1] !== q[0]; }); });
+    return {
+      title: "AI 상담", tab: false,
+      html: `<div class="wrap ai-narrow ai-room">
+  <div class="ai-bar"><span class="ai-bar__who"><span class="chat-av">하유</span><b>하이유플 AI 상담</b><small>지금 답해요</small></span>
+    <span class="ai-bar__acts"><button type="button" data-act="chatReset">새 상담</button><a href="#/my">나가기</a></span></div>
+  <div class="chat chat--room" id="chatBox">
+    <p class="msg msg--ai">안녕하세요, 하유예요 😊<br>찾으시는 기종이나 궁금한 점을 편하게 말씀해 주세요.</p>${msgs}</div>
+  ${left.length ? `<div class="chat-sugg" id="chatSugg">${left.map(function (q) { return `<button type="button" data-act="chatAsk" data-i="${CHAT_Q.indexOf(q)}">${q[0]}</button>`; }).join("")}</div>` : `<div class="chat-sugg"><button type="button" data-act="kakao">상담원과 이야기하기</button></div>`}
+  <div class="ai-send"><input class="input" id="chatInput" placeholder="궁금한 내용을 적어 주세요" aria-label="궁금한 내용"><button type="button" class="ai-send__go" data-act="chatSend" aria-label="보내기">${H.icon("arrow")}</button></div>
+  <p class="ai-foot">${H.icon("info")}<span>이 대화는 담당 직원도 함께 봐요. 필요하면 직원이 바로 이어받아요.</span></p>
+  <p class="demo-note"><span class="demo-tag">시안</span>정해진 질문에만 답해요 · 실제 금액으로 계산했어요</p>
+</div>`
+    };
+  };
+  H.acts.chatStart = function () { H.chatState.on = true; H.render(); };
+  H.acts.chatReset = function () { H.chatState = { on: true, log: [] }; H.render(); };
+  H.acts.chatSend = function () {
+    var el = H.$("#chatInput"), v = (el && el.value || "").trim();
+    if (!v) { H.toast("궁금한 내용을 적어 주세요"); return; }
+    H.chatState.log.push(["me", v], ["ai", "시안에서는 위 질문에만 답해요. 실제 상담에서는 이 물음도 AI가 받아요."]);
+    H.render();
+  };
+
   H.acts.chat = function () {
     H.closeDrawer(true);
+    H.closeSheet();
+    H.go("#/chat");
+  };
+  H.acts.chatOld = function () {
     H.openSheet({
       title: "AI 상담",
       body: `<div class="chat" id="chatBox"><p class="chat-who"><span class="chat-av">하유</span>하이유플 AI 상담</p>

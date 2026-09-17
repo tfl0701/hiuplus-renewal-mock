@@ -155,7 +155,7 @@
     new URLSearchParams(qs).forEach(function (v, k) { q[k] = v; });
     return { path: parts[0] || "", parts: parts, q: q, hash: location.hash || "#/" };
   };
-  var ROUTES = { "": "home", phones: "phones", order: "order", done: "done", my: "my", guide: "guides", reviews: "reviews", review: "review", cs: "cs", search: "search", signup: "signup", screens: "screens", tour: "tour", partner: "partner", admin: "admin", together: "together", receipt: "receipt" };
+  var ROUTES = { "": "home", phones: "phones", order: "order", done: "done", my: "my", guide: "guides", reviews: "reviews", review: "review", cs: "cs", search: "search", signup: "signup", screens: "screens", tour: "tour", partner: "partner", admin: "admin", together: "together", receipt: "receipt", chat: "chat" };
   function viewKey(r) {
     if (r.path === "guide" && r.parts[1]) return "guide";
     if (r.path === "phone") { var p = H.prod(r.parts[1]); return p && p.launch ? "launch" : "product"; }

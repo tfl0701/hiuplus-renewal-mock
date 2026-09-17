@@ -1497,3 +1497,37 @@ body.has-tour #main { padding-top: 60px; }
 .tgp-p__ic svg { width: 100%; height: 100%; display: block; }
 .tgp-p:not(.on) .tgp-p__ic { filter: grayscale(.85) opacity(.55); }
 .tgp-p.last .tgp-p__ic { background: #fff; box-shadow: 0 0 0 3px var(--lav-cta), 0 6px 16px rgba(93, 68, 119, .28); }
+
+/* ---------- AI 상담 화면 (#/chat) — 리뉴얼 모양 (대표 2026-09-17) ---------- */
+.ai-narrow { max-width: 620px; }
+.ai-hd { margin-top: 18px; padding: 30px 24px 26px; border-radius: 22px; background: linear-gradient(170deg, #1b1b1f 0%, #000 100%); color: #fff; }
+.ai-hd__eyebrow { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: #ff8fc2; }
+.ai-hd__eyebrow .ic { width: 16px; height: 16px; }
+.ai-hd__tag { margin-left: 4px; padding: 3px 8px; border-radius: 6px; background: rgba(255, 255, 255, .14); font-size: 11.5px; font-weight: 700; color: #fff; }
+.ai-hd h1 { margin-top: 14px; font-size: 30px; line-height: 1.28; font-weight: 700; letter-spacing: -0.035em; }
+.ai-hd__lead { margin-top: 12px; font-size: 14.5px; line-height: 1.65; color: #b6b6bd; }
+.ai-start { margin-top: 22px; height: 56px; border-radius: 14px; font-size: 16px; }
+.ai-start .ic { width: 17px; height: 17px; margin-left: 4px; }
+.ai-hd__hours { margin-top: 14px; font-size: 12px; line-height: 1.6; color: #86868f; }
+.ai-pts { margin-top: 14px; display: grid; gap: 8px; }
+.ai-pts li { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 14px; background: var(--surface); }
+.ai-pts .ic { width: 22px; height: 22px; flex: none; color: var(--mg); }
+.ai-pts span { font-size: 13px; line-height: 1.5; color: var(--g2); }
+.ai-pts b { display: block; font-size: 14.5px; color: var(--ink); }
+.ai-bar { margin-top: 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.ai-bar__who { display: flex; align-items: center; gap: 8px; }
+.ai-bar__who b { font-size: 15px; font-weight: 700; color: var(--ink); }
+.ai-bar__who small { font-size: 12px; color: var(--mg); font-weight: 700; }
+.ai-bar__acts { display: flex; gap: 12px; font-size: 13px; font-weight: 700; color: var(--g2); }
+.chat--room { margin-top: 14px; min-height: 240px; }
+.ai-send { margin-top: 12px; display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+.ai-send .input { border-radius: 999px; }
+.ai-send__go { width: 52px; height: 52px; flex: none; border-radius: 50%; background: var(--mg); color: #fff; display: grid; place-items: center; }
+.ai-send__go .ic { width: 20px; height: 20px; }
+.ai-foot { margin-top: 12px; display: flex; align-items: flex-start; gap: 7px; padding: 11px 13px; border-radius: 11px; background: var(--surface); font-size: 12.5px; line-height: 1.55; color: var(--g2); }
+.ai-foot .ic { width: 15px; height: 15px; flex: none; margin-top: 1px; color: var(--g3); }
+@media (min-width: 1024px) {
+  .ai-hd { margin-top: 44px; padding: 44px 40px 38px; border-radius: 26px; }
+  .ai-hd h1 { font-size: 40px; }
+  .ai-hd__lead { font-size: 16px; }
+}
