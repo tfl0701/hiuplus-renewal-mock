@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>금액 시트 글 비율 시안 — 하이유플</title>
+<style>
+  :root { --ink:#141414; --g1:#3c3c3c; --g2:#666; --line:#ececec; --accent:#e5287e; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:#f4f4f6; color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard Variable",Pretendard,system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased; }
+  .num { font-variant-numeric: tabular-nums; }
+  header { padding:26px 20px 18px; background:#fff; border-bottom:1px solid var(--line); }
+  header h1 { margin:0; font-size:20px; font-weight:700; letter-spacing:-.02em; }
+  header p { margin:8px 0 0; font-size:14px; line-height:1.65; color:var(--g2); }
+  .wrap { padding:18px 16px 60px; display:flex; flex-direction:column; gap:22px; }
+  @media (min-width:900px){ .wrap { flex-direction:row; align-items:flex-start; justify-content:center; flex-wrap:wrap; } }
+  .col { flex:0 0 auto; width:100%; max-width:375px; margin:0 auto; }
+  .tag { display:flex; align-items:center; gap:8px; margin:0 0 8px; }
+  .tag b { font-size:15px; font-weight:700; }
+  .tag span { font-size:12px; font-weight:700; padding:3px 8px; border-radius:999px; background:#e9e6ef; color:#5d4477; }
+  .tag span.now { background:#ffe8f2; color:#9b1553; }
+  .why { margin:0 0 10px; font-size:13px; line-height:1.6; color:var(--g2); }
+  .sheet { background:#fff; border-radius:18px 18px 0 0; box-shadow:0 -6px 24px rgba(0,0,0,.10); padding:0 20px 20px; overflow:hidden; }
+  .grab { height:22px; display:grid; place-items:center; }
+  .grab i { display:block; width:42px; height:4px; border-radius:4px; background:#d8d8d8; }
+  .hr { border-top:1px solid var(--line); margin:18px 0; }
+  .lead { margin:12px 0 0; font-size:13px; line-height:1.6; color:var(--g2); }
+
+  /* 지금 */
+  .n-grid { display:grid; grid-template-columns:1fr 1fr; row-gap:22px; column-gap:16px; padding-top:14px; }
+  .n-row { display:flex; justify-content:space-between; align-items:center; }
+  .n-row span { font-size:15px; }
+  .n-row b { font-size:15px; font-weight:700; }
+  .n-chk { color:var(--accent); font-size:13px; font-style:normal; margin-right:4px; }
+  .n-pay { display:flex; justify-content:space-between; align-items:baseline; }
+  .n-pay > span { font-size:15px; font-weight:700; }
+  .n-pay > b { font-size:24px; font-weight:700; }
+  .n-sub { margin:6px 0 0; text-align:right; font-size:13px; color:var(--g2); }
+  .n-line { display:flex; justify-content:space-between; margin-top:14px; font-size:15px; }
+  .n-line b { font-weight:700; }
+
+  /* A안 — 묶어서 가운데로 */
+  .a-pills { display:flex; flex-wrap:wrap; gap:7px; padding-top:14px; }
+  .a-pill { display:inline-flex; align-items:center; gap:5px; height:30px; padding:0 11px; border-radius:999px; background:#f6f5f8; font-size:13px; color:var(--g1); }
+  .a-pill i { font-style:normal; color:var(--accent); font-size:12px; }
+  .a-pill b { font-weight:700; color:var(--ink); }
+  .a-pay { text-align:left; }
+  .a-pay .k { font-size:13px; color:var(--g2); }
+  .a-pay .v { display:block; margin-top:2px; font-size:30px; font-weight:700; letter-spacing:-.03em; }
+  .a-parts { margin:4px 0 0; font-size:13px; color:var(--g2); }
+  .a-tbl { display:grid; grid-template-columns:auto auto; justify-content:space-between; row-gap:13px; }
+  .a-tbl .k { font-size:14px; color:var(--g1); }
+  .a-tbl .v { font-size:14px; font-weight:700; text-align:right; }
+  .a-tbl .v.dc { color:var(--accent); }
+
+  /* B안 — 안쪽으로 모으기 */
+  .b-in { max-width:300px; margin:0 auto; }
+  .b-grid { display:grid; grid-template-columns:1fr 1fr; row-gap:16px; column-gap:12px; padding-top:14px; }
+  .b-cell { display:flex; align-items:center; gap:6px; font-size:14px; }
+  .b-cell i { font-style:normal; color:var(--accent); font-size:12px; }
+  .b-cell b { font-weight:700; }
+  .b-cell span { color:var(--g1); }
+  .b-pay { display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
+  .b-pay span { font-size:14px; font-weight:700; }
+  .b-pay b { font-size:24px; font-weight:700; }
+  .b-line { display:flex; justify-content:space-between; gap:10px; margin-top:13px; font-size:14px; }
+  .b-line b { font-weight:700; }
+
+  /* C안 — 영수증처럼 점선으로 잇기 */
+  .c-row { display:flex; align-items:baseline; gap:8px; margin-top:13px; font-size:14px; }
+  .c-row .k { color:var(--g1); white-space:nowrap; }
+  .c-row .dots { flex:1 1 auto; border-bottom:1px dotted #d3d3d3; transform:translateY(-4px); }
+  .c-row .v { font-weight:700; white-space:nowrap; }
+  .c-row .v.dc { color:var(--accent); }
+  .c-head { display:flex; align-items:baseline; gap:8px; }
+  .c-head .k { font-size:14px; font-weight:700; white-space:nowrap; }
+  .c-head .dots { flex:1 1 auto; border-bottom:1px dotted #d3d3d3; transform:translateY(-6px); }
+  .c-head .v { font-size:24px; font-weight:700; white-space:nowrap; }
+  .c-chk { display:flex; flex-wrap:wrap; gap:6px 14px; padding-top:14px; font-size:14px; color:var(--g1); }
+  .c-chk span { display:inline-flex; align-items:center; gap:5px; }
+  .c-chk i { font-style:normal; color:var(--accent); font-size:12px; }
+  .c-chk b { font-weight:700; color:var(--ink); }
+
+  footer { padding:0 20px 40px; text-align:center; font-size:12px; color:#9a9a9a; }
+</style>
+</head>
+<body>
+<header>
+  <h1>금액 시트 — 글 비율 시안</h1>
+  <p>대표 지적: «글이 좌우로 붙어 있는 느낌이야.»<br>
+     지금은 라벨이 맨 왼쪽, 값이 맨 오른쪽으로 벌어져 한 줄로 안 읽힙니다. 아래 셋 중에서 골라 주시면 그대로 만들겠습니다.</p>
+</header>
+<div class="wrap">
+
+  <div class="col">
+    <p class="tag"><b>지금</b><span class="now">운영</span></p>
+    <p class="why">라벨과 값이 양끝으로 벌어져 사이가 비어 있습니다. 「부가서비스 ⟷ 없음」이 한 덩어리로 안 읽힙니다.</p>
+    <div class="sheet">
+      <div class="grab"><i></i></div>
+      <div class="n-grid">
+        <div class="n-row"><span>부가서비스</span><b><i class="n-chk">✓</i>없음</b></div>
+        <div class="n-row"><span>카드발급</span><b><i class="n-chk">✓</i>없음</b></div>
+        <div class="n-row"><span>기존폰 반납</span><b><i class="n-chk">✓</i>없음</b></div>
+        <div class="n-row"><span>인터넷 가입</span><b><i class="n-chk">✓</i>없음</b></div>
+      </div>
+      <div class="hr"></div>
+      <div class="n-pay"><span>월 납부 금액 (VAT 포함)</span><b class="num">169,482원</b></div>
+      <p class="n-sub num">휴대폰 83,232원 <span style="color:var(--accent)">+</span> 요금 86,250원</p>
+      <p class="lead">지금 보시는 금액이 최종 결제 금액이에요. 추가 청구는 없어요. 할부를 고른 경우에만 통신사 할부 이자(연 5.9%)가 붙어요.</p>
+      <div class="hr"></div>
+      <div class="n-line"><span>출고가</span><b class="num">2,200,000원</b></div>
+      <div class="n-line"><span>하이유플 자체할인</span><b class="num" style="color:var(--accent)">- 320,000원</b></div>
+    </div>
+  </div>
+
+  <div class="col">
+    <p class="tag"><b>안 1 — 묶어서 왼쪽으로</b><span>추천</span></p>
+    <p class="why">「없음」 넷은 알약으로 묶어 글자끼리 붙입니다. 월 납부는 라벨을 작게 위에 두고 숫자를 크게 아래로 내려, 눈이 가로로 헤매지 않습니다.</p>
+    <div class="sheet">
+      <div class="grab"><i></i></div>
+      <div class="a-pills">
+        <span class="a-pill"><i>✓</i>부가서비스 <b>없음</b></span>
+        <span class="a-pill"><i>✓</i>카드발급 <b>없음</b></span>
+        <span class="a-pill"><i>✓</i>기존폰 반납 <b>없음</b></span>
+        <span class="a-pill"><i>✓</i>인터넷 가입 <b>없음</b></span>
+      </div>
+      <div class="hr"></div>
+      <div class="a-pay">
+        <span class="k">월 납부 금액 (VAT 포함)</span>
+        <b class="v num">169,482원</b>
+        <p class="a-parts num">휴대폰 83,232원 <span style="color:var(--accent)">+</span> 요금 86,250원</p>
+      </div>
+      <p class="lead">지금 보시는 금액이 최종 결제 금액이에요. 추가 청구는 없어요. 할부를 고른 경우에만 통신사 할부 이자(연 5.9%)가 붙어요.</p>
+      <div class="hr"></div>
+      <div class="a-tbl">
+        <span class="k">출고가</span><b class="v num">2,200,000원</b>
+        <span class="k">하이유플 자체할인</span><b class="v dc num">- 320,000원</b>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <p class="tag"><b>안 2 — 안쪽으로 모으기</b></p>
+    <p class="why">지금 모양은 그대로 두고 표 폭만 좁혀 가운데로 모읍니다. 가장 적게 바뀌는 안입니다. 다만 양옆 여백이 늘어 조금 답답할 수 있습니다.</p>
+    <div class="sheet">
+      <div class="grab"><i></i></div>
+      <div class="b-in">
+        <div class="b-grid">
+          <span class="b-cell"><i>✓</i><span>부가서비스</span><b>없음</b></span>
+          <span class="b-cell"><i>✓</i><span>카드발급</span><b>없음</b></span>
+          <span class="b-cell"><i>✓</i><span>기존폰 반납</span><b>없음</b></span>
+          <span class="b-cell"><i>✓</i><span>인터넷 가입</span><b>없음</b></span>
+        </div>
+        <div class="hr"></div>
+        <div class="b-pay"><span>월 납부 금액</span><b class="num">169,482원</b></div>
+        <p class="n-sub num">휴대폰 83,232원 <span style="color:var(--accent)">+</span> 요금 86,250원</p>
+        <p class="lead">지금 보시는 금액이 최종 결제 금액이에요. 추가 청구는 없어요.</p>
+        <div class="hr"></div>
+        <div class="b-line"><span>출고가</span><b class="num">2,200,000원</b></div>
+        <div class="b-line"><span>하이유플 자체할인</span><b class="num" style="color:var(--accent)">- 320,000원</b></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <p class="tag"><b>안 3 — 점선으로 잇기</b></p>
+    <p class="why">라벨과 값 사이를 점선으로 이어 눈이 따라갑니다. 영수증에서 쓰는 방식이라 금액이 여러 줄일수록 읽기 쉽습니다.</p>
+    <div class="sheet">
+      <div class="grab"><i></i></div>
+      <div class="c-chk">
+        <span><i>✓</i>부가서비스 <b>없음</b></span>
+        <span><i>✓</i>카드발급 <b>없음</b></span>
+        <span><i>✓</i>기존폰 반납 <b>없음</b></span>
+        <span><i>✓</i>인터넷 가입 <b>없음</b></span>
+      </div>
+      <div class="hr"></div>
+      <div class="c-head"><span class="k">월 납부 금액 (VAT 포함)</span><span class="dots"></span><span class="v num">169,482원</span></div>
+      <p class="n-sub num">휴대폰 83,232원 <span style="color:var(--accent)">+</span> 요금 86,250원</p>
+      <p class="lead">지금 보시는 금액이 최종 결제 금액이에요. 추가 청구는 없어요. 할부를 고른 경우에만 통신사 할부 이자(연 5.9%)가 붙어요.</p>
+      <div class="hr"></div>
+      <div class="c-row"><span class="k">출고가</span><span class="dots"></span><span class="v num">2,200,000원</span></div>
+      <div class="c-row"><span class="k">하이유플 자체할인</span><span class="dots"></span><span class="v dc num">- 320,000원</span></div>
+    </div>
+  </div>
+
+</div>
+<footer>시안 · 실제 화면이 아닙니다 · 2026-09-17</footer>
+</body>
+</html>
