@@ -3,14 +3,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>배너 조작 버튼 — 투명도 시안</title>
+<title>배너 조작 버튼 — 배너 밑으로</title>
 <style>
   *{box-sizing:border-box}
   body{margin:0;background:#f4f4f6;color:#141414;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard Variable",Pretendard,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
   header{padding:26px 20px 18px;background:#fff;border-bottom:1px solid #ececec}
   header h1{margin:0;font-size:20px;font-weight:700;letter-spacing:-.02em}
   header p{margin:8px 0 0;font-size:14px;line-height:1.65;color:#666}
-  .wrap{padding:18px 16px 60px;display:flex;flex-direction:column;gap:26px}
+  .wrap{padding:18px 16px 60px;display:flex;flex-direction:column;gap:30px}
   .item{max-width:760px;margin:0 auto;width:100%}
   .cap-t{display:flex;align-items:center;gap:8px;margin:0 0 6px;flex-wrap:wrap}
   .cap-t b{font-size:15px;font-weight:700}
@@ -19,82 +19,59 @@
   .why{margin:0 0 9px;font-size:13px;line-height:1.6;color:#666}
   .stage{position:relative;border-radius:18px;overflow:hidden;background:#ddd}
   .bn{display:block;width:100%;height:auto}
-  .ctl{position:absolute;left:0;right:0;bottom:14px;display:flex;align-items:center;justify-content:center;gap:10px}
-  .rd{width:40px;height:40px;border:0;border-radius:999px;color:#fff;font-size:17px;line-height:1;backdrop-filter:blur(16px) saturate(1.7);-webkit-backdrop-filter:blur(16px) saturate(1.7);cursor:default}
-  .cap{height:40px;padding:0 16px;border-radius:999px;display:flex;align-items:center;gap:8px;backdrop-filter:blur(16px) saturate(1.7);-webkit-backdrop-filter:blur(16px) saturate(1.7)}
-  .ic{color:#fff;font-size:11px;letter-spacing:1px}
-  .bar{display:block;width:44px;height:4px;border-radius:4px;background:rgba(255,255,255,.4);overflow:hidden}
-  .bar i{display:block;width:60%;height:100%;background:#fff}
-  .dot{width:5px;height:5px;border-radius:999px;background:rgba(255,255,255,.55)}
-  .stage--out{border-radius:18px 18px 0 0}
-  .ctl-out{display:flex;align-items:center;justify-content:center;gap:10px;height:56px;background:#fff;border-radius:0 0 18px 18px}
-  .rd--out{background:#f2f2f4;color:#555}
-  .cap--out{background:#f2f2f4;backdrop-filter:none;-webkit-backdrop-filter:none}
-  .cap--out .ic{color:#555}
-  .bar--out{background:rgba(0,0,0,.14)} .bar--out i{background:#555}
-  .dot--out{background:rgba(0,0,0,.2)}
+  .under{display:flex;align-items:center;justify-content:center;gap:6px;height:38px}
+  .under--full{gap:10px;height:56px}
+  .dot{width:6px;height:6px;border-radius:999px;background:#d2d2d6}
+  .dot.on{background:var(--accent,#e5287e)}
+  .dot--w{background:rgba(255,255,255,.55)} .dot--w.on{background:#fff}
+  .dot--g{background:#c9c9cf} .dot--g.on{background:#555}
+  .mini{width:26px;height:26px;border:0;border-radius:999px;background:#f0f0f2;color:#666;font-size:9px;line-height:1;cursor:default}
+  .gap{width:6px}
+  .rd{width:38px;height:38px;border:0;border-radius:999px;background:#f2f2f4;color:#555;font-size:16px;line-height:1;cursor:default}
+  .cap{height:38px;padding:0 14px;border-radius:999px;background:#f2f2f4;display:flex;align-items:center;gap:8px}
+  .ic{font-size:10px;letter-spacing:1px;color:#555}
+  .bar{display:block;width:40px;height:4px;border-radius:4px;background:rgba(0,0,0,.14);overflow:hidden}
+  .bar i{display:block;width:60%;height:100%;background:#555}
+  .ctl{position:absolute;left:0;right:0;bottom:14px;display:flex;align-items:center;justify-content:center;gap:10px;z-index:2}
+  .rd--on{background:rgba(17,17,20,.44);color:#fff;backdrop-filter:blur(16px) saturate(1.7);-webkit-backdrop-filter:blur(16px) saturate(1.7)}
+  .cap--on{background:rgba(17,17,20,.44);backdrop-filter:blur(16px) saturate(1.7);-webkit-backdrop-filter:blur(16px) saturate(1.7)}
+  .cap--on .ic{color:#fff} .cap--on .bar{background:rgba(255,255,255,.4)} .cap--on .bar i{background:#fff}
   footer{padding:0 20px 40px;text-align:center;font-size:12px;color:#9a9a9a}
 </style></head>
 <body>
 <header>
-  <h1>배너 조작 버튼 — 얼마나 옅게</h1>
-  <p>대표 «진해서 배너를 가린다. 더 투명하게 하거나 배너 밑으로 옮겨 달라».<br>
-     지금은 rgba(17,17,20,<b>0.44</b>)입니다. 실제 배너 그림 위에 얹어 견줍니다.</p>
+  <h1>배너 조작 버튼 — 배너 밑으로</h1>
+  <p>대표 «진해서 배너를 가린다» → «이런 식으로 하단에 처리해 줘»(인스타처럼 점만 밑에).<br>
+     넷을 나란히 놓습니다. 맨 아래가 지금 운영입니다.</p>
 </header>
 <div class="wrap">
   <div class="item">
-    <p class="cap-t"><b>지금</b><code>rgba(17,17,20,0.44)</code></p>
-    <p class="why">배너 그림이 비쳐 보이긴 하지만 진해서 가려집니다.</p>
-    <div class="stage">
-      <img class="bn" src="https://uxmlorzhyjxdzqdwjspy.supabase.co/storage/v1/render/image/public/hs-product-images/colors/1c18f14b-40d1-4f88-9ccc-509fc0cd4116.png?width=1280&resize=contain&quality=80" alt="">
-      <div class="ctl">
-        <button class="rd" style="background:rgba(17,17,20,0.44)" aria-label="이전 배너">‹</button>
-        <div class="cap" style="background:rgba(17,17,20,0.44)">
-          <span class="ic">❙❙</span><span class="bar"><i></i></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
-        </div>
-        <button class="rd" style="background:rgba(17,17,20,0.44)" aria-label="다음 배너">›</button>
-      </div>
+    <p class="cap-t"><b>① 인스타처럼 — 점만</b><span class="rec">추천</span></p>
+    <p class="why">배너를 하나도 안 가립니다. 대표가 보내신 그 모양입니다. 점만 있고 화살표·멈춤은 없습니다.<br>
+       휴대폰은 손가락으로 밀어 넘기면 되지만, <b>자동 넘김을 멈출 방법이 없어집니다.</b></p>
+    <div class="stage"><img class="bn" src="https://uxmlorzhyjxdzqdwjspy.supabase.co/storage/v1/render/image/public/hs-product-images/colors/1c18f14b-40d1-4f88-9ccc-509fc0cd4116.png?width=1280&resize=contain&quality=80" alt=""></div>
+    <div class="under"><span class="dot "></span><span class="dot "></span><span class="dot on"></span><span class="dot "></span><span class="dot "></span></div>
+  </div>
+  <div class="item">
+    <p class="cap-t"><b>② 점 + 멈춤 단추</b></p>
+    <p class="why">①에 작은 멈춤 단추 하나만 더합니다. 글을 읽는 동안 배너가 넘어가는 것을 막을 수 있습니다.</p>
+    <div class="stage"><img class="bn" src="https://uxmlorzhyjxdzqdwjspy.supabase.co/storage/v1/render/image/public/hs-product-images/colors/1c18f14b-40d1-4f88-9ccc-509fc0cd4116.png?width=1280&resize=contain&quality=80" alt=""></div>
+    <div class="under"><button class="mini" aria-label="멈춤">❙❙</button><span class="gap"></span><span class="dot "></span><span class="dot "></span><span class="dot on"></span><span class="dot "></span><span class="dot "></span></div>
+  </div>
+  <div class="item">
+    <p class="cap-t"><b>③ 지금 것을 그대로 밑으로</b></p>
+    <p class="why">화살표·멈춤·남은 시간 막대까지 지금 있는 것을 다 밑으로 옮깁니다. 배너는 안 가리지만 아래가 좀 무겁습니다.</p>
+    <div class="stage"><img class="bn" src="https://uxmlorzhyjxdzqdwjspy.supabase.co/storage/v1/render/image/public/hs-product-images/colors/1c18f14b-40d1-4f88-9ccc-509fc0cd4116.png?width=1280&resize=contain&quality=80" alt=""></div>
+    <div class="under under--full">
+      <button class="rd" aria-label="이전 배너">‹</button>
+      <div class="cap"><span class="ic">❙❙</span><span class="bar"><i></i></span><span class="dot dot--g "></span><span class="dot dot--g "></span><span class="dot dot--g on"></span><span class="dot dot--g "></span><span class="dot dot--g "></span></div>
+      <button class="rd" aria-label="다음 배너">›</button>
     </div>
   </div>
   <div class="item">
-    <p class="cap-t"><b>조금 옅게</b><code>rgba(17,17,20,0.30)</code></p>
-    <p class="why">그림이 훨씬 잘 보입니다. 단추는 여전히 또렷합니다.</p>
-    <div class="stage">
-      <img class="bn" src="https://uxmlorzhyjxdzqdwjspy.supabase.co/storage/v1/render/image/public/hs-product-images/colors/1c18f14b-40d1-4f88-9ccc-509fc0cd4116.png?width=1280&resize=contain&quality=80" alt="">
-      <div class="ctl">
-        <button class="rd" style="background:rgba(17,17,20,0.30)" aria-label="이전 배너">‹</button>
-        <div class="cap" style="background:rgba(17,17,20,0.30)">
-          <span class="ic">❙❙</span><span class="bar"><i></i></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
-        </div>
-        <button class="rd" style="background:rgba(17,17,20,0.30)" aria-label="다음 배너">›</button>
-      </div>
-    </div>
-  </div>
-  <div class="item">
-    <p class="cap-t"><b>많이 옅게</b><code>rgba(17,17,20,0.20)</code><span class="rec">추천</span></p>
-    <p class="why">거의 안 가립니다. 밝은 그림 위에서는 단추가 조금 흐려 보일 수 있습니다.</p>
-    <div class="stage">
-      <img class="bn" src="https://uxmlorzhyjxdzqdwjspy.supabase.co/storage/v1/render/image/public/hs-product-images/colors/1c18f14b-40d1-4f88-9ccc-509fc0cd4116.png?width=1280&resize=contain&quality=80" alt="">
-      <div class="ctl">
-        <button class="rd" style="background:rgba(17,17,20,0.20)" aria-label="이전 배너">‹</button>
-        <div class="cap" style="background:rgba(17,17,20,0.20)">
-          <span class="ic">❙❙</span><span class="bar"><i></i></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
-        </div>
-        <button class="rd" style="background:rgba(17,17,20,0.20)" aria-label="다음 배너">›</button>
-      </div>
-    </div>
-  </div>
-  <div class="item">
-    <p class="cap-t"><b>배너 밑으로 빼기</b><code>배너 밖 · 흰 바탕</code></p>
-    <p class="why">배너를 하나도 안 가립니다. 대신 배너 아래에 자리를 44px 더 씁니다.</p>
-    <div class="stage stage--out">
-      <img class="bn" src="https://uxmlorzhyjxdzqdwjspy.supabase.co/storage/v1/render/image/public/hs-product-images/colors/1c18f14b-40d1-4f88-9ccc-509fc0cd4116.png?width=1280&resize=contain&quality=80" alt="">
-    </div>
-    <div class="ctl-out">
-      <button class="rd rd--out" aria-label="이전 배너">‹</button>
-      <div class="cap cap--out"><span class="ic">❙❙</span><span class="bar bar--out"><i></i></span><span class="dot dot--out"></span><span class="dot dot--out"></span><span class="dot dot--out"></span></div>
-      <button class="rd rd--out" aria-label="다음 배너">›</button>
-    </div>
+    <p class="cap-t"><b>④ 지금 (운영)</b><code>배너 위 · rgba(17,17,20,0.44)</code></p>
+    <p class="why">배너 위에 얹혀 있어 그림을 가립니다. 대표가 «진하다»고 하신 것입니다.</p>
+    <div class="stage"><div class="ctl"><button class="rd rd--on" aria-label="이전 배너">‹</button><div class="cap cap--on"><span class="ic">❙❙</span><span class="bar"><i></i></span><span class="dot dot--w "></span><span class="dot dot--w "></span><span class="dot dot--w on"></span><span class="dot dot--w "></span><span class="dot dot--w "></span></div><button class="rd rd--on" aria-label="다음 배너">›</button></div><img class="bn" src="https://uxmlorzhyjxdzqdwjspy.supabase.co/storage/v1/render/image/public/hs-product-images/colors/1c18f14b-40d1-4f88-9ccc-509fc0cd4116.png?width=1280&resize=contain&quality=80" alt=""></div>
   </div>
 </div>
 <footer>시안 · 실제 화면이 아닙니다 · 2026-09-17</footer>
