@@ -107,8 +107,8 @@
     <div class="tg-hd__top">
       <div class="tg-hd__say">
         <p class="tg-eyebrow">휴대폰 + 인터넷</p>
-        <h1>인터넷도 같이 하면<br>결합 할인이 따로 있어요</h1>
-        <p class="tg-lead">휴대폰 가격은 인터넷과 상관없어요. LG U+ 인터넷을 같이 쓰면 «U+투게더 결합»이나 «참 쉬운 가족 결합»으로 매달 요금이 내려가요.</p>
+        <h1>휴대폰만 묶어도 할인돼요<br>인터넷까지 하면 더 받고요</h1>
+        <p class="tg-lead">U+투게더 결합은 휴대폰끼리만 모여도 회선마다 요금이 내려가요. 여기에 인터넷을 더하면 인터넷도 할인되고 사은품도 드려요.</p>
       </div>
       <p class="tg-hook"><b class="num">80만원</b><span>인터넷을 같이 바꾸시면<br>지원해 드려요</span></p>
     </div>
@@ -126,7 +126,7 @@
         <p class="cb__n">U+투게더 결합</p>
         <p class="cb__d">무제한 요금제끼리 모이면, 회선마다 크게 받는 할인</p>
         <p class="cb__big"><b class="num">91,000</b><span>원</span><small>매달</small></p>
-        <p class="cb__basis">휴대폰 4대(회선당 20,000원) + 1Gbps 인터넷 기준 · 월 85,000원 이상 요금제만</p>
+        <p class="cb__basis">휴대폰 4대(회선당 20,000원) + 500Mbps 인터넷 기준 · 월 85,000원 이상 요금제만</p>
         <img class="cb__img" src="img/combo-together.png" width="1080" height="1448" alt="U+투게더 결합 할인표">
       </article>
 
@@ -139,8 +139,8 @@
       <article class="cb__c cb__c--wide">
         <p class="cb__n">참 쉬운 가족 결합</p>
         <p class="cb__d">가족이라면 복잡한 조건 없이, 회선마다 받는 할인</p>
-        <p class="cb__big"><b class="num">48,400</b><span>원</span><small>매달</small></p>
-        <p class="cb__basis">같은 조건 — 휴대폰 4회선(회선당 8,800원) + 1Gbps 인터넷 기준</p>
+        <p class="cb__big"><b class="num">45,100</b><span>원</span><small>매달</small></p>
+        <p class="cb__basis">같은 조건 — 휴대폰 4회선(회선당 8,800원) + 500Mbps 인터넷 기준</p>
         <img class="cb__img" src="img/combo-family.png" width="1080" height="1374" alt="참 쉬운 가족 결합 할인표">
       </article>
     </div>

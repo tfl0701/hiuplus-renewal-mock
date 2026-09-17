@@ -414,7 +414,7 @@ ${H.bannerHtml()}
   H.productBar = function (p) {
     var s = H.selFor(p), r = H.price(p, s);
     var up = document.body.classList.contains("pdsheet-on");
-    return `<div class="pd-sheet mo-only" id="pdSheet" aria-hidden="${!up}">
+    return `<div class="pd-sheet mo-only" id="pdSheet" aria-hidden="${!up}" style="height:${stopH(H.pdStop)}px">
       <button type="button" class="pd-sheet__grab" data-act="barDetail" aria-label="금액 상세 ${up ? "접기" : "펴기"}"><i></i></button>
       <div class="pd-sheet__in">${H.priceSheetCard(p)}</div>
     </div><button type="button" class="bar__price" data-act="barDetail" aria-expanded="${up}"><small class="num">실구매가 ${H.won(r.principal)} · ${r.months ? r.months + "개월 할부" : "일시불"}</small><b class="num">월 ${H.won(r.monthlyTotal)}${H.icon("chev-d", "bar__chev")}</b></button><button type="button" class="bar__more pc-only" data-act="barMore" aria-expanded="false">금액 상세${H.icon("chev-d", "bar__chev2")}</button><button type="button" class="btn btn--mg" data-act="order">주문하기</button>`;
@@ -423,14 +423,45 @@ ${H.bannerHtml()}
     var on = document.body.classList.toggle("bar-open");
     el.setAttribute("aria-expanded", String(on));
   };
+  /* 설 수 있는 세 자리 — 코드(ST-20260917-13)와 같게 맞춘다.
+   *   접힘   손잡이만 (22)
+   *   절반   화면의 절반 — 처음 열면 여기. 뒤에 고르던 칸이 보인다
+   *   끝까지 화면의 72%(최대 560) — 더 끌어 올리면 여기
+   * 처음부터 «끝까지»로 열었더니 화면을 거의 다 덮었다 (대표 2026-09-17 «너무 꽉 차서 이상하다» → «절반쯤») */
+  var GRAB_H = 22, STOPS = ["closed", "half", "full"], DRAG_STEP = 60;
+  function stopH(stop) {
+    if (stop === "closed") return GRAB_H;
+    if (stop === "half") return Math.round(innerHeight * 0.5);
+    return Math.min(Math.round(innerHeight * 0.72), 560);
+  }
+  function nearestStop(h) {
+    return STOPS.reduce(function (best, s) { return Math.abs(stopH(s) - h) < Math.abs(stopH(best) - h) ? s : best; });
+  }
+  /* 손을 뗐을 때 갈 자리 — ★«끈 방향»을 먼저 본다.
+   * 자리 사이가 고르지 않아(812 폰에서 22 · 406 · 560), «가장 가까운 자리»만 보면
+   * 올리기는 77px, 내리기는 192px 을 끌어야 해서 내릴 때만 도로 튕겨 올라갔다
+   * (대표 2026-09-17 «올라가는데 내려지기가 안 돼»). 이제 60px 이면 끈 쪽으로 한 칸 간다. */
+  function stopAfterDrag(from, dy, h) {
+    if (Math.abs(dy) < DRAG_STEP) return from;
+    var at = STOPS.indexOf(from), step = dy > 0 ? 1 : -1;
+    var one = STOPS[Math.min(STOPS.length - 1, Math.max(0, at + step))] || from;
+    var near = nearestStop(h);
+    if (step > 0) return STOPS.indexOf(near) > STOPS.indexOf(one) ? near : one;
+    return STOPS.indexOf(near) < STOPS.indexOf(one) ? near : one;
+  }
+
   /* 올리고 내리기 — 화면 값을 하나로 모아 둔다(누르기·끌기·화면 바뀜 모두 여기로) */
-  H.pdSheet = function (on) {
-    on = !!on;
+  H.pdStop = "closed";
+  H.pdSheet = function (stop) {
+    if (stop === true) stop = "half";
+    if (stop === false || !stop) stop = "closed";
+    var on = stop !== "closed";
+    H.pdStop = stop;
     document.body.classList.toggle("pdsheet-on", on);
     var sh = H.$("#pdSheet");
     if (sh) {
-      sh.style.maxHeight = "";
       sh.style.transition = "";
+      sh.style.height = stopH(stop) + "px";
       sh.setAttribute("aria-hidden", String(!on));
       var g = sh.querySelector(".pd-sheet__grab");
       if (g) g.setAttribute("aria-label", "금액 상세 " + (on ? "접기" : "펴기"));
@@ -443,12 +474,15 @@ ${H.bannerHtml()}
       dim = document.createElement("div");
       dim.className = "pd-dim";
       dim.id = "pdDim";
-      dim.setAttribute("data-act", "barDetail");
+      dim.setAttribute("data-act", "pdClose");
       document.body.appendChild(dim);
       void dim.offsetWidth; /* 처음 만들자마자 켜도 서서히 어두워지게 */
     }
     if (dim) dim.classList.toggle("on", on);
+    /* 펴 둔 동안 뒤 화면이 따라 움직이지 않게 잠근다 (대표 2026-09-17) */
+    if (H.$("#sheet") && H.$("#sheet").hidden !== false) document.body.style.overflow = on ? "hidden" : "";
   };
+  H.acts.pdClose = function () { H.pdSheet("closed"); };
   H.acts.barDetail = function () {
     if (matchMedia("(min-width: 1024px)").matches) {
       /* PC — 옛 동작 그대로: 금액칸으로 올라가 한 번 반짝인다 */
@@ -462,35 +496,52 @@ ${H.bannerHtml()}
       box.classList.add("pbox--flash");
       return;
     }
-    H.pdSheet(!document.body.classList.contains("pdsheet-on"));
+    /* 누르면 접힘 ↔ 절반 */
+    H.pdSheet(H.pdStop === "closed" ? "half" : "closed");
   };
 
-  /* 손잡이 끌기 — 띠가 다시 그려져도 듣게 문서에 한 번만 건다 */
+  /* 손잡이·몸통 끌기 — 띠가 다시 그려져도 듣게 문서에 한 번만 건다.
+   * ★움직임은 창(window)이 듣는다. 손잡이가 22px 밖에 안 돼서 단추에만 걸면
+   *   끌어 올리는 순간 손가락이 단추 밖으로 나가 끌기가 통째로 죽는다. */
   (function () {
-    var sh = null, grab = null, y0 = 0, h0 = 0, h = 0, top = 0;
+    var sh = null, y0 = 0, h0 = 0, h = 0, from = "closed", moved = false, full = 0, body = false;
+    function move(e) {
+      if (!sh) return;
+      var dy = y0 - e.clientY;
+      /* 몸통을 잡고 «위로» 끄는 것은 속을 읽으려는 것이다 — 끌기를 놓아 준다 */
+      if (body && dy > 0 && !moved) { var el0 = sh; sh = null; el0.style.transition = ""; H.pdSheet(from); removeEventListener("pointermove", move); removeEventListener("pointerup", up); removeEventListener("pointercancel", up); return; }
+      if (Math.abs(dy) > 3) moved = true;
+      h = Math.max(GRAB_H, Math.min(full, h0 + dy));
+      sh.style.height = h + "px";
+    }
+    function up(e) {
+      if (!sh) return;
+      var el = sh, dy = y0 - (e && e.clientY !== undefined ? e.clientY : y0);
+      sh = null;
+      removeEventListener("pointermove", move);
+      removeEventListener("pointerup", up);
+      removeEventListener("pointercancel", up);
+      el.style.transition = "";
+      if (moved) H.pdSheet(stopAfterDrag(from, dy, h));
+      else if (!body) H.pdSheet(from === "closed" ? "half" : "closed");
+      else H.pdSheet(from);
+    }
     document.addEventListener("pointerdown", function (e) {
-      var g = e.target.closest && e.target.closest(".pd-sheet__grab");
-      if (!g || matchMedia("(min-width: 1024px)").matches) return;
-      sh = g.parentNode; grab = g;
-      y0 = e.clientY; h0 = sh.offsetHeight; h = h0;
-      top = Math.min(sh.scrollHeight, innerHeight * 0.85); /* 다 폈을 때 높이 */
+      if (!e.target.closest) return;
+      var g = e.target.closest(".pd-sheet__grab"), inn = e.target.closest(".pd-sheet__in");
+      if ((!g && !inn) || matchMedia("(min-width: 1024px)").matches) return;
+      /* 속을 읽는 중(맨 위가 아닐 때)에는 끌기를 시작하지 않는다 — 글을 읽는 것이다 */
+      if (inn && inn.scrollTop > 0) return;
+      sh = (g || inn).parentNode;
+      body = !!inn;
+      from = H.pdStop;
+      y0 = e.clientY; h0 = sh.offsetHeight; h = h0; moved = false;
+      full = stopH("full");
       sh.style.transition = "none";
-      try { g.setPointerCapture(e.pointerId); } catch (err) { /* 옛 브라우저 */ }
+      addEventListener("pointermove", move);
+      addEventListener("pointerup", up);
+      addEventListener("pointercancel", up);
     });
-    document.addEventListener("pointermove", function (e) {
-      if (!sh) return;
-      h = Math.max(22, Math.min(top, h0 + (y0 - e.clientY)));
-      sh.style.maxHeight = h + "px";
-    });
-    var done = function () {
-      if (!sh) return;
-      /* 22(손잡이만)에서 다 편 높이까지, 3분의 1을 넘겼으면 펴진 것으로 본다 */
-      var open = h > 22 + (top - 22) * 0.33;
-      sh = null; grab = null;
-      H.pdSheet(open);
-    };
-    document.addEventListener("pointerup", done);
-    document.addEventListener("pointercancel", done);
   })();
 
   H.refreshProduct = function () {
