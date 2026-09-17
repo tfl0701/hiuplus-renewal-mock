@@ -149,13 +149,13 @@
 
   <section class="tg-sec"><h2>이렇게 진행돼요</h2><p class="tg-sub">휴대폰부터 결합까지 네 걸음이에요. 어려운 건 담당자가 같이 해 드려요.</p>
     <ol class="flow">${[
-      { who: "손님", t: "휴대폰 주문", d: "지금처럼 휴대폰을 고르고 주문해요.", hi: "인터넷을 안 해도 휴대폰 가격은 같아요", ic: "phone" },
+      { who: "손님", t: "휴대폰 주문", d: "지금처럼 휴대폰을 고르고 주문해요.", ic: "phone" },
       { who: "담당자", t: "인터넷 상담", d: "번호를 남기면 전화로 조합과 설치 일정을 여쭤봐요.", ic: "call" },
       { who: "설치기사", t: "설치", d: "정하신 날에 찾아가 달아 드려요.", fee: [["인터넷", "36,300원"], ["인터넷 + TV", "56,100원"]], ic: "wifi" },
       { who: "하이유플", t: "결합 신청", d: "설치가 끝나면 알려 주세요. 결합은 하이유플이 신청해 드려요.", hi: "따로 어디에 신청하지 않으셔도 돼요", ic: "check" }
     ].map(function (s, i) {
       return `<li class="flow__i">
-        <span class="flow__n">${H.icon(s.ic)}<i class="num">${i + 1}</i></span>
+        <span class="flow__n num">${i + 1}</span>
         <div class="flow__t">
           <span class="flow__who">${s.who}</span>
           <b>${s.t}</b><p>${s.d}</p>
