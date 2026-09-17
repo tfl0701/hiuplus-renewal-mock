@@ -232,6 +232,9 @@
   function watchBar() {
     if (H._barOff) { H._barOff(); H._barOff = null; }
     document.body.classList.remove("bar-up");
+    /* 화면이 바뀌면 띠 위 금액칸은 내려 둔다. 손잡이가 나와 있는 화면만 본문을 더 띄운다 */
+    if (H.pdSheet) H.pdSheet(false);
+    document.body.classList.toggle("bar-lip", !!H.$("#pdSheet"));
     if (!H.$("#bar")) return;
     var sel = ".pd-cta.pc-only .btn, .order-submit.pc-only .btn";
     var tick = function () {
@@ -315,7 +318,7 @@
   });
   document.addEventListener("input", function (e) { var el = e.target.closest("[data-input]"); if (el && H.inputs[el.dataset.input]) H.inputs[el.dataset.input](el, e); });
   document.addEventListener("change", function (e) { var el = e.target.closest("[data-change]"); if (el && H.inputs[el.dataset.change]) H.inputs[el.dataset.change](el, e); });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape") { H.closeSheet(); H.closeDrawer(); } });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") { H.closeSheet(); H.closeDrawer(); if (H.pdSheet) H.pdSheet(false); } });
 
   H.acts.closeSheet = function () { H.closeSheet(); };
   H.acts.closeDrawer = function () { H.closeDrawer(); };

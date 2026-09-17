@@ -35,7 +35,7 @@
   var TG_PEOPLE = [[1, "1명"], [2, "2명"], [3, "3명"], [4, "4~5명"]];
   var TG_DC = { 1: 0, 2: 10000, 3: 14000, 4: 20000 };
   var TG_PLANS = [50, 49, 48, 17];
-  function tgPeople() { return H.state.tgPeople || 4; }
+  function tgPeople() { return H.state.tgPeople || 2; }  /* 처음 고름 = 2명 (대표 2026-09-17) */
   H.acts.tgPeople = function (el) {
     H.state.tgPeople = Number(el.dataset.v);
     H.save();
@@ -135,7 +135,7 @@
         <p class="cb__n">참 쉬운 가족 결합</p>
         <p class="cb__d">가족이라면 복잡한 조건 없이, 회선마다 받는 할인</p>
         <p class="cb__big"><b class="num">48,400</b><span>원</span><small>매달</small></p>
-        <p class="cb__basis">같은 조건 — 휴대폰 4회선(회선당 8,800원) + 1GB 인터넷 기준</p>
+        <p class="cb__basis">같은 조건 — 휴대폰 4회선(회선당 8,800원) + 1Gbps 인터넷 기준</p>
         <img class="cb__img" src="img/combo-family.png" width="1080" height="1374" alt="참 쉬운 가족 결합 할인표">
       </article>
     </div>

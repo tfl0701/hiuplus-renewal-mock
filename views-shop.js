@@ -396,26 +396,103 @@ ${H.bannerHtml()}
         <div class="pd-cta__sub"><button type="button" data-act="callback">${H.icon("call")}번호만 남기고 상담받기</button><button type="button" data-act="chat">${H.icon("spark")}AI에게 물어보기</button></div></div>
       <div class="pd-cta__sub pd-sub-mo mo-only"><button type="button" data-act="callback">${H.icon("call")}번호만 남기고 상담받기</button><button type="button" data-act="chat">${H.icon("spark")}AI에게 물어보기</button></div>`;
   };
+  /* 금액칸을 띠 위로 올린다 — 예전 사이트의 «할인내역» 펼침과 같은 자리·같은 움직임.
+   * 손잡이가 띠 위에 조금 나와 있어 끌어 올리면 펴지고 끌어 내리면 접힌다. 금액을 눌러도 같다.
+   * (대표 2026-09-17 «이 화면으로 다시 돌아가는 게 아니고 이 화면이 아래에서 위로 올라가면서
+   *  보여주는 거야 · 이전처럼 올리고 내릴 수 있게»)
+   * 화면을 위로 되감지 않으니 손님은 보던 자리를 잃지 않는다. PC는 옛 동작 그대로 둔다. */
+  H.priceSheetCard = function (p) {
+    var s = H.selFor(p), r = H.price(p, s);
+    var cond = [p.vols[s.vol][0], p.colors[s.color][0], (r.plan || {}).name, H.methodLabel(s.method), H.discountLabel(s.discount), r.months ? r.months + "개월 할부" : "일시불"].filter(Boolean).join(" · ");
+    return `<div class="pdf__prod"><span class="pdf__th"><img src="${H.img(p, s.color)}" alt=""></span><span><b>${p.name}</b><small>${H.esc(cond)}</small></span></div>
+      <div class="pbox__main"><span class="k">나의 실구매가</span><span class="v num">${H.won(r.principal)}</span></div>
+      <div class="pbox__month"><span class="k">월 납부 금액 (VAT 포함)</span><span class="v num">${H.won(r.monthlyTotal)}</span></div>
+      <p class="pbox__parts num"><span>휴대폰 ${H.won(r.monthlyTotal - r.planFee)}</span><i>+</i><span>요금 ${H.won(r.planFee)}</span></p>
+      <div class="pbox__rows">${H.priceRows(p, s, r)}</div>
+      <p class="pbox__note">지금 보시는 금액이 최종 결제 금액이에요. 추가 청구는 없어요.${r.months ? " 할부를 다 갚기 전에 한 번에 갚으면, 그 뒤 이자는 붙지 않아요." : ""}</p>`;
+  };
   H.productBar = function (p) {
     var s = H.selFor(p), r = H.price(p, s);
-    /* 금액 부분을 누르면 금액칸으로 올라간다 — 띠에는 요약만 있어 손님이 무엇으로 나온 값인지
-     * 볼 길이 없었다 (대표 2026-09-17 «누르면 위로 스크롤되면서 상세 내역을 보여주는게 있어야되고») */
-    return `<button type="button" class="bar__price" data-act="barDetail"><small class="num">실구매가 ${H.won(r.principal)} · ${r.months ? r.months + "개월 할부" : "일시불"}</small><b class="num">월 ${H.won(r.monthlyTotal)}${H.icon("chev-u", "bar__chev")}</b></button><button type="button" class="bar__more pc-only" data-act="barMore" aria-expanded="false">금액 상세${H.icon("chev-d", "bar__chev2")}</button><button type="button" class="btn btn--mg" data-act="order">주문하기</button>`;
+    var up = document.body.classList.contains("pdsheet-on");
+    return `<div class="pd-sheet mo-only" id="pdSheet" aria-hidden="${!up}">
+      <button type="button" class="pd-sheet__grab" data-act="barDetail" aria-label="금액 상세 ${up ? "접기" : "펴기"}"><i></i></button>
+      <div class="pd-sheet__in">${H.priceSheetCard(p)}</div>
+    </div><button type="button" class="bar__price" data-act="barDetail" aria-expanded="${up}"><small class="num">실구매가 ${H.won(r.principal)} · ${r.months ? r.months + "개월 할부" : "일시불"}</small><b class="num">월 ${H.won(r.monthlyTotal)}${H.icon("chev-d", "bar__chev")}</b></button><button type="button" class="bar__more pc-only" data-act="barMore" aria-expanded="false">금액 상세${H.icon("chev-d", "bar__chev2")}</button><button type="button" class="btn btn--mg" data-act="order">주문하기</button>`;
   };
   H.acts.barMore = function (el) {
     var on = document.body.classList.toggle("bar-open");
     el.setAttribute("aria-expanded", String(on));
   };
-  H.acts.barDetail = function () {
-    var box = H.$(".pbox");
-    if (!box) return;
-    var hdr = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--hdr"), 10) || 60;
-    var y = box.getBoundingClientRect().top + window.scrollY - hdr - 12;
-    window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
-    box.classList.remove("pbox--flash");
-    void box.offsetWidth;
-    box.classList.add("pbox--flash");
+  /* 올리고 내리기 — 화면 값을 하나로 모아 둔다(누르기·끌기·화면 바뀜 모두 여기로) */
+  H.pdSheet = function (on) {
+    on = !!on;
+    document.body.classList.toggle("pdsheet-on", on);
+    var sh = H.$("#pdSheet");
+    if (sh) {
+      sh.style.maxHeight = "";
+      sh.style.transition = "";
+      sh.setAttribute("aria-hidden", String(!on));
+      var g = sh.querySelector(".pd-sheet__grab");
+      if (g) g.setAttribute("aria-label", "금액 상세 " + (on ? "접기" : "펴기"));
+      if (!on) { var inn = sh.querySelector(".pd-sheet__in"); if (inn) inn.scrollTop = 0; }
+    }
+    var pr = H.$(".bar__price");
+    if (pr) pr.setAttribute("aria-expanded", String(on));
+    var dim = H.$("#pdDim");
+    if (!dim && on) {
+      dim = document.createElement("div");
+      dim.className = "pd-dim";
+      dim.id = "pdDim";
+      dim.setAttribute("data-act", "barDetail");
+      document.body.appendChild(dim);
+      void dim.offsetWidth; /* 처음 만들자마자 켜도 서서히 어두워지게 */
+    }
+    if (dim) dim.classList.toggle("on", on);
   };
+  H.acts.barDetail = function () {
+    if (matchMedia("(min-width: 1024px)").matches) {
+      /* PC — 옛 동작 그대로: 금액칸으로 올라가 한 번 반짝인다 */
+      var box = H.$(".pbox");
+      if (!box) return;
+      var hdr = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--hdr"), 10) || 60;
+      var y = box.getBoundingClientRect().top + window.scrollY - hdr - 12;
+      window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+      box.classList.remove("pbox--flash");
+      void box.offsetWidth;
+      box.classList.add("pbox--flash");
+      return;
+    }
+    H.pdSheet(!document.body.classList.contains("pdsheet-on"));
+  };
+
+  /* 손잡이 끌기 — 띠가 다시 그려져도 듣게 문서에 한 번만 건다 */
+  (function () {
+    var sh = null, grab = null, y0 = 0, h0 = 0, h = 0, top = 0;
+    document.addEventListener("pointerdown", function (e) {
+      var g = e.target.closest && e.target.closest(".pd-sheet__grab");
+      if (!g || matchMedia("(min-width: 1024px)").matches) return;
+      sh = g.parentNode; grab = g;
+      y0 = e.clientY; h0 = sh.offsetHeight; h = h0;
+      top = Math.min(sh.scrollHeight, innerHeight * 0.85); /* 다 폈을 때 높이 */
+      sh.style.transition = "none";
+      try { g.setPointerCapture(e.pointerId); } catch (err) { /* 옛 브라우저 */ }
+    });
+    document.addEventListener("pointermove", function (e) {
+      if (!sh) return;
+      h = Math.max(22, Math.min(top, h0 + (y0 - e.clientY)));
+      sh.style.maxHeight = h + "px";
+    });
+    var done = function () {
+      if (!sh) return;
+      /* 22(손잡이만)에서 다 편 높이까지, 3분의 1을 넘겼으면 펴진 것으로 본다 */
+      var open = h > 22 + (top - 22) * 0.33;
+      sh = null; grab = null;
+      H.pdSheet(open);
+    };
+    document.addEventListener("pointerup", done);
+    document.addEventListener("pointercancel", done);
+  })();
+
   H.refreshProduct = function () {
     var p = H.prod(H.route.parts[1]);
     if (!p || p.launch) return;
