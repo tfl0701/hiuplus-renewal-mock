@@ -159,7 +159,7 @@ body.has-bar #app { padding-bottom: calc(var(--bar) + env(safe-area-inset-bottom
   /* ★본문이 1200폭이라 옆에 카드가 들어갈 자리가 없다(1,900은 돼야 함). 그래서 늘 띄우지 않고
    * 띠의 [금액 상세]를 눌렀을 때만 띠 위로 펼친다 (대표 2026-09-17 «왼쪽 라인이랑 겹치지 않게») */
   .pd-float { display: none; }
-  body.bar-up.bar-open .pd-float { display: block; position: fixed; z-index: 44; bottom: calc(var(--bar) + 34px); right: calc(50% - var(--wrap) / 2 - 80px); width: 340px; max-height: calc(100vh - var(--hdr) - var(--bar) - 90px); overflow: auto; padding: 18px 20px 20px; border-radius: 18px; background: #fff; box-shadow: 0 10px 34px rgba(0, 0, 0, .13), inset 0 0 0 1px var(--line); }
+  body.bar-up.bar-open .pd-float { display: block; position: fixed; z-index: 44; bottom: calc(var(--bar) + 34px); right: max(var(--gut), calc(50% - var(--wrap) / 2 - 80px)); width: 340px; max-height: calc(100vh - var(--hdr) - var(--bar) - 90px); overflow: auto; padding: 18px 20px 20px; border-radius: 18px; background: #fff; box-shadow: 0 10px 34px rgba(0, 0, 0, .13), inset 0 0 0 1px var(--line); }
   .pdf__prod { display: flex; align-items: center; gap: 11px; padding-bottom: 14px; border-bottom: 1px solid var(--line-2); }
   .pdf__th { flex: none; width: 46px; height: 46px; border-radius: 11px; background: var(--surface); display: grid; place-items: center; overflow: hidden; }
   .pdf__th img { width: 82%; height: 82%; object-fit: contain; }
