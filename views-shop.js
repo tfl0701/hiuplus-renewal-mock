@@ -356,6 +356,7 @@ ${H.bannerHtml()}
       body: `<p class="plan-note plan-note--top">${H.icon("info")}${p.name} ${p.vols[s.vol][0]} · ${r.plan.name} · ${H.methodLabel(s.method)} · ${r.months ? r.months + "개월 할부" : "일시불"} 기준</p>
         <section class="cmp-sec"><h3>요금제를 24개월 그대로 쓰면</h3>${cmpTable(p, s, false)}</section>
         ${canDown ? `<section class="cmp-sec"><h3>185일 뒤 월 47,000원 요금제로 낮추면</h3>${cmpTable(p, s, true)}<p class="help-t">185일은 개통일부터 세요. 185일이 지나는 ${H.DOWN.keep}개월째까지는 고른 요금제, ${H.DOWN.keep + 1}개월째부터 월 47,000원 요금제(${H.DOWN.name})로 계산했어요. 47,000원보다 낮추면 위약금이 생길 수 있어요.</p></section>` : `<p class="help-t">고른 요금제가 월 47,000원 이하라 낮추는 경우는 따로 계산하지 않았어요.</p>`}
+        ${r.months && r.months !== 24 ? `<p class="a-note">${H.icon("info")}<span><b>${r.months}개월 할부를 고르셨어요.</b> 이 표의 요금은 <b>24개월 기준</b>이에요. 할부 이자는 고르신 ${r.months}개월대로 들어가요.</span></p>` : ""}
         <p class="help-t">24개월 합계 = 할부원금 + 할부 이자 + 요금. 선택약정 25% 할인은 바꾼 요금제 기준으로 이어져요. 하이유플 ${D.asOf.replace(/-/g, ".")} 가격 기준이에요.</p>`
     });
   };
