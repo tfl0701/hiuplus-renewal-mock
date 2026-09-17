@@ -1363,11 +1363,12 @@ body.has-tour #main { padding-top: 60px; }
 .pdown__when { margin-top: 8px; font-size: 12.5px; color: #9b1553; }
 .pdown__when b { font-weight: 700; }
 .pdown__list { margin-top: 12px; display: grid; gap: 6px; }
-.pdown__list li { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 13px; border-radius: 11px; background: #fff; }
+.pdown__list li { display: flex; align-items: center; justify-content: space-between; gap: 8px 10px; padding: 11px 13px; border-radius: 11px; background: #fff; }
+.pdown__list li > div:first-child { min-width: 0; }
 .pdown__list li.best { box-shadow: inset 0 0 0 1.5px var(--mg); }
-.pdown__list li > div:first-child b { display: flex; align-items: center; gap: 5px; font-size: 14px; font-weight: 700; color: var(--ink); }
+.pdown__list li > div:first-child b { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 5px; font-size: 14px; font-weight: 700; color: var(--ink); }
 .pdown__list li > div:first-child small { display: block; margin-top: 2px; font-size: 12px; color: var(--g2); }
-.pdown__list .tag { display: inline-flex; align-items: center; height: 18px; padding: 0 6px; border-radius: 5px; background: var(--mg); color: #fff; font-size: 10.5px; font-weight: 700; }
+.pdown__list .tag { flex: none; display: inline-flex; align-items: center; height: 18px; padding: 0 6px; border-radius: 5px; background: var(--mg); color: #fff; font-size: 10.5px; font-weight: 700; white-space: nowrap; }
 .pdown__n { flex: none; text-align: right; }
 .pdown__n b { display: block; font-size: 14px; font-weight: 700; color: var(--ink); }
 .pdown__n small { display: block; margin-top: 2px; font-size: 12px; font-weight: 700; color: var(--mg); }

@@ -97,7 +97,8 @@
   };
 
   /* 신청내역 확인 — 지금 사이트 /receipt/<토큰>(로그인 없이 · 30일 · 개통완료 · 취소 · 직원이 끊으면 닫힘)과 같은 화면.
-   * «내용이 맞아요»는 제안(지금은 카카오톡 답장으로 받음) */
+   * ★«내용이 맞아요» 단추는 넣지 않는다 — 손님이 안 누르면 우리가 할 수 있는 게 없다.
+   * 확인은 지금처럼 카카오톡 답장으로 받는다 (대표 2026-09-17) */
   H.views.receipt = function (r) {
     var o = findOrder(r.parts[1]);
     if (!o) return { title: "신청내역 확인", html: `<div class="wrap me-narrow"><p class="empty">링크가 닫혔거나 없는 신청이에요.<br>개통이 끝나거나 30일이 지나면 링크가 닫혀요.</p></div>` };
@@ -116,8 +117,7 @@
     <div><dt>유지 기간</dt><dd>185일 · 이후 월 47,000원까지 낮출 수 있어요</dd></div>
   </dl></section>
   <section class="form-sec"><h2>금액</h2><div class="sum sum--flat"><div class="pbox__rows">${H.priceRows(p, s, pr)}</div><div class="sum__total"><span>월 납부 금액</span><b class="num">${H.won(pr.monthlyTotal)}</b></div></div></section>
-  <div class="rc-confirm">${o.confirmed ? `<p class="ok-t">${H.icon("check", "ic--sm")} ${H.esc(o.confirmed)}에 확인했어요</p>` : `<button type="button" class="btn btn--mg btn--block" data-act="rcConfirm" data-id="${o.id}">내용이 맞아요</button>`}
-    <p class="demo-note"><span class="demo-tag">제안</span>누르면 자비스웹 접수 상세에 «손님 확인»이 남아요. 지금은 카카오톡 답장으로 받아요</p></div>
+  <p class="help-t">내용이 다르면 담당자에게 알려 주세요. 확인은 카카오톡 답장으로 받고 있어요.</p>
 </div>`
     };
   };
