@@ -157,7 +157,7 @@ body.has-bar #app { padding-bottom: calc(var(--bar) + env(safe-area-inset-bottom
 
   /* 오른쪽 빈 자리에 따라오는 금액 카드 */
   .pd-float { display: none; }
-  body.bar-up .pd-float { display: block; position: fixed; z-index: 44; top: calc(var(--hdr) + 26px); right: max(var(--gut), calc((100vw - var(--wrap)) / 2)); width: 360px; max-height: calc(100vh - var(--hdr) - var(--bar) - 76px); overflow: auto; padding: 18px 20px 20px; border-radius: 18px; background: #fff; box-shadow: 0 10px 34px rgba(0, 0, 0, .13), inset 0 0 0 1px var(--line); }
+  body.bar-up .pd-float { display: block; position: fixed; z-index: 44; top: calc(var(--hdr) + 26px); right: var(--gut); width: 340px; max-height: calc(100vh - var(--hdr) - var(--bar) - 76px); overflow: auto; padding: 18px 20px 20px; border-radius: 18px; background: #fff; box-shadow: 0 10px 34px rgba(0, 0, 0, .13), inset 0 0 0 1px var(--line); }
   .pdf__prod { display: flex; align-items: center; gap: 11px; padding-bottom: 14px; border-bottom: 1px solid var(--line-2); }
   .pdf__th { flex: none; width: 46px; height: 46px; border-radius: 11px; background: var(--surface); display: grid; place-items: center; overflow: hidden; }
   .pdf__th img { width: 82%; height: 82%; object-fit: contain; }
@@ -1439,3 +1439,44 @@ body.has-tour #main { padding-top: 60px; }
   .tgp-p__ic { width: 66px; height: 66px; }
   .tgp-p__ic .ic { width: 30px; height: 30px; }
 }
+
+/* 인원 줄 다시 — 체크 배지가 지저분해 채움과 테두리로 알린다 (대표 2026-09-17) */
+.tgp-people { padding: 18px 12px; background: var(--lav-tint); }
+.tgp-p__ic { width: 58px; height: 58px; background: #fff; box-shadow: inset 0 0 0 1.5px #e3daee; color: #c6b9d8; }
+.tgp-p.on .tgp-p__ic { background: #fff; color: var(--lav-cta); box-shadow: inset 0 0 0 1.5px var(--lav); }
+.tgp-p.last .tgp-p__ic { background: var(--lav-cta); color: #fff; box-shadow: 0 6px 16px rgba(93, 68, 119, .3); }
+.tgp-p small { font-size: 12.5px; color: #a394b8; }
+.tgp-p.on small { color: var(--lav-cta); }
+.tgp-p.last small { color: var(--lav-cta); font-weight: 700; }
+.tgp-plus { margin-top: -20px; color: #cfc2de; }
+
+/* 결합 머리칸 체크 칸을 위 세 칸과 같은 재질로 (대표 2026-09-17 «칸이 잘 안 맞아») */
+.tg-hd .bf-net { margin-top: 8px; padding: 12px 14px; border-radius: 12px; background: rgba(255, 255, 255, .78); }
+.tg-hd .bf-net.on { box-shadow: inset 0 0 0 1.5px var(--lav-cta); }
+.tg-hd .bf-net__t b { font-size: 15px; color: var(--ink); }
+.tg-hd .bf-net__t small { font-size: 13px; color: var(--g2); }
+
+/* ---------- 결합 화면 다시 — 투게더를 위에 가로로 크게, 그 밑에 인원 계산, 그 밑에 참쉬운
+ * (대표 2026-09-17 «투게더 할인이 우리한테는 유리해») ---------- */
+.cb { grid-template-columns: 1fr; }
+.tgp { margin: 2px 0; padding: 22px 20px; border-radius: 20px; background: var(--surface); }
+.tgp h3 { font-size: 17px; font-weight: 700; letter-spacing: -0.03em; color: var(--ink); }
+.tgp__sub { margin-top: 5px; font-size: 13px; line-height: 1.55; color: var(--g2); }
+.tgp .tgp-people { margin-top: 14px; }
+@media (min-width: 1024px) {
+  .cb { grid-template-columns: 1fr; gap: 16px; }
+  .tgp { padding: 30px 26px; border-radius: 24px; }
+  .tgp h3 { font-size: 21px; }
+  .tgp__sub { font-size: 14.5px; }
+  /* 가로형 — 왼쪽에 글, 오른쪽에 표 그림 */
+  .cb__c--wide { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 30px; align-items: start; padding: 32px 30px; }
+  .cb__c--wide .cb__n, .cb__c--wide .cb__d, .cb__c--wide .cb__big, .cb__c--wide .cb__basis { grid-column: 1; }
+  .cb__c--wide .cb__img { grid-column: 2; grid-row: 1 / span 4; width: 100%; margin: 0; border-radius: 16px; box-shadow: 0 6px 20px rgba(47, 36, 64, .10); }
+  .cb__c--wide .cb__big b { font-size: 60px; }
+  .cb__c--wide .cb__basis { max-width: 34em; }
+}
+
+/* 보던 휴대폰으로 돌아가기 — 가운데로 (대표 2026-09-17 «벨런스 있게») */
+.tg-cta { display: flex; justify-content: center; }
+.tg-cta .btn { width: 100%; max-width: 420px; }
+.tg + .demo-note, .tg .demo-note { text-align: center; }
