@@ -1531,3 +1531,34 @@ body.has-tour #main { padding-top: 60px; }
   .ai-hd h1 { font-size: 40px; }
   .ai-hd__lead { font-size: 16px; }
 }
+
+/* ---------- AI 상담 팝업 (대표 2026-09-17 «전체화면 말고 팝업») ---------- */
+.aip { position: fixed; z-index: 92; left: 0; right: 0; bottom: 0; max-height: 86vh; max-height: 86dvh;
+  display: flex; flex-direction: column; background: #fff; border-radius: 22px 22px 0 0;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, .18); padding-bottom: env(safe-area-inset-bottom);
+  animation: aipUp .26s var(--ease); }
+@keyframes aipUp { from { transform: translateY(100%); } to { transform: none; } }
+.aip__hd { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 16px 18px 12px; border-bottom: 1px solid var(--line); }
+.aip__who { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.aip__who b { font-size: 15px; font-weight: 700; color: var(--ink); }
+.aip__who small { font-size: 12px; font-weight: 700; color: var(--mg); }
+.aip__acts { flex: none; display: flex; align-items: center; gap: 10px; }
+.aip__acts button { font-size: 13px; font-weight: 700; color: var(--g2); }
+.aip__x { width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center; color: var(--ink); }
+.aip__x:hover { background: var(--chip); }
+.aip__x .ic { width: 18px; height: 18px; }
+.aip__body { flex: 1 1 auto; overflow: auto; padding: 16px 18px 6px; }
+.aip__foot { flex: none; padding: 10px 18px 16px; border-top: 1px solid var(--line-2); background: #fff; }
+.aip__note { margin-top: 9px; display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--g3); }
+.aip__note .ic { width: 14px; height: 14px; flex: none; }
+.aip .chat-sugg { margin-top: 12px; }
+body.ai-on { overflow: hidden; }
+@media (min-width: 1024px) {
+  .aip { left: auto; right: 24px; bottom: 24px; width: 384px; height: 560px; max-height: calc(100vh - 120px);
+    border-radius: 20px; box-shadow: 0 16px 48px rgba(0, 0, 0, .20), inset 0 0 0 1px var(--line);
+    animation: aipIn .22s var(--ease); }
+  @keyframes aipIn { from { transform: translateY(16px); opacity: 0; } to { transform: none; opacity: 1; } }
+  body.ai-on { overflow: auto; }
+}
+@media (prefers-reduced-motion: reduce) { .aip { animation: none; } }

@@ -483,19 +483,48 @@
 </div>`
     };
   };
-  H.acts.chatStart = function () { H.chatState.on = true; H.render(); };
-  H.acts.chatReset = function () { H.chatState = { on: true, log: [] }; H.render(); };
+  /* ★전체 화면이 아니라 팝업으로 뜬다 (대표 2026-09-17 «전체화면으로 뜨면안되고 팝업으로 떠야되»)
+   * PC 는 오른쪽 아래 붙은 칸, 휴대폰은 아래에서 올라오는 칸 */
+  H.aiPopHtml = function () {
+    var st = H.chatState;
+    var msgs = st.log.map(function (m) { return `<p class="msg msg--${m[0]}">${H.esc(m[1])}</p>`; }).join("");
+    var left = CHAT_Q.filter(function (q) { return st.log.every(function (m) { return m[1] !== q[0]; }); });
+    return `<div class="aip__hd">
+        <span class="aip__who"><span class="chat-av">하유</span><b>하이유플 AI 상담</b><small>지금 답해요</small></span>
+        <span class="aip__acts"><button type="button" data-act="chatReset">새 상담</button>
+          <button type="button" class="aip__x" data-act="aiClose" aria-label="닫기">${H.icon("close")}</button></span></div>
+      <div class="aip__body" id="chatBox">
+        <p class="msg msg--ai">안녕하세요, 하유예요 😊<br>찾으시는 기종이나 궁금한 점을 편하게 말씀해 주세요.</p>${msgs}
+        ${left.length ? `<div class="chat-sugg">${left.map(function (q) { return `<button type="button" data-act="chatAsk" data-i="${CHAT_Q.indexOf(q)}">${q[0]}</button>`; }).join("")}</div>`
+      : `<div class="chat-sugg"><button type="button" data-act="kakao">상담원과 이야기하기</button></div>`}
+      </div>
+      <div class="aip__foot">
+        <div class="ai-send"><input class="input" id="chatInput" placeholder="궁금한 내용을 적어 주세요" aria-label="궁금한 내용"><button type="button" class="ai-send__go" data-act="chatSend" aria-label="보내기">${H.icon("arrow")}</button></div>
+        <p class="aip__note">${H.icon("info")}<span>이 대화는 담당 직원도 함께 봐요 · 실시간 가격으로 답해요</span></p>
+      </div>`;
+  };
+  H.acts.aiOpen = function () {
+    var el = H.$("#aiPop");
+    if (!el) { el = document.createElement("div"); el.id = "aiPop"; el.className = "aip"; el.setAttribute("role", "dialog"); el.setAttribute("aria-label", "AI 상담"); document.body.appendChild(el); }
+    el.innerHTML = H.aiPopHtml();
+    document.body.classList.add("ai-on");
+    var i = H.$("#chatInput");
+    if (i) setTimeout(function () { i.focus(); }, 60);
+  };
+  H.acts.aiClose = function () { document.body.classList.remove("ai-on"); var el = H.$("#aiPop"); if (el) el.remove(); };
+  H.aiRefresh = function () { var el = H.$("#aiPop"); if (el) { el.innerHTML = H.aiPopHtml(); var b = H.$("#chatBox"); if (b) b.scrollTop = b.scrollHeight; } };
+  H.acts.chatReset = function () { H.chatState = { on: true, log: [] }; H.aiRefresh(); };
   H.acts.chatSend = function () {
     var el = H.$("#chatInput"), v = (el && el.value || "").trim();
     if (!v) { H.toast("궁금한 내용을 적어 주세요"); return; }
     H.chatState.log.push(["me", v], ["ai", "시안에서는 위 질문에만 답해요. 실제 상담에서는 이 물음도 AI가 받아요."]);
-    H.render();
+    H.aiRefresh();
   };
 
   H.acts.chat = function () {
     H.closeDrawer(true);
     H.closeSheet();
-    H.go("#/chat");
+    H.acts.aiOpen();
   };
   H.acts.chatOld = function () {
     H.openSheet({
@@ -507,11 +536,9 @@
     });
   };
   H.acts.chatAsk = function (el) {
-    var q = CHAT_Q[Number(el.dataset.i)], box = H.$("#chatBox"), body = H.$("#sheetBody");
-    box.insertAdjacentHTML("beforeend", `<p class="msg msg--me">${q[0]}</p><p class="msg msg--ai">${H.esc(q[1]())}</p>`);
-    el.remove();
-    if (!H.$("#chatSugg button")) H.$("#chatSugg").innerHTML = `<button type="button" data-act="kakao">상담원과 이야기하기</button>`;
-    body.scrollTop = body.scrollHeight;
+    var q = CHAT_Q[Number(el.dataset.i)];
+    H.chatState.log.push(["me", q[0]], ["ai", q[1]()]);
+    H.aiRefresh();
   };
 
   /* ---------- 기획 메모 ---------- */
