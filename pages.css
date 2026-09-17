@@ -1562,3 +1562,30 @@ body.ai-on { overflow: hidden; }
   body.ai-on { overflow: auto; }
 }
 @media (prefers-reduced-motion: reduce) { .aip { animation: none; } }
+
+/* ---------- 결합 «이렇게 진행돼요» 다시 — 네 걸음이 이어져 보이게 (대표 2026-09-17) ---------- */
+.flow { margin-top: 18px; display: grid; gap: 0; }
+.flow__i { position: relative; min-width: 0; display: grid; grid-template-columns: 46px minmax(0, 1fr); gap: 14px; padding-bottom: 22px; }
+.flow__i:last-child { padding-bottom: 0; }
+/* 걸음을 잇는 선 */
+.flow__i::before { content: ""; position: absolute; left: 22px; top: 46px; bottom: 0; width: 2px; background: var(--lav); }
+.flow__i:last-child::before { display: none; }
+.flow__n { position: relative; z-index: 1; width: 46px; height: 46px; border-radius: 50%; background: var(--lav-tint); box-shadow: inset 0 0 0 1.5px var(--lav); color: var(--lav-cta); display: grid; place-items: center; }
+.flow__n .ic { width: 21px; height: 21px; }
+.flow__n .num { position: absolute; top: -4px; right: -4px; width: 20px; height: 20px; border-radius: 50%; background: var(--lav-cta); color: #fff; font-size: 11px; font-weight: 700; font-style: normal; display: grid; place-items: center; box-shadow: 0 0 0 2px #fff; }
+.flow__who { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 6px; background: var(--chip); font-size: 11.5px; font-weight: 700; color: var(--g2); }
+.flow__t b { display: block; margin-top: 6px; font-size: 16px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
+.flow__t p { margin-top: 4px; font-size: 13.5px; line-height: 1.55; color: var(--g2); }
+.flow__hi { margin-top: 8px; display: inline-flex; align-items: center; gap: 5px; padding: 6px 10px; border-radius: 9px; background: var(--mg-tint); font-size: 12.5px; font-weight: 700; color: #9b1553; }
+.flow__hi .ic { width: 14px; height: 14px; flex: none; }
+.flow__fee { margin-top: 8px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 9px 12px; border-radius: 10px; background: var(--surface); }
+.flow__fee em { font-style: normal; font-size: 11.5px; font-weight: 700; color: var(--g3); }
+.flow__fee > span { display: inline-flex; align-items: baseline; gap: 5px; font-size: 12.5px; color: var(--g2); }
+.flow__fee b { font-size: 13.5px; font-weight: 700; color: var(--ink); }
+@media (min-width: 1024px) {
+  .flow { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; align-items: start; }
+  .flow__i { grid-template-columns: 1fr; gap: 12px; padding-bottom: 0; }
+  /* PC 는 선이 가로로 */
+  .flow__i::before { left: 46px; right: -18px; top: 22px; bottom: auto; width: auto; height: 2px; }
+  .flow__t b { margin-top: 8px; font-size: 17px; }
+}

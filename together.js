@@ -145,13 +145,22 @@
     <div class="tg-gift">${H.icon("won")}<div><b>인터넷을 같이 바꾸시면 80만원을 지원해 드려요</b><p>인터넷과 TV 상품은 상담에서 맞는 것으로 안내해 드려요. LG U+ 인터넷은 공유기가 포함돼요.</p></div></div>
   </section>
 
-  <section class="tg-sec"><h2>이렇게 진행돼요</h2>
-    <ol class="steps">${[
-      ["휴대폰 주문", "지금처럼 휴대폰을 고르고 주문해요. 인터넷을 안 해도 가격은 같아요."],
-      ["인터넷 상담 신청", "이 화면에서 번호를 남기면 담당자가 조합과 설치 일정을 여쭤봐요."],
-      ["설치", "설치비는 처음 한 번 인터넷 36,300원, 인터넷+TV 56,100원이에요."],
-      ["결합 신청", "U+one 앱이나 114에서 결합을 신청해요. 방법은 상담 때 같이 안내해요."]
-    ].map(function (s, i) { return `<li class="step"><i>${i + 1}</i><div><b>${s[0]}</b><p>${s[1]}</p></div></li>`; }).join("")}</ol>
+  <section class="tg-sec"><h2>이렇게 진행돼요</h2><p class="tg-sub">휴대폰부터 결합까지 네 걸음이에요. 어려운 건 담당자가 같이 해 드려요.</p>
+    <ol class="flow">${[
+      { who: "손님", t: "휴대폰 주문", d: "지금처럼 휴대폰을 고르고 주문해요.", hi: "인터넷을 안 해도 휴대폰 가격은 같아요", ic: "phone" },
+      { who: "담당자", t: "인터넷 상담", d: "번호를 남기면 전화로 조합과 설치 일정을 여쭤봐요.", ic: "call" },
+      { who: "설치기사", t: "설치", d: "정하신 날에 찾아가 달아 드려요.", fee: [["인터넷", "36,300원"], ["인터넷 + TV", "56,100원"]], ic: "wifi" },
+      { who: "손님", t: "결합 신청", d: "U+one 앱이나 114로 신청해요. 방법은 상담 때 같이 알려 드려요.", ic: "check" }
+    ].map(function (s, i) {
+      return `<li class="flow__i">
+        <span class="flow__n">${H.icon(s.ic)}<i class="num">${i + 1}</i></span>
+        <div class="flow__t">
+          <span class="flow__who">${s.who}</span>
+          <b>${s.t}</b><p>${s.d}</p>
+          ${s.hi ? `<span class="flow__hi">${H.icon("check")}${s.hi}</span>` : ""}
+          ${s.fee ? `<span class="flow__fee"><em>처음 한 번</em>${s.fee.map(function (f) { return `<span><span>${f[0]}</span><b class="num">${f[1]}</b></span>`; }).join("")}</span>` : ""}
+        </div></li>`;
+    }).join("")}</ol>
   </section>
 
   <section class="tg-sec"><h2>자주 묻는 질문</h2>
