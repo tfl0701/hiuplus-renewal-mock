@@ -418,11 +418,11 @@
   H.acts.consult = function () {
     H.closeDrawer(true);
     H.openSheet({
+      /* 전화 갈래는 넣지 않는다 — 하이유플은 «전화 없이 개통»이 강점이다 (대표 2026-09-17) */
       title: "무엇을 도와드릴까요?",
       body: `<div class="consult-list">
         <button type="button" class="cs-card cs-card--dark" data-act="chat"><span class="cs-card__ic">${H.icon("spark")}</span><b>AI 상담 하유</b><small>가격 · 요금제 · 선택약정 비교를 바로 물어보세요</small></button>
         <button type="button" class="cs-card cs-card--kakao" data-act="kakao"><span class="cs-card__ic">${H.icon("kakao", "ic--fill")}</span><b>카카오톡 상담</b><small>상담원과 채팅으로 이야기해요</small></button>
-        <a class="cs-card" href="tel:${C.cs.phone}"><span class="cs-card__ic">${H.icon("call")}</span><b class="num">${C.cs.phone}</b><small>${C.cs.hours[0]} · ${C.cs.hours[1]}</small></a>
       </div>`
     });
   };
