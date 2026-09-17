@@ -104,9 +104,14 @@
       title: "휴대폰 + 인터넷 같이",
       html: `<div class="wrap tg">
   <header class="tg-hd">
-    <p class="tg-eyebrow">휴대폰 + 인터넷</p>
-    <h1>인터넷도 같이 하면<br>결합 할인이 따로 있어요</h1>
-    <p class="tg-lead">휴대폰 가격은 인터넷과 상관없어요. LG U+ 인터넷을 같이 쓰면 «U+투게더 결합»이나 «참 쉬운 가족 결합»으로 매달 요금이 내려가요.</p>
+    <div class="tg-hd__top">
+      <div class="tg-hd__say">
+        <p class="tg-eyebrow">휴대폰 + 인터넷</p>
+        <h1>인터넷도 같이 하면<br>결합 할인이 따로 있어요</h1>
+        <p class="tg-lead">휴대폰 가격은 인터넷과 상관없어요. LG U+ 인터넷을 같이 쓰면 «U+투게더 결합»이나 «참 쉬운 가족 결합»으로 매달 요금이 내려가요.</p>
+      </div>
+      <p class="tg-hook"><b class="num">80만원</b><span>인터넷을 같이 바꾸시면<br>지원해 드려요</span></p>
+    </div>
     <ul class="tg-points">
       <li>${H.icon("check")}<span><b>휴대폰 가격은 그대로</b>인터넷 결합 조건 없음</span></li>
       <li>${H.icon("wifi")}<span><b>인터넷 요금 할인</b>속도에 따라 매달 내려가요</span></li>

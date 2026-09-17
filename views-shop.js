@@ -148,7 +148,7 @@ ${H.bannerHtml()}
 
   <section class="sec" aria-labelledby="findT">
     <div class="sec-hd">
-      <div><h2 id="findT">어떤 휴대폰을 찾으세요?</h2><p class="sub">내 조건으로 확인</p></div>
+      <div><h2 id="findT">어떤 휴대폰을 찾으세요?</h2></div>
       <div class="chips home-chips" role="group" aria-label="휴대폰 종류">${chips}</div>
     </div>
     <div class="cat-grid" id="catGrid">${catCards(set)}</div>
