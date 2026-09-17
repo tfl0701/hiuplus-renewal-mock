@@ -144,13 +144,29 @@ body.has-bar #app { padding-bottom: calc(var(--bar) + env(safe-area-inset-bottom
 /* PC에서도 아래 띠를 쓴다 — 오른쪽 칸이 스크롤로 사라지면 손님이 주문하려고 다시 위로
  * 올라가야 했다 (대표 2026-09-17). 주문 단추가 화면에서 사라질 때만 띠가 올라온다 */
 @media (min-width: 1024px) {
-  .bar { padding-inline: max(var(--gut), calc((100% - var(--wrap)) / 2)); transform: translateY(110%); transition: transform .24s var(--ease); pointer-events: none; }
+  /* 화면 전체를 가로지르지 않는 떠 있는 막대 — 오른쪽 아래 상담 단추를 가리지 않게
+   * 오른쪽을 비워 둔다 (대표 2026-09-17) */
+  .bar { left: 50%; right: auto; bottom: 22px; width: min(var(--wrap), calc(100% - 320px)); margin-left: calc(var(--wrap) / -2 - 80px); padding: 12px 14px 12px 20px; border: 0; border-radius: 18px; box-shadow: 0 10px 34px rgba(0, 0, 0, .13), inset 0 0 0 1px var(--line); transform: translateY(150%); transition: transform .24s var(--ease); pointer-events: none; }
   body.bar-up .bar { transform: none; pointer-events: auto; }
   body.has-bar #app { padding-bottom: 0; }
-  body.has-bar.bar-up #app { padding-bottom: var(--bar); }
+  body.has-bar.bar-up #app { padding-bottom: calc(var(--bar) + 22px); }
   .bar__price small { font-size: 13px; }
   .bar__price b { font-size: 20px; }
-  .bar .btn { height: 54px; padding: 0 40px; font-size: 16px; }
+  .bar .btn { height: 54px; padding: 0 36px; font-size: 16px; }
+  .bar__chev { display: none; }
+
+  /* 오른쪽 빈 자리에 따라오는 금액 카드 */
+  .pd-float { display: none; }
+  body.bar-up .pd-float { display: block; position: fixed; z-index: 44; top: calc(var(--hdr) + 26px); right: max(var(--gut), calc((100vw - var(--wrap)) / 2)); width: 360px; max-height: calc(100vh - var(--hdr) - var(--bar) - 76px); overflow: auto; padding: 18px 20px 20px; border-radius: 18px; background: #fff; box-shadow: 0 10px 34px rgba(0, 0, 0, .13), inset 0 0 0 1px var(--line); }
+  .pdf__prod { display: flex; align-items: center; gap: 11px; padding-bottom: 14px; border-bottom: 1px solid var(--line-2); }
+  .pdf__th { flex: none; width: 46px; height: 46px; border-radius: 11px; background: var(--surface); display: grid; place-items: center; overflow: hidden; }
+  .pdf__th img { width: 82%; height: 82%; object-fit: contain; }
+  .pdf__prod b { display: block; font-size: 14px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
+  .pdf__prod small { display: block; margin-top: 2px; font-size: 11.5px; line-height: 1.45; color: var(--g3); }
+  .pd-float .pbox__rows { margin-top: 14px; padding-top: 0; border-top: 0; }
+  .pdf__total { margin-top: 14px; padding-top: 14px; border-top: 1px dashed #d6d6d6; display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+  .pdf__total span { font-size: 14px; font-weight: 700; color: var(--ink); }
+  .pdf__total b { font-size: 22px; font-weight: 700; color: var(--black); }
 }
 @media (prefers-reduced-motion: reduce) {
   .bar { transition: none; }

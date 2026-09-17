@@ -375,6 +375,16 @@ ${H.bannerHtml()}
       <p class="pbox__note">지금 보시는 금액이 최종 결제 금액이에요. 추가 청구는 없어요. 할부를 고른 경우에만 통신사 할부 이자(연 5.9%)가 붙어요.</p>
       <div class="pbox__rows">${H.priceRows(p, s, r)}</div></div>`;
   }
+  /* PC에서 스크롤해 오른쪽이 비면 그 자리에 금액 카드가 따라온다 (대표 2026-09-17
+   * «드래그하면 빈 공간에 주문하기 띠 나올 때 같이 보이게») */
+  H.floatCard = function (p) {
+    var s = H.selFor(p), r = H.price(p, s);
+    var cond = [p.vols[s.vol][0], p.colors[s.color][0], (r.plan || {}).name, H.methodLabel(s.method), H.discountLabel(s.discount), r.months ? r.months + "개월 할부" : "일시불"].filter(Boolean).join(" · ");
+    return `<div class="pdf__prod"><span class="pdf__th"><img src="${H.img(p, s.color)}" alt=""></span><span><b>${p.name}</b><small>${H.esc(cond)}</small></span></div>
+      <div class="pbox__rows">${H.priceRows(p, s, r)}</div>
+      <div class="pdf__total"><span>월 납부 금액</span><b class="num">${H.won(r.monthlyTotal)}</b></div>`;
+  };
+
   H.productPanel = function (p) {
     var s = H.selFor(p), r = H.price(p, s);
     /* 인터넷 결합은 고르는 칸 안(PC 오른쪽 칸)에 둔다 — 아래에 있으면 PC에서 그냥 지나친다는
@@ -406,6 +416,8 @@ ${H.bannerHtml()}
     if (!p || p.launch) return;
     var s = H.selFor(p), panel = H.$("#pdPanel"), bar = H.$("#bar"), img = H.$("#pdImg img");
     if (panel) panel.innerHTML = H.productPanel(p);
+    var fl = H.$("#pdFloat");
+    if (fl) fl.innerHTML = H.floatCard(p);
     if (bar) bar.innerHTML = H.productBar(p);
     if (img && img.getAttribute("src") !== H.img(p, s.color)) img.src = H.img(p, s.color);
   };
@@ -430,6 +442,7 @@ ${H.bannerHtml()}
       <div id="pdPanel">${H.productPanel(p)}</div>
     </div>
   </div>
+  <aside class="pd-float pc-only" id="pdFloat" aria-hidden="true">${H.floatCard(p)}</aside>
   <div class="pd-lower">
     <nav class="pd-tabs" aria-label="상품 안내">${tabs.map(function (t, i) { return `<button type="button" data-act="jump" data-id="${t[0]}" class="${i === 0 ? "on" : ""}">${t[1]}</button>`; }).join("")}</nav>
     <section class="pd-sec" id="pdBenefit">

@@ -237,8 +237,10 @@
     var tick = function () {
       var cta = H.$(sel); // 옵션을 고치면 칸이 다시 그려지니 그때그때 찾는다
       if (!cta) { document.body.classList.add("bar-up"); return; }
+      /* ★위로 지나갔을 때만 올린다 — 화면 맨 위(단추가 아직 아래에 있을 때)에서는 띠를 띄우지
+       * 않는다 (대표 2026-09-17 «상단 화면에 주문하기 띠 나오는 건 없애줘») */
       var r = cta.getBoundingClientRect();
-      document.body.classList.toggle("bar-up", r.bottom <= 24 || r.top >= window.innerHeight);
+      document.body.classList.toggle("bar-up", r.bottom <= 24);
     };
     addEventListener("scroll", tick, { passive: true });
     addEventListener("resize", tick);
