@@ -301,7 +301,12 @@
       title: "최근 본 상품",
       html: `<div class="wrap">${back("#/my", "마이페이지")}
         <header class="ph ph--tight"><h1>최근 본 상품</h1></header>
-        ${list.length ? `<div class="p-grid">${list.map(H.productCard).join("")}</div>` : `<div class="empty">최근에 보신 상품이 없어요.<br>상품을 둘러보시면 여기에 모입니다.<br><br><a class="btn btn--ink btn--sm" href="#/phones">휴대폰 보러 가기</a></div>`}
+        ${list.length ? `<div class="p-grid">${list.map(function (p) {
+          /* 최근 본 상품은 이름·사진만 — 대표 2026-09-18 «이름 사진만 두자». 기록이 손님 기기에 이름·사진만
+             남아서 요금제·가격은 그리지 않는다(서버에서 새로 불러오지 않는다). */
+          var s = H.defaults(p);
+          return `<a class="p-card" href="#/phone/${p.id}"><div class="p-card__img"><img src="${H.img(p, s.color)}" alt="" loading="lazy"></div><p class="p-card__name">${p.name}</p></a>`;
+        }).join("")}</div>` : `<div class="empty">최근에 보신 상품이 없어요.<br>상품을 둘러보시면 여기에 모입니다.<br><br><a class="btn btn--ink btn--sm" href="#/phones">휴대폰 보러 가기</a></div>`}
       </div>`
     };
   };
