@@ -268,8 +268,9 @@
   <section class="form-sec"><h2>금액</h2><div class="sum sum--flat"><div class="pbox__rows">${H.priceRows(p, s, pr)}${o.usedMileage ? `<div class="row"><span>마일리지 사용</span><b class="num minus">- ${H.num(o.usedMileage)}P</b></div>` : ""}</div>
     <div class="sum__total"><span>월 납부 금액</span><b class="num">${H.won(pr.monthlyTotal)}</b></div></div></section>
   <section class="form-sec"><h2>받으실 곳</h2><dl class="kv">
-    <div><dt>주소</dt><dd>${H.esc(o.addr || "-")}</dd></div>
-    <div><dt>상세 주소</dt><dd>${H.esc(o.addr2 || "-")}</dd></div>
+    <!-- 주소 한 줄 — 접수는 주소와 상세주소를 한 칸(hs_orders.customer_address)에 이어 붙여
+         저장한다. 나눠 적을 수가 없어 2026-09-18 에 목업도 한 줄로 맞췄다. -->
+    <div><dt>주소</dt><dd>${H.esc([o.addr, o.addr2].filter(Boolean).join(" ") || "-")}</dd></div>
     <div><dt>송장번호</dt><dd>${o.step >= 2 ? `<span class="num">${H.esc(o.courier || "CJ대한통운")} ${H.esc(o.trackingNo || "123456789012")}</span> <span class="demo-tag">예시</span>` : "택배를 보내면 알려드려요"}</dd></div>
   </dl></section>
   <div class="done__acts"><button type="button" class="btn btn--line btn--sm" data-act="joinInfo" data-id="${o.id}">가입내역 받는 방법</button><a class="btn btn--line btn--sm" href="#/receipt/${o.id}">신청내역 확인 링크</a>${o.step >= 3 ? '<button type="button" class="btn btn--line btn--sm" data-act="caseAsk">케이스 요청하기</button>' : ""}<button type="button" class="btn btn--line btn--sm" data-act="kakao">${H.icon("kakao", "ic--fill")}카카오톡으로 물어보기</button></div>
