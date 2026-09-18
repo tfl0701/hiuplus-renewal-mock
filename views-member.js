@@ -222,7 +222,8 @@
   </div>
   <div>
     <h2 class="me-sec-t">진행 중인 신청</h2>${current}
-    <div class="sec-row"><h2 class="me-sec-t">최근 신청내역</h2><a class="link-arrow" href="#/my/orders">전체 보기${H.icon("arrow")}</a></div>
+    <!-- «전체 보기»는 뺐다 — 갈 화면이 없다(옛 신청 목록은 2026-08-23 대표 결정으로 없애고 마이페이지로 모음). 대표 2026-09-18 «빼». -->
+    <div class="sec-row"><h2 class="me-sec-t">최근 신청내역</h2></div>
     ${s.orders.length ? `<div class="o-list">${s.orders.slice(0, 3).map(orderRow).join("")}</div>` : '<p class="help-t">아직 신청내역이 없어요.</p>'}
   </div>
 </div></div>`
