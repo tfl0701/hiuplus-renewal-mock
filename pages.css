@@ -1632,3 +1632,6 @@ body.ai-on { overflow: hidden; }
   .flow__i::before { left: 46px; right: -18px; top: 22px; bottom: auto; width: auto; height: 2px; }
   .flow__t b { margin-top: 8px; font-size: 17px; }
 }
+
+/* 185일 칸 — 정지 기간 안내(대표 2026-09-18) */
+.dday .dday__note { display: block; margin-top: 6px; font-size: 12px; color: var(--g3); line-height: 1.5; }

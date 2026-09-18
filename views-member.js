@@ -168,6 +168,7 @@
           <div class="pdown__n"><b class="num">월 ${H.won(feeOf(x.fee))}</b><small class="num">매달 ${H.won(save)} ↓</small></div></li>`;
     }).join("")}</ul>
       <p class="help-t">월 47,000원(${H.DOWN.name})보다 더 낮추면 받은 지원금을 토해내야 할 수 있어요. 선택약정 25% 할인은 바꾼 요금제에도 그대로 이어져요.</p>
+      <p class="help-t">일시정지·미납정지·해외 출국 등으로 쉰 날은 사용일에 들어가지 않아요. 그런 날이 있었다면 그만큼 빼고 세어 주세요 — 바꿀 수 있는 날이 그만큼 뒤로 밀려요.</p>
       <div class="pdown__acts"><button type="button" class="btn btn--line btn--sm" data-act="consult">바꾸는 것 상담받기</button><a class="btn btn--soft btn--sm" href="#/guide/plan-down">왜 185일인가요?</a></div>
     </section>`;
   }
@@ -257,7 +258,7 @@
     ${H.tracker(o.step)}
     ${o.step >= 2 ? trackRow(o) : ""}
     <p class="order-card__next">${next[0]}</p><p class="help-t">${next[1]}</p>${next[2]}
-    ${o.step === 3 ? `<div class="dday"><span>요금제를 낮출 수 있을 때까지</span><b class="num">185일 남았어요</b><span>개통일 기준 185일이 지나면 월 47,000원 이상 요금제로 바꿀 수 있어요.</span></div>` : ""}
+    ${o.step === 3 ? `<div class="dday"><span>요금제를 낮출 수 있을 때까지</span><b class="num">185일 남았어요</b><span>개통일 기준 185일이 지나면 월 47,000원 이상 요금제로 바꿀 수 있어요.</span><span class="dday__note">일시정지·미납정지·해외 출국 등으로 쉰 날은 사용일에 들어가지 않아요. 그런 날이 있었다면 그만큼 빼고 세어 주세요 — 바꿀 수 있는 날이 그만큼 뒤로 밀려요.</span></div>` : ""}
     ${demoStep(o)}
   </div>
   <section class="form-sec"><h2>신청 조건</h2><dl class="kv">
